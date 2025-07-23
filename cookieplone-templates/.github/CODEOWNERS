@@ -1,0 +1,9 @@
+/.github/ @ericof
+/templates/add-ons/backend/ @ericof
+/templates/add-ons/frontend/ @sneridagh
+/templates/docs/ @ericof
+/templates/projects/monorepo/ @ericof
+/templates/projects/classic/ @pbauer
+/templates/sub/cache/ @ericof
+/templates/sub/frontend_project/ @sneridagh
+/templates/sub/project_settings/ @sneridagh

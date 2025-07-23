@@ -1,0 +1,30 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "editor.formatOnSave": true,
+        "python.formatting.provider": "black",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "typescript.tsdk": "frontend/node_modules/typescript/lib",
+        "eslint.workingDirectories": ["frontend"],
+        "prettier.configPath": "frontend/.prettierrc",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter"
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "ms-python.black-formatter",
+            "dbaeumer.vscode-eslint",
+            "esbenp.prettier-vscode",
+            "editorconfig.editorconfig"
+        ]
+    }
+}

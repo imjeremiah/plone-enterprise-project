@@ -1,0 +1,13 @@
+bin/
+include/
+lib/
+lib64/
+pip-selfcheck.json
+.vscode
+collective.plonedistribution
+.pytest_cache
+.reports/*.csv
+.reports/*.json
+.reports/*.md
+__pycache__/
+.venv
