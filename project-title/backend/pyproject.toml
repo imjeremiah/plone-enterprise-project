@@ -24,6 +24,7 @@ classifiers = [
 ]
 dependencies = [
     "Products.CMFPlone==6.1.2",
+    "pas.plugins.authomatic",
     "plone.api",
     "plone.restapi",
     "plone.volto",

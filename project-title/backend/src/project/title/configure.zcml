@@ -16,10 +16,26 @@
   <include file="profiles.zcml" />
   <include file="permissions.zcml" />
 
+  <include package=".behaviors" />
   <include package=".controlpanel" />
   <include package=".indexers" />
   <include package=".serializers" />
   <include package=".vocabularies" />
+
+  <!-- CORS Configuration -->
+  <adapter
+      factory=".cors.CORSPolicy"
+      for="* *"
+      />
+
+  <!-- OAuth Redirect JavaScript View -->
+  <browser:page
+      xmlns:browser="http://namespaces.zope.org/browser"
+      for="*"
+      name="oauth_redirect_js"
+      class=".browser.views.OAuthRedirectView"
+      permission="zope2.View"
+      />
 
   <!-- -*- extra stuff goes here -*- -->
 

@@ -1,0 +1,183 @@
+/**
+ * Enhanced Login Component Styles for Project Title
+ * Provides modern, teacher-friendly login interface with OAuth integration
+ */
+
+.login-form {
+  margin-top: 3rem !important;
+  margin-bottom: 3rem !important;
+}
+
+.login-header {
+  color: #2185d0 !important;
+  margin-bottom: 1rem !important;
+}
+
+.login-description {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+/* Google OAuth Button Styling */
+.google-login-button {
+  margin-bottom: 1rem !important;
+  background-color: #db4437 !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s ease !important;
+}
+
+.google-login-button:hover {
+  background-color: #c23321 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+.google-login-button:focus {
+  background-color: #c23321 !important;
+  box-shadow: 0 0 0 3px rgba(219, 68, 55, 0.3) !important;
+}
+
+/* OAuth Login Section */
+.oauth-login-section {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.login-help-text {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.login-help-text p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+/* Traditional Login Toggle */
+.traditional-login-toggle {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.traditional-login-toggle-button {
+  margin-top: 0.5rem !important;
+  color: #666 !important;
+  border-color: #ddd !important;
+}
+
+.traditional-login-toggle-button:hover {
+  color: #2185d0 !important;
+  border-color: #2185d0 !important;
+}
+
+.admin-help-text {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.admin-help-text p {
+  margin: 0.25rem 0;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* Form Styling */
+.ui.form .field > label {
+  font-weight: 600;
+  color: #333;
+}
+
+.ui.form .field > input {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+}
+
+.ui.form .field > input:focus {
+  border-color: #2185d0;
+  box-shadow: 0 0 0 2px rgba(33, 133, 208, 0.2);
+}
+
+/* Login Links */
+.login-links {
+  margin-top: 2rem !important;
+}
+
+.login-links a {
+  color: #2185d0;
+  text-decoration: none;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-form {
+    margin-top: 1rem !important;
+    padding: 1rem !important;
+  }
+  
+  .login-description {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .oauth-login-section,
+  .traditional-login-toggle {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Accessibility Improvements */
+.google-login-button:focus,
+.traditional-login-toggle-button:focus,
+.ui.form input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(33, 133, 208, 0.3) !important;
+}
+
+/* Loading State */
+.ui.loading.button {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Error Message Styling */
+.ui.negative.message {
+  background-color: #fff6f6;
+  border: 1px solid #e0b4b4;
+  color: #9f3a38;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+/* Success States (for future use) */
+.oauth-success {
+  background-color: #fcfff5;
+  border: 1px solid #a3c293;
+  color: #2c662d;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Divider Styling */
+.ui.horizontal.divider {
+  color: #999;
+  font-weight: 500;
+  margin: 2rem 0 1.5rem 0;
+}
+
+/* Segment Styling */
+.ui.segment.padded {
+  padding: 2rem !important;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+} 

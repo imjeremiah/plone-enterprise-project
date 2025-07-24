@@ -1,5 +1,37 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <!-- -*- extra stuff goes here -*- -->
+  <!-- Educational Standards Vocabularies for K-12 Teachers -->
+  
+  <!-- All Standards (Comprehensive) -->
+  <utility
+    name="project.title.vocabularies.Standards"
+    component=".standards.standards_vocabulary_factory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+  />
+  
+  <!-- Subject-Specific Standards -->
+  <utility
+    name="project.title.vocabularies.MathStandards"
+    component=".standards.math_standards_vocabulary_factory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+  />
+  
+  <utility
+    name="project.title.vocabularies.ELAStandards"
+    component=".standards.ela_standards_vocabulary_factory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+  />
+  
+  <utility
+    name="project.title.vocabularies.ScienceStandards"
+    component=".standards.science_standards_vocabulary_factory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+  />
+  
+  <utility
+    name="project.title.vocabularies.SocialStudiesStandards"
+    component=".standards.social_studies_standards_vocabulary_factory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+  />
 
 </configure>

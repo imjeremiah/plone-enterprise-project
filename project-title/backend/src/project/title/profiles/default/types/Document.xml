@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<object meta_type="Dexterity FTI"
+        name="Document"
+        xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+
+  <!-- Add SIMPLE Standards Alignment behavior for educational content -->
+  <property name="behaviors" purge="false">
+    <element value="project.title.behaviors.simple_standards.ISimpleStandardsAligned"/>
+  </property>
+
+</object> 

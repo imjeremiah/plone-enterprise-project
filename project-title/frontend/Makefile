@@ -46,7 +46,7 @@ install: ## Installs the add-on in a development environment
 
 .PHONY: start
 start: ## Starts Volto, allowing reloading of the add-on during development
-	pnpm start
+	RAZZLE_API_PATH=http://localhost:8080/Plone pnpm start
 
 .PHONY: build
 build: ## Build a production bundle for distribution of the project with the add-on

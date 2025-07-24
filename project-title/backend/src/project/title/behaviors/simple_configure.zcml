@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="project.title">
+
+  <!-- SIMPLE Standards Alignment Behavior - NO DEPENDENCIES -->
+  
+  <plone:behavior
+      title="Simple Standards Alignment"
+      description="Basic standards alignment for educational content"
+      provides=".simple_standards.ISimpleStandardsAligned"
+      factory="plone.behavior.AnnotationStorage"
+      marker=".simple_standards.ISimpleStandardsAligned"
+      for="plone.dexterity.interfaces.IDexterityContent"
+      />
+
+</configure> 

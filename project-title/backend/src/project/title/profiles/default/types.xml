@@ -2,9 +2,21 @@
 <object meta_type="Plone Types Tool"
         name="portal_types"
 >
-  <!--
+  <!-- Content types enhanced with Standards Alignment for K-12 education -->
+  
   <object meta_type="Dexterity FTI"
-          name="MyType"
+          name="Document"
+          filename="types/Document.xml"
   />
--->
+  
+  <object meta_type="Dexterity FTI"
+          name="News Item"
+          filename="types/News Item.xml"
+  />
+  
+  <object meta_type="Dexterity FTI"
+          name="Event"
+          filename="types/Event.xml"
+  />
+  
 </object>

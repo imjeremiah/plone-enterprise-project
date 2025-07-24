@@ -1,0 +1,310 @@
+/**
+ * Enhanced Login Component for Project Title
+ * 
+ * Extends Volto's default login with Google OAuth integration.
+ * Provides teachers with modern authentication options while preserving admin access.
+ */
+
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import './Login.css';
+import {
+  Button,
+  Container,
+  Grid,
+  Header,
+  Message,
+  Segment,
+  Form,
+  Input,
+  Divider,
+} from 'semantic-ui-react';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
+import { Helmet } from '@plone/volto/helpers';
+import { login } from '@plone/volto/actions';
+import { getBaseUrl } from '@plone/volto/helpers';
+import config from '@plone/volto/registry';
+
+const messages = defineMessages({
+  title: {
+    id: 'Log in',
+    defaultMessage: 'Log in',
+  },
+  description: {
+    id: 'Sign in to access your lesson planning workspace',
+    defaultMessage: 'Sign in to access your lesson planning workspace',
+  },
+  username: {
+    id: 'Login Name',
+    defaultMessage: 'Login Name',
+  },
+  password: {
+    id: 'Password',
+    defaultMessage: 'Password',
+  },
+  login: {
+    id: 'Log in',
+    defaultMessage: 'Log in',
+  },
+  googleLogin: {
+    id: 'Sign in with Google',
+    defaultMessage: 'Sign in with Google',
+  },
+  or: {
+    id: 'or',
+    defaultMessage: 'or',
+  },
+  forgotPassword: {
+    id: 'Forgot your password?',
+    defaultMessage: 'Forgot your password?',
+  },
+  registerAccount: {
+    id: 'Register a new account',
+    defaultMessage: 'Register a new account',
+  },
+  teacherLogin: {
+    id: 'Teacher Quick Access',
+    defaultMessage: 'Teacher Quick Access',
+  },
+  adminLogin: {
+    id: 'Administrator Login',
+    defaultMessage: 'Administrator Login',
+  },
+});
+
+const Login = (props) => {
+  const intl = useIntl();
+  const dispatch = useDispatch();
+  
+  // Redux state
+  const loading = useSelector((state) => state.userSession?.login?.loading);
+  const error = useSelector((state) => state.userSession?.login?.error);
+  const isLoggedIn = useSelector((state) => state.userSession?.token);
+  
+  // Local state
+  const [formData, setFormData] = useState({
+    login: '',
+    password: '',
+  });
+  const [showTraditionalLogin, setShowTraditionalLogin] = useState(false);
+
+  // Redirect if already logged in
+  if (isLoggedIn) {
+    return <Redirect to={getBaseUrl('')} />;
+  }
+
+  /**
+   * Handle traditional form login submission
+   */
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    if (!formData.login || !formData.password) {
+      toast.error('Please enter both username and password.');
+      return;
+    }
+
+    dispatch(login(formData.login, formData.password));
+  };
+
+  /**
+   * Handle form field changes
+   */
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  /**
+   * Handle Google OAuth login
+   */
+  const handleGoogleLogin = () => {
+    // Store current location and OAuth indicator
+    sessionStorage.setItem('oauth_return_url', window.location.href);
+    sessionStorage.setItem('oauth_in_progress', 'true');
+    
+    // Use the working authomatic endpoint
+    const baseUrl = config.settings.apiPath || '';
+    const redirectUrl = `${baseUrl}/@@authomatic-handler/google`;
+    
+    // Redirect to Google OAuth
+    window.location.href = redirectUrl;
+  };
+
+  /**
+   * Toggle between OAuth and traditional login
+   */
+  const toggleLoginMode = () => {
+    setShowTraditionalLogin(!showTraditionalLogin);
+  };
+
+  return (
+    <Container text>
+      <Helmet title={intl.formatMessage(messages.title)} />
+      
+      <Segment basic className="login-form">
+        <Grid centered>
+          <Grid.Column mobile={12} tablet={8} computer={6}>
+            
+            {/* Header */}
+            <Header as="h1" textAlign="center" className="login-header">
+              <FormattedMessage {...messages.title} />
+            </Header>
+            
+            <p className="login-description">
+              <FormattedMessage {...messages.description} />
+            </p>
+
+            {/* Error Messages */}
+            {error && (
+              <Message negative>
+                <Message.Header>Login Failed</Message.Header>
+                <p>{error.message || 'Please check your credentials and try again.'}</p>
+              </Message>
+            )}
+
+            {/* Main Login Options */}
+            {!showTraditionalLogin ? (
+              <Segment padded>
+                {/* Google OAuth Login - Primary Option */}
+                <div className="oauth-login-section">
+                  <Header as="h3" textAlign="center" color="blue">
+                    <FormattedMessage {...messages.teacherLogin} />
+                  </Header>
+                  
+                  <Button
+                    fluid
+                    size="large"
+                    color="google plus"
+                    icon="google"
+                    content={intl.formatMessage(messages.googleLogin)}
+                    onClick={handleGoogleLogin}
+                    loading={loading}
+                    className="google-login-button"
+                  />
+                  
+                  <div className="login-help-text">
+                    <p>
+                      <small>
+                        Use your Google account for secure, fast access to your lesson planning workspace.
+                        Perfect for teachers and educators.
+                      </small>
+                    </p>
+                  </div>
+                </div>
+
+                <Divider horizontal>
+                  <FormattedMessage {...messages.or} />
+                </Divider>
+
+                {/* Traditional Login Toggle */}
+                <div className="traditional-login-toggle">
+                  <Header as="h4" textAlign="center">
+                    <FormattedMessage {...messages.adminLogin} />
+                  </Header>
+                  
+                  <Button
+                    basic
+                    fluid
+                    content="Use Username & Password"
+                    onClick={toggleLoginMode}
+                    className="traditional-login-toggle-button"
+                  />
+                  
+                  <div className="admin-help-text">
+                    <p>
+                      <small>
+                        For site administrators and users without Google accounts.
+                      </small>
+                    </p>
+                  </div>
+                </div>
+              </Segment>
+            ) : (
+              <Segment padded>
+                {/* Traditional Login Form */}
+                <Form onSubmit={handleSubmit} loading={loading}>
+                  <Header as="h3" textAlign="center">
+                    <FormattedMessage {...messages.adminLogin} />
+                  </Header>
+
+                  <Form.Field>
+                    <label htmlFor="login">
+                      <FormattedMessage {...messages.username} />
+                    </label>
+                    <Input
+                      id="login"
+                      name="login"
+                      type="text"
+                      value={formData.login}
+                      onChange={handleChange}
+                      placeholder="Enter your username"
+                      autoComplete="username"
+                      autoFocus
+                    />
+                  </Form.Field>
+
+                  <Form.Field>
+                    <label htmlFor="password">
+                      <FormattedMessage {...messages.password} />
+                    </label>
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Enter your password"
+                      autoComplete="current-password"
+                    />
+                  </Form.Field>
+
+                  <Button
+                    type="submit"
+                    primary
+                    fluid
+                    size="large"
+                    content={intl.formatMessage(messages.login)}
+                    loading={loading}
+                  />
+                </Form>
+
+                <Divider />
+
+                {/* Back to OAuth */}
+                <Button
+                  basic
+                  fluid
+                  content="Back to Google Sign-in"
+                  onClick={toggleLoginMode}
+                  icon="arrow left"
+                />
+              </Segment>
+            )}
+
+            {/* Additional Links */}
+            <Segment basic textAlign="center" className="login-links">
+              <p>
+                <Link to="/forgot-password">
+                  <FormattedMessage {...messages.forgotPassword} />
+                </Link>
+              </p>
+              <p>
+                <Link to="/register">
+                  <FormattedMessage {...messages.registerAccount} />
+                </Link>
+              </p>
+            </Segment>
+
+          </Grid.Column>
+        </Grid>
+      </Segment>
+    </Container>
+  );
+};
+
+export default Login; 
