@@ -1,0 +1,25 @@
+{
+  "google": {
+    "display": {
+      "title": "Google",
+      "cssclasses": {
+        "button": "plone-btn plone-btn-default",
+        "icon": "glypicon glyphicon-google"
+      },
+      "as_form": false
+    },
+    "propertymap": {
+      "email": "email",
+      "link": "home_page",
+      "location": "location", 
+      "name": "fullname"
+    },
+    "class_": "authomatic.providers.oauth2.Google",
+    "consumer_key": "637802324010-b1p2m27mahnnv0cp7q3pc740slenln1u.apps.googleusercontent.com",
+    "consumer_secret": "PUT-YOUR-ACTUAL-GOOGLE-CLIENT-SECRET-HERE",
+    "scope": ["profile", "email"],
+    "access_headers": {
+      "User-Agent": "Project Title Educational Platform"
+    }
+  }
+} 

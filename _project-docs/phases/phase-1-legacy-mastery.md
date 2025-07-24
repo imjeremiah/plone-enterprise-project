@@ -39,7 +39,7 @@ Analyze modern Plone 6.1.2 architecture for extension points and conduct concept
    Feature 5: Dashboard → Volto blocks + plone.restapi
    Feature 6: Google Classroom → External API client + content adapters
    ```
-3. Document in `_project-docs/plone/feature-integration-map.md`
+3. Document in `_project-docs/project/feature-integration-map.md`
 
 ### Task 3: Teacher Workflow Analysis
 1. Map current vanilla Plone workflow for content creation
@@ -51,7 +51,7 @@ Analyze modern Plone 6.1.2 architecture for extension points and conduct concept
    - No analytics dashboard
 3. Document how each feature addresses specific pain points
 4. Create before/after workflow comparison
-5. Save as `_project-docs/plone/teacher-workflow-gaps.md`
+5. Save as `_project-docs/project/teacher-workflow-gaps.md`
 
 ### Task 4: Technical Approach & Risk Mitigation
 1. Document implementation strategy:
@@ -61,25 +61,23 @@ Analyze modern Plone 6.1.2 architecture for extension points and conduct concept
    - Maintain upgrade path
 2. Create testing checklist for each feature
 3. Plan rollback strategy if features cause issues
-4. Document in `_project-docs/plone/implementation-strategy.md`
+4. Document in `_project-docs/project/implementation-strategy.md`
 
 ## Impacted Files and Directories
 - **New Documentation**: 
   - `_project-docs/plone/legacy-evolution-analysis.md`
-  - `_project-docs/plone/feature-integration-map.md`
-  - `_project-docs/plone/teacher-workflow-gaps.md`
-  - `_project-docs/plone/implementation-strategy.md`
+  - `_project-docs/project/feature-integration-map.md`
+  - `_project-docs/project/teacher-workflow-gaps.md`
+  - `_project-docs/project/implementation-strategy.md`
 - **Existing Docs** (reference only):
-  - Review all files in `_project-docs/plone/`
+  - Review all files in `_project-docs`
   - No modifications to existing architecture docs
-- **AI Usage Log**: Start `_project-docs/ai-usage.md`
 
 **Review Checklist**:
 - ✅ Legacy analysis provides context without actual migration
 - ✅ All 6 features have clear integration points mapped
 - ✅ Teacher pain points documented with solutions
 - ✅ Technical risks identified and mitigated
-- ✅ AI usage documented for architecture exploration
 - ✅ Ready to start feature implementation
 
 ## Rules Adherence

@@ -1,0 +1,24 @@
+{
+  "microsoft": {
+    "display": {
+      "title": "Microsoft",
+      "cssclasses": {
+        "button": "plone-btn plone-btn-microsoft",
+        "icon": "fab fa-microsoft"
+      },
+      "as_form": false
+    },
+    "propertymap": {
+      "email": "email",
+      "name": "fullname",
+      "displayName": "fullname"
+    },
+    "class_": "authomatic.providers.oauth2.Microsoft",
+    "consumer_key": "YOUR-MICROSOFT-CLIENT-ID",
+    "consumer_secret": "YOUR-MICROSOFT-CLIENT-SECRET", 
+    "scope": ["openid", "profile", "email"],
+    "access_headers": {
+      "User-Agent": "Project Title Educational Platform"
+    }
+  }
+} 

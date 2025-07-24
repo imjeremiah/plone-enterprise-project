@@ -1,0 +1,24 @@
+{
+  "github": {
+    "display": {
+      "title": "GitHub",
+      "cssclasses": {
+        "button": "plone-btn plone-btn-github",
+        "icon": "fab fa-github"
+      },
+      "as_form": false
+    },
+    "propertymap": {
+      "email": "email",
+      "name": "fullname",
+      "login": "username"
+    },
+    "class_": "authomatic.providers.oauth2.GitHub", 
+    "consumer_key": "YOUR-GITHUB-CLIENT-ID",
+    "consumer_secret": "YOUR-GITHUB-CLIENT-SECRET",
+    "scope": ["user:email"],
+    "access_headers": {
+      "User-Agent": "Project Title Educational Platform"
+    }
+  }
+} 
