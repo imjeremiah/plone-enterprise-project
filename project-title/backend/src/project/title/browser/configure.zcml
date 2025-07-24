@@ -1,0 +1,52 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="project.title">
+
+  <!-- Seating Chart Browser Views for drag-drop functionality -->
+  <browser:page
+    name="update-position"
+    for="project.title.content.seating_chart.ISeatingChart"
+    class=".seating_views.SeatingChartUpdateView"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
+    name="update-grid"
+    for="project.title.content.seating_chart.ISeatingChart"
+    class=".seating_views.SeatingChartUpdateView"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
+    name="seating-stats"
+    for="project.title.content.seating_chart.ISeatingChart"
+    class=".seating_views.SeatingChartStatsView"
+    permission="zope2.View"
+    />
+
+  <!-- Random Student Picker Views -->
+  <browser:page
+    name="random-picker"
+    for="*"
+    class=".random_picker.RandomStudentPickerView"
+    template="random_picker.pt"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="pick-student"
+    for="*"
+    class=".random_picker.RandomStudentPickerView"
+    permission="zope2.View"
+    />
+
+  <!-- Static Resource Directory -->
+  <browser:resourceDirectory
+    name="project.title"
+    directory="static"
+    />
+
+  <!-- -*- extra stuff goes here -*- -->
+
+</configure>

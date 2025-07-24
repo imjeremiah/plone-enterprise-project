@@ -1,0 +1,412 @@
+/*
+Random Student Picker React Component Styles
+
+Provides engaging visual design for the Volto-integrated picker
+with spinning wheel animation and classroom-appropriate styling.
+*/
+
+.random-student-picker {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+}
+
+/* Force main header to be centered */
+.random-student-picker .picker-main-header {
+  text-align: center !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.random-student-picker .picker-main-header .content {
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+.random-student-picker .picker-main-header .sub.header {
+  text-align: center !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* Center the grid and columns */
+.random-student-picker .ui.grid {
+  margin: 0 auto !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.random-student-picker .ui.grid > .column {
+  text-align: center !important;
+  margin: 0 auto !important;
+}
+
+.random-student-picker .ui.segment {
+  text-align: center !important;
+  margin: 0 auto !important;
+}
+
+/* Wheel Section */
+.wheel-section {
+  padding: 40px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Picker Wheel Container */
+.picker-wheel-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+/* Main Picker Wheel */
+.picker-wheel {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  position: relative;
+  border: 6px solid #2c3e50;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  margin: 0 auto 20px auto;
+  overflow: hidden;
+  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+}
+
+.picker-wheel.spinning {
+  /* Animation is controlled by inline styles for dynamic rotation */
+}
+
+/* Wheel Segments Container */
+.wheel-segments {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* Individual Wheel Segment */
+.wheel-segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transform-origin: 100% 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 10px 15px;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Segment Text */
+.segment-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #2c3e50;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+  transform: rotate(-45deg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60px;
+}
+
+/* Wheel Center */
+.wheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+/* Wheel Pointer */
+.wheel-pointer {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 32px;
+  color: #e74c3c;
+  z-index: 20;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Picker Controls */
+.picker-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 20px auto;
+  max-width: 500px;
+}
+
+/* Recent Picks Labels */
+.recent-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.recent-picks .ui.label {
+  margin-bottom: 5px;
+}
+
+/* Selected Student Display in Modal */
+.selected-student-display {
+  padding: 20px;
+}
+
+.student-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: white;
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .random-student-picker {
+    padding: 15px;
+    text-align: center !important;
+  }
+  
+  .random-student-picker .ui.grid {
+    text-align: center !important;
+    margin: 0 auto !important;
+  }
+  
+  .random-student-picker .ui.grid > .column {
+    text-align: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+  
+  .picker-wheel {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto !important;
+  }
+  
+  .wheel-section {
+    padding: 30px 15px;
+    text-align: center !important;
+  }
+  
+  .picker-controls {
+    flex-direction: column;
+    width: 100%;
+    text-align: center !important;
+    margin: 0 auto !important;
+  }
+  
+  .picker-controls .ui.button {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto !important;
+  }
+  
+  .segment-text {
+    font-size: 10px;
+    max-width: 50px;
+  }
+  
+  .wheel-center {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .wheel-pointer {
+    font-size: 28px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .picker-wheel {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .segment-text {
+    font-size: 9px;
+    max-width: 40px;
+  }
+  
+  .wheel-center {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .wheel-pointer {
+    font-size: 24px;
+    top: -12px;
+  }
+}
+
+/* Touch-friendly enhancements for tablets */
+@media (pointer: coarse) {
+  .picker-controls .ui.button {
+    min-height: 48px;
+    padding: 16px 24px;
+    font-size: 16px;
+  }
+  
+  .ui.table td {
+    padding: 12px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .picker-wheel {
+    border-width: 4px;
+    border-color: #000;
+  }
+  
+  .wheel-segment {
+    border-color: #000;
+  }
+  
+  .segment-text {
+    color: #000;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 1);
+    font-weight: 700;
+  }
+}
+
+/* Animation improvements */
+@media (prefers-reduced-motion: reduce) {
+  .picker-wheel {
+    transition: none !important;
+  }
+  
+  .picker-wheel.spinning {
+    animation: none !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .picker-wheel-container,
+  .picker-controls {
+    display: none;
+  }
+  
+  .wheel-section {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}
+
+/* Accessibility improvements */
+.picker-wheel:focus-within {
+  outline: 3px solid #667eea;
+  outline-offset: 4px;
+}
+
+/* Loading states */
+.picker-wheel.spinning .segment-text {
+  animation: blur-text 4s ease-in-out;
+}
+
+@keyframes blur-text {
+  0%, 100% {
+    filter: blur(0px);
+  }
+  50% {
+    filter: blur(2px);
+  }
+}
+
+/* Success animations */
+.selected-student-display {
+  animation: result-appear 0.5s ease-out;
+}
+
+@keyframes result-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Fairness score color coding */
+.ui.statistic .value.fairness-excellent {
+  color: #28a745 !important;
+}
+
+.ui.statistic .value.fairness-good {
+  color: #17a2b8 !important;
+}
+
+.ui.statistic .value.fairness-fair {
+  color: #ffc107 !important;
+}
+
+.ui.statistic .value.fairness-poor {
+  color: #dc3545 !important;
+}
+
+/* Enhanced button styles */
+.picker-controls .ui.button.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.picker-controls .ui.button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.picker-controls .ui.button.primary:active {
+  transform: translateY(0);
+}
+
+/* Table highlighting for fairness */
+.ui.table tr.warning {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+  border-left: 4px solid #ffc107;
+}
+
+.ui.table tr.warning:hover {
+  background-color: rgba(255, 193, 7, 0.2) !important;
+} 

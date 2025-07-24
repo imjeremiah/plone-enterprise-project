@@ -1,0 +1,8 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="project.title">
+
+  <!-- Content types are registered via FTI files in profiles/default/types/ -->
+  <!-- No additional configuration needed here -->
+
+</configure> 
