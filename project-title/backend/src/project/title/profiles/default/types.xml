@@ -19,4 +19,10 @@
           filename="types/Event.xml"
   />
   
+  <!-- Classroom Management Content Types -->
+  <object meta_type="Dexterity FTI"
+          name="SeatingChart"
+          filename="types/SeatingChart.xml"
+  />
+  
 </object>

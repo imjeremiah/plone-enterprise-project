@@ -1,0 +1,158 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="project.title">
+
+<head>
+    <metal:block fill-slot="style_slot">
+        <link rel="stylesheet" type="text/css" href="++resource++project.title/random-picker.css" />
+    </metal:block>
+    
+    <metal:block fill-slot="javascript_head_slot">
+        <script type="text/javascript" src="++resource++project.title/random-picker.js"></script>
+    </metal:block>
+</head>
+
+<body>
+    <div metal:fill-slot="main">
+        <div class="main-content">
+            <div class="classroom-header">
+                <h1 class="documentFirstHeading">
+                    <i class="fas fa-dice" aria-hidden="true"></i>
+                    Random Student Picker
+                </h1>
+                <p class="documentDescription">
+                    Fair and equitable student selection for classroom participation.
+                    The picker tracks history to ensure every student gets equal opportunities.
+                </p>
+            </div>
+
+            <!-- Main Random Picker Interface -->
+            <div id="random-picker-container" class="random-picker-interface">
+            
+            <!-- Picker Wheel Section -->
+            <div class="picker-wheel-section">
+                <div class="picker-wheel" id="picker-wheel">
+                    <div class="wheel-content" id="wheel-content">
+                        <!-- Student names will be populated by JavaScript -->
+                    </div>
+                    <div class="wheel-pointer">▼</div>
+                </div>
+                
+                <div class="picker-controls">
+                    <button id="spin-button" class="btn btn-primary btn-large">
+                        <i class="fas fa-play"></i>
+                        Pick a Student
+                    </button>
+                    
+                    <button id="reset-button" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i>
+                        Reset History
+                    </button>
+                </div>
+            </div>
+
+            <!-- Statistics Panel -->
+            <div class="picker-stats-panel">
+                <h3>Fairness Statistics</h3>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Students:</span>
+                        <span class="stat-value" id="total-students">-</span>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <span class="stat-label">Fairness Score:</span>
+                        <span class="stat-value" id="fairness-score">100%</span>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <span class="stat-label">Today's Picks:</span>
+                        <span class="stat-value" id="today-picks">0</span>
+                    </div>
+                </div>
+
+                <!-- Recent Selections -->
+                <div class="recent-selections">
+                    <h4>Recent Selections</h4>
+                    <ul id="recent-picks" class="recent-picks-list">
+                        <!-- Recent picks will be populated by JavaScript -->
+                    </ul>
+                </div>
+
+                <!-- Student History Table -->
+                <div class="student-history">
+                    <h4>Student Pick History</h4>
+                    <div class="history-table-container">
+                        <table id="history-table" class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Times Picked</th>
+                                    <th>Last Picked</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- History will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selection Result Modal -->
+        <div id="selection-modal" class="selection-modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Selected Student</h2>
+                    <button id="close-modal" class="close-button">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="selected-student-display">
+                        <div class="student-avatar">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3 id="selected-student-name">Student Name</h3>
+                        <p class="selection-time" id="selection-time">Selected at: </p>
+                    </div>
+                    <div class="fairness-info">
+                        <p>Fairness Score: <span id="modal-fairness-score">100%</span></p>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button id="pick-another" class="btn btn-secondary">Pick Another</button>
+                    <button id="done-picking" class="btn btn-primary">Done</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="spinner"></div>
+            <p>Selecting student...</p>
+        </div>
+
+        <!-- JavaScript Data -->
+        <script type="application/json" id="picker-config">
+            <tal:block tal:content="python: modules['json'].dumps({
+                'apiUrl': view.context.absolute_url(),
+                'students': view.get_students() or [],
+                'csrfToken': context.restrictedTraverse('@@authenticator').token()
+            })" tal:omit-tag=""></tal:block>
+        </script>
+
+        <!-- Debug Students -->
+        <script>
+            console.log('Raw config element:', document.getElementById('picker-config'));
+            console.log('Config text:', document.getElementById('picker-config').textContent);
+        </script>
+
+        </div>
+    </div>
+</body>
+
+</html> 

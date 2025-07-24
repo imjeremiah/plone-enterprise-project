@@ -1,156 +1,161 @@
 
-# UI Design Principles for K-12 Educational Platform
+# UI Design Principles for K-12 Classroom Management Platform
 
-This document defines the core UI/UX principles for our K-12 Educational Content Platform built on Plone 6.1.2 with Volto React frontend. These principles guide the creation of interfaces that serve teachers in under-resourced schools, emphasizing **efficiency**, **clarity**, and **collaboration** while maintaining Plone's architectural integrity.
+This document defines the core UI/UX principles for our K-12 Classroom Management Platform built on Plone 6.1.2 with Volto React frontend. These principles guide the creation of interfaces that serve teachers managing their classrooms, emphasizing **real-time control**, **efficiency**, and **situational awareness** while maintaining Plone's architectural integrity.
 
 ## Core Design Values
 
-### 1. Teacher-Centered Efficiency
-Teachers have limited time. Every interaction should minimize clicks and cognitive load while maximizing educational impact.
+### 1. Real-Time Classroom Control
+Teachers need instant access to classroom management tools. Every interaction should provide immediate feedback and control over the classroom environment.
 
-### 2. Progressive Disclosure
-Complex features should reveal themselves gradually as teachers become more comfortable with the platform.
+### 2. Progressive Information Display
+Complex classroom data should be presented in digestible layers, from at-a-glance status to detailed analytics.
 
-### 3. Mobile-First Reality
-Many teachers use personal devices. The platform must work flawlessly on phones and tablets.
+### 3. Touch-First Reality
+Many teachers use tablets while moving around the classroom. The platform must work flawlessly with touch interactions.
 
 ---
 
 ## Design Principles
 
-## 1. Modularity Through Educational Building Blocks
+## 1. Modularity Through Classroom Management Widgets
 
 ### Description
-Leverage Volto's block system to create reusable educational components that teachers can mix and match.
+Leverage Volto's block system to create reusable classroom management components that teachers can arrange on their dashboard.
 
 ### Implementation
-- **Lesson Blocks**: Text, media, activity, assessment, discussion
-- **Resource Blocks**: File attachments, external links, embedded content
-- **Standards Blocks**: Alignment widgets, learning objectives, success criteria
-- **Collaboration Blocks**: Co-teacher notes, peer feedback, version history
+- **Timer Blocks**: Countdown, elapsed time, multi-timer management
+- **Seating Blocks**: Grid view, list view, group arrangements
+- **Status Blocks**: Active hall passes, participation tracking
+- **Control Blocks**: Quick actions, random picker, announcements
 
 ### Patterns
 ```javascript
-// Educational block registration example
-const LessonObjectiveBlock = {
-  id: 'lessonObjective',
-  title: 'Learning Objective',
-  icon: targetSVG,
-  group: 'educational',
-  view: LessonObjectiveView,
-  edit: LessonObjectiveEdit,
-  schema: LessonObjectiveSchema,
+// Classroom widget registration example
+const TimerWidgetBlock = {
+  id: 'timerWidget',
+  title: 'Lesson Timer',
+  icon: clockSVG,
+  group: 'classroom',
+  view: TimerWidgetView,
+  edit: TimerWidgetEdit,
+  schema: TimerWidgetSchema,
 };
 ```
 
 ### Best Practices
-- Each block should work standalone or combined
-- Provide sensible defaults for quick creation
-- Include help text and examples within blocks
-- Support copy/paste between lessons
+- Each widget should work standalone or in dashboard
+- Provide visual and audio feedback
+- Support touch gestures for common actions
+- Enable quick configuration without leaving dashboard
 
 ---
 
-## 2. Accessibility as Educational Equity
+## 2. Accessibility as Classroom Equity
 
 ### Description
-Ensure all teachers and students can use the platform regardless of abilities or technology access.
+Ensure all teachers can use the platform regardless of abilities or classroom environment.
 
 ### Requirements
 - **WCAG 2.1 AA** compliance minimum
-- **Screen Reader**: Full compatibility with NVDA, JAWS, VoiceOver
-- **Keyboard Navigation**: Complete functionality without mouse
-- **Low Bandwidth**: Core features work on 3G connections
+- **Screen Reader**: Full compatibility for visually impaired teachers
+- **Keyboard Navigation**: Complete functionality without mouse/touch
+- **High Noise Tolerance**: Visual alerts for noisy environments
 
 ### Implementation Patterns
 ```jsx
-// Accessible lesson card component
-<article 
-  role="article"
-  aria-label={`Lesson: ${lesson.title}`}
-  className="lesson-card"
+// Accessible timer component
+<div 
+  role="timer"
+  aria-live="polite"
+  aria-label={`Timer: ${minutes} minutes ${seconds} seconds remaining`}
+  className="timer-widget"
 >
-  <h3 id={`lesson-${lesson.id}`}>{lesson.title}</h3>
-  <div aria-describedby={`lesson-${lesson.id}`}>
-    {/* Content */}
+  <span className="timer-display" aria-hidden="true">
+    {formatTime(remainingTime)}
+  </span>
+  <div className="timer-controls">
+    {/* Accessible controls */}
   </div>
-</article>
+</div>
 ```
 
 ### Specific Accommodations
-- High contrast mode toggle
-- Font size controls (not just browser zoom)
-- Simplified navigation mode
-- Print-friendly lesson views
-- Offline capability for key features
+- High contrast mode for projector use
+- Large touch targets for tablet use
+- Visual + audio alerts for timers
+- Color-blind safe status indicators
+- Offline capability for unreliable internet
 
 ---
 
-## 3. Responsive Design for Real Classrooms
+## 3. Responsive Design for Active Teaching
 
 ### Description
-Design for the devices teachers actually use, in the environments where they work.
+Design for teachers who are moving around the classroom, not sitting at a desk.
 
 ### Breakpoint Strategy
 ```css
 /* Mobile First Approach */
 /* Phone: 320px - 639px (default) */
-/* Tablet: 640px - 1023px */
+/* Tablet: 640px - 1023px (primary target) */
 @media (min-width: 640px) { }
-/* Desktop: 1024px+ */
+/* Desktop: 1024px+ (dashboard view) */
 @media (min-width: 1024px) { }
-/* Wide: 1280px+ */
+/* Wide: 1280px+ (multi-class view) */
 @media (min-width: 1280px) { }
 ```
 
-### Mobile Patterns
-- **Bottom Navigation**: Primary actions always accessible
-- **Swipe Gestures**: Navigate between lessons
-- **Progressive Enhancement**: Advanced features on larger screens
-- **Touch Targets**: Minimum 48x48px
-- **Thumb-Friendly Zones**: Critical actions in easy reach
+### Tablet-First Patterns
+- **Floating Controls**: Timer and picker always accessible
+- **Swipe Gestures**: Quick navigation between features
+- **Touch Optimized**: Large buttons, clear spacing
+- **Portrait Mode**: Optimized for one-handed use
+- **Landscape Mode**: Side-by-side feature view
 
-### Tablet Optimization
-- Split-screen lesson editing
-- Drag-and-drop on touch
-- Stylus support for annotations
+### Standing Desk Mode
+- Extra large controls for distance viewing
+- High contrast for visibility
+- Simplified interface for quick glances
 
 ---
 
-## 4. Intuitive Teacher Workflows
+## 4. Intuitive Classroom Workflows
 
 ### Description
-Mirror familiar teaching processes while introducing powerful digital capabilities.
+Mirror natural classroom management patterns while adding digital enhancements.
 
 ### Key Workflows
 
-#### Lesson Planning Flow
+#### Daily Classroom Flow
 ```
-Dashboard → Browse/Search → Create/Adapt → Enrich → Review → Share → Teach → Reflect
+Morning Setup → Active Teaching → Transitions → Monitoring → End of Day
 ```
 
-#### Quick Actions Pattern
-- Floating Action Button (FAB) for primary creation
-- Context menus for resource management
-- Bulk operations for semester planning
-- Quick duplicate for differentiation
+#### Quick Action Patterns
+- Single tap for common actions (start timer, pick student)
+- Long press for options (timer presets, picker settings)
+- Swipe for navigation (between classes, features)
+- Pinch to zoom seating chart
 
 ### Navigation Principles
-- **Breadcrumbs**: Always show context
-- **Recent Items**: Quick access sidebar
-- **Smart Search**: Understands educational terms
-- **Predictive Navigation**: Suggest next logical step
+- **Persistent Dashboard**: Always one tap away
+- **Feature Cards**: Visual organization of tools
+- **Smart Defaults**: Remember last settings
+- **Contextual Actions**: Based on time of day
 
 ### Implementation
 ```jsx
-// Smart workflow assistant
-const WorkflowAssistant = () => {
-  const suggestions = useWorkflowSuggestions(currentContext);
+// Smart classroom assistant
+const ClassroomAssistant = () => {
+  const currentPeriod = useCurrentPeriod();
+  const suggestions = useClassroomSuggestions(currentPeriod);
+  
   return (
-    <div className="workflow-assistant">
-      <h4>Suggested Next Steps</h4>
-      {suggestions.map(suggestion => (
-        <WorkflowSuggestion key={suggestion.id} {...suggestion} />
+    <div className="classroom-assistant">
+      <h4>Quick Actions for {currentPeriod.name}</h4>
+      {suggestions.map(action => (
+        <QuickAction key={action.id} {...action} />
       ))}
     </div>
   );
@@ -159,96 +164,94 @@ const WorkflowAssistant = () => {
 
 ---
 
-## 5. Collaborative by Design
+## 5. Real-Time Awareness
 
 ### Description
-Foster sharing and peer learning among teachers within and across schools.
+Provide continuous awareness of classroom status without requiring active monitoring.
 
-### Collaboration Features
-- **Real-time Indicators**: Show who's viewing/editing
-- **Inline Comments**: Contextual feedback on lessons
-- **Version Comparison**: Track changes over time
-- **Attribution**: Clear credit for contributions
+### Status Indicators
+- **Visual Badges**: Pass count, timer status, alerts
+- **Ambient Information**: Color-coded states
+- **Progressive Alerts**: Subtle → obvious as urgency increases
+- **Glanceable Dashboard**: Full status in 2 seconds
 
-### Privacy Controls
+### Implementation
 ```jsx
-// Granular sharing controls
-const SharingControls = {
-  levels: [
-    { id: 'private', label: 'Only me' },
-    { id: 'department', label: 'My department' },
-    { id: 'school', label: 'My school' },
-    { id: 'district', label: 'District teachers' },
-    { id: 'public', label: 'All educators' }
+// Real-time status bar
+const ClassroomStatusBar = {
+  displays: [
+    { id: 'passes', icon: 'hall-pass', count: activePassCount },
+    { id: 'timer', icon: 'clock', status: timerStatus },
+    { id: 'alerts', icon: 'alert', priority: highestAlert }
   ],
-  permissions: ['view', 'comment', 'edit', 'copy']
+  updateInterval: 1000 // 1 second updates
 };
 ```
 
 ---
 
-## 6. Performance for Low-Resource Schools
+## 6. Performance for Classroom Devices
 
 ### Description
-Optimize for schools with limited bandwidth and older devices.
+Optimize for school tablets and varying network conditions.
 
 ### Performance Targets
-- Initial load: < 3 seconds on 3G
-- Time to Interactive: < 5 seconds
+- Initial load: < 2 seconds on tablet
+- Interaction response: < 100ms
 - Offline capability for core features
-- Progressive Web App (PWA) support
+- Battery efficient for all-day use
 
 ### Optimization Strategies
 ```javascript
-// Lazy loading educational content
-const LessonContent = lazy(() => 
-  import(/* webpackChunkName: "lesson" */ './LessonContent')
-);
-
-// Image optimization
-const OptimizedImage = ({ src, alt }) => (
-  <picture>
-    <source srcSet={`${src}?w=400`} media="(max-width: 640px)" />
-    <source srcSet={`${src}?w=800`} media="(max-width: 1024px)" />
-    <img src={`${src}?w=1200`} alt={alt} loading="lazy" />
-  </picture>
-);
+// Efficient updates
+const DashboardUpdater = () => {
+  // Only update changed widgets
+  const updates = useMemo(() => 
+    calculateMinimalUpdates(previousState, currentState),
+    [previousState, currentState]
+  );
+  
+  // Batch DOM updates
+  useLayoutEffect(() => {
+    applyUpdates(updates);
+  }, [updates]);
+};
 ```
 
-### Caching Strategy
-- Service Worker for offline access
-- Local storage for work-in-progress
-- Sync when connection restored
+### Offline Support
+- Timer continues without connection
+- Seating chart editable offline
+- Hall passes queue for sync
+- Dashboard shows cached data
 
 ---
 
-## 7. Contextual Help & Onboarding
+## 7. Contextual Help & Teacher Support
 
 ### Description
-Provide assistance without disrupting workflow, recognizing teachers learn by doing.
+Provide help without disrupting classroom flow.
 
 ### Help Patterns
-- **Progressive Onboarding**: Feature tours on first use
-- **Contextual Tooltips**: Hover/tap for quick help
-- **Video Tutorials**: Embedded where relevant
-- **Peer Examples**: Show how others use features
+- **Quick Tips**: First use of features
+- **Gesture Hints**: Show available actions
+- **Video Tutorials**: 30-second feature guides
+- **Peer Examples**: How other teachers use features
 
 ### Implementation
 ```jsx
-// Contextual help system
-const ContextualHelp = ({ feature }) => {
-  const [showHelp, setShowHelp] = useState(isFirstUse(feature));
+// Non-intrusive help
+const FeatureHint = ({ feature, dismissible = true }) => {
+  const [show, setShow] = useState(isFirstUse(feature));
+  
+  if (!show) return null;
   
   return (
-    <div className="help-container">
-      <button 
-        onClick={() => setShowHelp(!showHelp)}
-        aria-label="Toggle help"
-      >
-        <HelpIcon />
-      </button>
-      {showHelp && (
-        <HelpContent feature={feature} onDismiss={() => setShowHelp(false)} />
+    <div className="feature-hint" role="tooltip">
+      <span>{getHintText(feature)}</span>
+      {dismissible && (
+        <button onClick={() => setShow(false)} aria-label="Dismiss hint">
+          ×
+        </button>
       )}
     </div>
   );
@@ -257,44 +260,50 @@ const ContextualHelp = ({ feature }) => {
 
 ---
 
-## 8. Data Privacy & Ethical Design
+## 8. Privacy & Classroom Safety
 
 ### Description
-Protect teacher and student data while enabling useful analytics.
+Protect student privacy while enabling useful features.
 
 ### Privacy Principles
-- **Data Minimization**: Only collect what improves teaching
-- **Transparent Controls**: Clear data usage explanations
-- **Student Protection**: COPPA/FERPA compliance
-- **Right to Delete**: Easy data removal
+- **No PII Storage**: Only seat positions, not names in QR codes
+- **Anonymized Tracking**: Participation without identification
+- **Local First**: Sensitive data stays on device
+- **Clear Permissions**: Explicit control over data sharing
 
 ### UI Patterns
-- Privacy dashboard with clear controls
-- Consent workflows for data sharing
-- Anonymous usage options
-- Data export capabilities
+- Privacy indicators on features
+- Anonymous mode toggles
+- Data retention settings
+- Clear data export options
 
 ---
 
-## Educational UI Patterns Library
+## Classroom Management UI Patterns Library
 
-### Lesson Components
-- **Lesson Card**: Preview with metadata badges
-- **Standards Picker**: Hierarchical selection tree
-- **Time Estimator**: Visual duration indicator
-- **Difficulty Meter**: Student level indicators
+### Timer Components
+- **Countdown Timer**: Large display with color transitions
+- **Multi-Timer**: Manage multiple activities
+- **Timer Presets**: Quick access to common durations
+- **Full-Screen Mode**: Visible to entire class
 
-### Teacher Tools
-- **Quick Differentiation**: Split-screen variations
-- **Annotation Layer**: Mark up any content
-- **Resource Basket**: Collect and organize materials
-- **Lesson Scheduler**: Calendar integration
+### Seating Management
+- **Drag-Drop Grid**: Visual seat arrangement
+- **Quick Swap**: Two-tap student position exchange
+- **Group Mode**: Arrange desks for group work
+- **Random Shuffle**: Mix up seating instantly
 
-### Student Interfaces
-- **Simplified View**: Focus mode for students
-- **Progress Tracker**: Visual completion indicators
-- **Help Request**: Easy teacher contact
-- **Portfolio View**: Student work collection
+### Student Selection
+- **Picker Wheel**: Visual random selection
+- **Fairness Indicator**: Shows participation equity
+- **History View**: Recent selections
+- **Group Picker**: Select teams fairly
+
+### Hall Pass System
+- **Quick Issue**: One-tap pass creation
+- **Active Monitor**: Live pass tracking
+- **Time Alerts**: Progressive warnings
+- **QR Display**: Large format for scanning
 
 ---
 
@@ -302,55 +311,55 @@ Protect teacher and student data while enabling useful analytics.
 
 ### Component Architecture
 ```typescript
-// Educational component interface
-interface EducationalComponent {
+// Classroom component interface
+interface ClassroomComponent {
   id: string;
-  type: 'lesson' | 'resource' | 'assessment';
-  metadata: EducationalMetadata;
+  type: 'timer' | 'seating' | 'picker' | 'pass' | 'dashboard';
+  state: ComponentState;
+  settings: ComponentSettings;
+  actions: ComponentActions;
   accessibility: AccessibilityConfig;
-  permissions: PermissionSet;
-  analytics: AnalyticsConfig;
 }
 ```
 
 ### State Management
-- Use Redux for global educational state
+- Use Redux for global classroom state
 - Local state for UI interactions
-- Persist work-in-progress locally
-- Sync with backend when possible
+- Persist settings and arrangements
+- Sync when connection available
 
 ### Testing Requirements
-1. Accessibility audit for every component
-2. Mobile device testing matrix
-3. Low-bandwidth simulation tests
-4. Teacher usability testing sessions
-5. Cross-browser compatibility checks
+1. Touch interaction testing on tablets
+2. Offline functionality verification
+3. Performance under load (30+ students)
+4. Accessibility audit every component
+5. Teacher usability sessions
 
 ---
 
 ## Common Anti-Patterns to Avoid
 
-1. **Information Overload**: Don't show all features at once
-2. **Desktop-Only Thinking**: Avoid hover-dependent interactions
-3. **Assumption of Tech Literacy**: Don't assume familiarity with advanced features
-4. **Ignoring Context**: Remember teachers work in noisy, interrupted environments
-5. **Feature Creep**: Every addition should solve a real teacher problem
+1. **Desktop-First Thinking**: Assume mouse and keyboard
+2. **Information Overload**: Too much data at once
+3. **Blocking Interactions**: Modals during class time
+4. **Silent Failures**: Always provide feedback
+5. **Complex Configurations**: Keep settings simple
 
 ---
 
 ## Measuring Success
 
 ### Key Metrics
-- Time to create first lesson < 10 minutes
-- Mobile usage > 40% of sessions
-- Sharing rate > 30% of created content
-- Return usage > 3x per week
-- Accessibility score > 95%
+- Time to complete common tasks < 5 seconds
+- Tablet usage > 60% of sessions
+- Feature adoption > 80% within first week
+- Error rate < 1% for critical features
+- Teacher satisfaction > 9/10
 
-### Teacher Satisfaction Indicators
-- "Would recommend to colleague" > 8/10
-- "Saves me time" > 85% agree
-- "Easy to use" > 90% agree
-- Support ticket rate < 5%
+### Classroom Impact Indicators
+- Transition time reduced by 50%
+- Participation equity improved
+- Hall pass incidents reduced
+- Substitute readiness < 5 minutes
 
-This UI framework ensures our platform serves teachers effectively while maintaining technical excellence and educational impact. 
+This UI framework ensures our platform serves teachers effectively during active classroom management while maintaining technical excellence and educational impact. 

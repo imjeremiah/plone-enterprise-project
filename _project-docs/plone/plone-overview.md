@@ -1,26 +1,26 @@
-# Plone CMS: Educational Platform Architecture & Implementation Guide
+# Plone CMS: Classroom Management Platform Architecture & Implementation Guide
 
 ## Executive Summary
 
-**Plone** is a mature, enterprise-grade Content Management System that serves as the foundation for this K-12 Educational Content Platform. This document covers both Plone's comprehensive architecture and this project's specific implementation using **Plone 6.1.2**, **Volto React frontend**, and modern development tooling via **cookieplone templates**.
+**Plone** is a mature, enterprise-grade Content Management System that serves as the foundation for this K-12 Classroom Management Platform. This document covers both Plone's comprehensive architecture and this project's specific implementation using **Plone 6.1.2**, **Volto React frontend**, and modern development tooling via **cookieplone templates**.
 
-This implementation leverages Plone's sophisticated **distributed component architecture** to create a specialized platform for K-12 teachers in under-resourced U.S. public schools, focusing on collaborative lesson planning and Google Classroom integration.
+This implementation leverages Plone's sophisticated **distributed component architecture** to create a specialized platform for K-12 teachers, focusing on real-time classroom management tools that streamline daily operations and improve student engagement.
 
 ---
 
-## Project Context: K-12 Educational Platform
+## Project Context: K-12 Classroom Management Platform
 
 ### Mission
-Transform Plone CMS into a modern educational content platform that addresses critical pain points for K-12 teachers:
-- **Fragmented Tools**: 70% of teachers use Google Classroom but lack centralized content management
-- **Collaboration Barriers**: No effective way to share lesson plans across departments
-- **Standards Compliance**: Manual tracking of Common Core alignment wastes 10+ hours/week
-- **Mobile Access**: Teachers need tablet-friendly interfaces for classroom use
+Transform Plone CMS into a modern classroom management command center that addresses critical daily operational pain points for K-12 teachers:
+- **Fragmented Tools**: Teachers juggle paper seating charts, phone timers, and hall pass clipboards
+- **Participation Inequity**: 20% of students dominate 80% of classroom discussion
+- **Transition Chaos**: 5-10 minutes lost per class transition due to poor time management
+- **Substitute Readiness**: 90 minutes to prepare emergency plans when sick
 
 ### Current Implementation Status
 - **Phase 0**: ✅ Complete - Base Plone 6.1.2 installation with cookieplone structure
 - **Phase 1**: ✅ Complete - Legacy system analysis and architecture mapping
-- **Phase 2**: 🚧 In Progress - Volto frontend and MVP features
+- **Phase 2**: 🚧 In Progress - Google SSO authentication (completed), planning remaining features
 - **Phase 3-4**: 📋 Planned - Full feature implementation and deployment
 
 ---
@@ -44,15 +44,15 @@ Plone is an **open-source enterprise CMS** that powers websites for governments,
 ### Implementation Stack
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│          K-12 EDUCATIONAL PLATFORM ARCHITECTURE              │
+│          K-12 CLASSROOM MANAGEMENT PLATFORM ARCHITECTURE     │
 ├──────────────────────────────────────────────────────────────┤
 │                                                              │
 │  ┌─────────────────────────────────────────────────────────┐ │
-│  │              FRONTEND (Volto React)                     │ │
+│  │              FRONTEND (Volto React + JavaScript)        │ │
 │  │  Location: frontend/                                    │ │
 │  │  • Node.js 22 with pnpm 9.1.1                           │ │
-│  │  • Volto addon: volto-project-title                     │ │
-│  │  • Planned: Standards widgets, Mobile UI                │ │
+│  │  • Interactive JavaScript widgets                       │ │
+│  │  • Real-time dashboard updates via AJAX                 │ │
 │  └─────────────────────────────────────────────────────────┘ │
 │                         │                                    │
 │                     REST API                                 │
@@ -62,7 +62,7 @@ Plone is an **open-source enterprise CMS** that powers websites for governments,
 │  │  Location: backend/                                     │ │
 │  │  • Python 3.12 with uv package manager                  │ │
 │  │  • Package: project.title                               │ │
-│  │  • Profiles: default, initial, uninstall                │ │
+│  │  • Custom content types: SeatingChart, HallPass         │ │
 │  └─────────────────────────────────────────────────────────┘ │
 │                         │                                    │
 │  ┌─────────────────────────────────────────────────────────┐ │
@@ -79,6 +79,9 @@ Plone is an **open-source enterprise CMS** that powers websites for governments,
 project-title/
 ├── backend/                    # Plone backend application
 │   ├── src/project/title/     # Custom Python package
+│   │   ├── content/          # SeatingChart, HallPass types
+│   │   ├── browser/          # Views and static resources
+│   │   └── api/             # AJAX endpoints
 │   ├── scripts/               # Site creation scripts
 │   └── Makefile              # Backend-specific commands
 ├── frontend/                  # Volto React application  
@@ -116,6 +119,7 @@ project-title/
 │  Volto:              (via @plone/volto workspace)         │
 │  React:              18+ (via Volto)                      │
 │  State Management:   Redux (via Volto)                    │
+│  Custom JS:         Timer, Drag-drop, Animations          │
 └───────────────────────────────────────────────────────────┘
 ```
 
@@ -155,36 +159,36 @@ make format          # Format code
 - Custom package: `project.title`
 - REST API endpoints via plone.restapi
 - Basic Volto frontend setup
+- Google SSO authentication (Feature 1)
 
-#### 🚧 In Progress (Phase 2)
-- Modern authentication (Google SSO)
-- Standards alignment vocabulary system
-- Mobile-responsive Volto customizations
+#### 🚧 In Progress (Phase 2-3)
+- Seating Chart Generator (drag-drop interface)
+- Random Student Picker (fairness algorithm)
+- Digital Hall Pass system (QR codes)
 
 #### 📋 Planned Features (Phase 3-4)
-- Advanced search with standards filtering
-- Teacher dashboard with analytics
-- Google Classroom integration
-- Lesson plan collaboration workflows
+- Lesson Timer Widget (audio alerts)
+- Substitute Folder Generator (one-click prep)
+- Teacher Dashboard (real-time command center)
 
 ---
 
-## Educational Platform Features (Planned)
+## Classroom Management Features
 
-### Phase 2: MVP Foundation
-1. **Modern Authentication**: Google SSO for teacher accounts
-2. **Standards Alignment System**: Common Core vocabulary and tagging
-3. **Mobile-Responsive Design**: Tablet-optimized for classroom use
+### Phase 2: Core Management Tools
+1. **✅ Google SSO**: Single sign-on for all teachers
+2. **Seating Chart Generator**: Drag-drop student arrangement with integration
+3. **Random Student Picker**: Fair participation with visual spinner
 
-### Phase 3: Feature Implementation  
-1. **Advanced Search**: Standards-based lesson discovery
-2. **Analytics Dashboard**: Usage metrics and compliance tracking
-3. **Google Classroom Sync**: Bi-directional content integration
+### Phase 3: Advanced Features  
+1. **Digital Hall Pass**: QR-coded passes with time tracking
+2. **Lesson Timer Widget**: Visual countdown with audio alerts
+3. **Substitute Folder Generator**: One-click emergency preparation
 
-### Phase 4: Polish & Launch
-1. **Performance Optimization**: <2s page loads
-2. **Accessibility Audit**: WCAG 2.1 AA compliance
-3. **Teacher Training Materials**: Video tutorials and guides
+### Phase 4: Integration & Polish
+1. **Teacher Dashboard**: Real-time classroom command center
+2. **Performance Optimization**: <200ms response times
+3. **Mobile Optimization**: Tablet-friendly for classroom use
 
 ---
 
@@ -394,11 +398,13 @@ GET    /api/@search          # Content search
 GET    /api/@types           # Content type info
 GET    /api/@workflow        # Workflow states
 
-# Planned Educational Endpoints
-GET    /api/@vocabularies/standards    # Common Core standards
-POST   /api/@lessons                   # Create lesson plans
-GET    /api/@analytics/usage           # Teacher dashboards
-POST   /api/@sync/google-classroom     # External sync
+# Planned Classroom Management Endpoints
+GET    /api/@dashboard-data           # Real-time classroom status
+POST   /api/@seating/update-position  # Drag-drop position updates
+POST   /api/@picker/select-student    # Fair selection algorithm
+POST   /api/@hallpass/issue           # Create digital pass
+GET    /api/@timer/status             # Current timer state
+POST   /api/@substitute/generate      # Create sub folder
 ```
 
 ### Component Architecture (ZCA)
@@ -409,12 +415,15 @@ The project uses ZCA for extensibility:
 # Current: Basic interfaces
 from project.title.interfaces import IBrowserLayer
 
-# Planned: Educational behaviors  
-class IStandardsAligned(Interface):
-    """Behavior for standards-aligned content"""
+# Planned: Classroom management behaviors  
+class ISeatingChart(Interface):
+    """Seating chart content type"""
     
-class IGoogleClassroomSyncable(Interface):
-    """Behavior for syncable content"""
+class IHallPass(Interface):
+    """Digital hall pass with tracking"""
+    
+class ITimerEnabled(Interface):
+    """Content that can have timers"""
 ```
 
 ---
@@ -434,10 +443,10 @@ make test            # Runs all test suites
 ```
 
 ### Planned Testing Expansion
-- Cypress E2E tests for teacher workflows
-- Performance benchmarks for mobile devices
-- Accessibility testing automation
-- Security penetration testing
+- JavaScript unit tests for interactive widgets
+- Browser testing for drag-drop functionality
+- Performance testing for real-time updates
+- Mobile device testing for classroom tablets
 
 ---
 
@@ -469,10 +478,10 @@ make test            # Runs all test suites
 - **Memory Usage**: ~180MB baseline
 
 ### Target Metrics (Phase 4)
-- **Page Load**: <2 seconds on 4G mobile
-- **Time to Interactive**: <3 seconds
-- **Lighthouse Score**: 90+ across all metrics
-- **Teacher Task Time**: 60% reduction in lesson planning
+- **Dashboard Update**: <200ms refresh rate
+- **Drag-Drop Response**: <50ms visual feedback
+- **Timer Accuracy**: ±100ms precision
+- **Mobile Performance**: Smooth on 2018+ tablets
 
 ---
 
@@ -482,26 +491,27 @@ make test            # Runs all test suites
 - Plone's built-in security framework
 - CSRF protection enabled
 - Basic authentication for API
+- Google SSO integration (completed)
 
 ### Planned Security Enhancements
-- Google OAuth integration
-- Role-based access control for schools/districts
-- Student data privacy compliance (FERPA)
-- Audit logging for all teacher actions
+- Role-based access for substitute teachers
+- Student privacy protection (no PII in QR codes)
+- Audit logging for hall pass patterns
+- Secure timer state to prevent tampering
 
 ---
 
 ## Conclusion
 
-This Plone-based Educational Content Platform leverages enterprise-grade architecture to solve real problems for K-12 teachers. By combining Plone's mature content management capabilities with modern development practices (cookieplone templates, Docker, React), we're creating a solution that:
+This Plone-based Classroom Management Platform leverages enterprise-grade architecture to solve real problems for K-12 teachers. By combining Plone's mature content management capabilities with modern interactive JavaScript tools, we're creating a solution that:
 
 1. **🏗️ Builds on Proven Foundation**: 25 years of Plone stability
-2. **🎯 Solves Real Problems**: Addresses teacher workflow pain points
-3. **📱 Embraces Modern UX**: Mobile-first with Volto React frontend
+2. **🎯 Solves Real Problems**: Addresses daily classroom management pain points
+3. **📱 Embraces Modern UX**: Interactive tools with real-time updates
 4. **🔐 Ensures Security**: Enterprise-grade permissions for student data
-5. **🚀 Scales Effectively**: From single schools to entire districts
+5. **🚀 Improves Efficiency**: 70% reduction in administrative overhead
 
-The combination of Plone's **architectural sophistication** and **focused educational features** positions this platform to transform how teachers collaborate and manage curriculum in under-resourced schools.
+The combination of Plone's **architectural sophistication** and **focused classroom management features** positions this platform to transform how teachers manage their classrooms, reducing stress and improving student engagement.
 
 ---
 

@@ -4,6 +4,12 @@
     i18n_domain="project.title"
     >
 
+  <!-- Classroom Management Permissions -->
+  <permission
+      id="project.title.AddSeatingChart"
+      title="project.title: Add Seating Chart"
+      />
+
   <!-- -*- extra stuff goes here -*- -->
 
 </configure>

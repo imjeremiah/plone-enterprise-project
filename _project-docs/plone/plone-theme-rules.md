@@ -1,11 +1,11 @@
 
-# Theme Rules for K-12 Educational Platform (Volto Frontend)
+# Theme Rules for K-12 Classroom Management Platform (Volto Frontend)
 
-This document defines the visual design system for our K-12 Educational Content Platform built on Plone 6.1.2 with Volto React frontend. The theme emphasizes **clarity**, **approachability**, and **professionalism** for teachers in under-resourced schools, while ensuring **accessibility** and **mobile responsiveness**.
+This document defines the visual design system for our K-12 Classroom Management Platform built on Plone 6.1.2 with Volto React frontend. The theme emphasizes **clarity**, **efficiency**, and **real-time feedback** for teachers managing their classrooms, while ensuring **accessibility** and **mobile responsiveness**.
 
 ## Design Philosophy
 
-Our theme balances professional educational aesthetics with warmth and approachability, avoiding both corporate sterility and childish design. It should feel like a trusted colleague's well-organized classroom.
+Our theme balances professional classroom management aesthetics with intuitive controls and real-time information display. It should feel like a modern classroom command center that's both powerful and approachable.
 
 ## Color Palette
 
@@ -15,25 +15,25 @@ Our theme balances professional educational aesthetics with warmth and approacha
   - Lighter: #3b82f6 (hover states)
   - Darker: #1d4ed8 (pressed states)
 
-- **Educational Green**: #059669 (Success, growth, learning)
-  - Use for: Success messages, completed lessons, achievements
+- **Educational Green**: #059669 (Success, active, all-clear)
+  - Use for: Active timers, available students, success states
   - Lighter: #10b981 (positive feedback)
   - Darker: #047857 (emphasis)
 
 ### Secondary Colors
-- **Warm Orange**: #f59e0b (Energy, creativity, attention)
-  - Use for: Highlights, notifications, draft states
+- **Warm Orange**: #f59e0b (Attention, warnings, alerts)
+  - Use for: Timer warnings, long hall passes, attention needed
   - Lighter: #fbbf24 (warnings)
   - Darker: #d97706 (urgent items)
 
-- **Supportive Purple**: #7c3aed (Innovation, special features)
-  - Use for: Premium features, AI suggestions, special content
+- **Supportive Purple**: #7c3aed (Special features, analytics)
+  - Use for: Random picker, special tools, data insights
   - Lighter: #8b5cf6 (accents)
   - Darker: #6d28d9 (emphasis)
 
 ### Functional Colors
-- **Error Red**: #dc2626 (Errors, critical alerts)
-- **Info Blue**: #0891b2 (Information, tips)
+- **Error Red**: #dc2626 (Errors, critical alerts, timer end)
+- **Info Blue**: #0891b2 (Information, active passes)
 - **Neutral Grays**: 
   - Text: #111827 (primary), #4b5563 (secondary), #9ca3af (muted)
   - Backgrounds: #ffffff (primary), #f9fafb (secondary), #f3f4f6 (tertiary)
@@ -54,14 +54,14 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, san
 - Fallbacks: System fonts for performance
 
 ### Type Scale
-- **Display**: 3rem (48px) - Landing pages only
+- **Display**: 3rem (48px) - Dashboard headers only
 - **H1**: 2.25rem (36px) - Page titles
 - **H2**: 1.875rem (30px) - Section headers
-- **H3**: 1.5rem (24px) - Subsections
+- **H3**: 1.5rem (24px) - Widget titles
 - **H4**: 1.25rem (20px) - Card titles
 - **Body**: 1rem (16px) - Standard text
-- **Small**: 0.875rem (14px) - Metadata, captions
-- **Tiny**: 0.75rem (12px) - Timestamps, legal
+- **Small**: 0.875rem (14px) - Metadata, labels
+- **Tiny**: 0.75rem (12px) - Timestamps, fine print
 
 ### Type Styles
 - **Line Heights**: 1.5 for body, 1.2 for headings
@@ -94,9 +94,9 @@ Based on 8px grid for consistency:
   transition: all 0.2s;
 }
 
-/* Educational CTAs */
-.button-create-lesson {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+/* Timer Controls */
+.button-timer-start {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 ```
@@ -115,40 +115,88 @@ Based on 8px grid for consistency:
 - **Focus State**: 2px solid #2563eb with 4px light blue glow
 - **Error State**: Border #dc2626, background #fef2f2
 
-### Educational-Specific Components
+### Classroom-Specific Components
 
-#### Lesson Plan Cards
+#### Seating Chart Grid
 ```css
-.lesson-card {
-  border-left: 4px solid [subject-color];
-  padding: 1.5rem;
+.seating-grid {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+}
+
+.student-seat {
   background: white;
-  transition: transform 0.2s, box-shadow 0.2s;
+  border: 2px solid #e5e7eb;
+  padding: 0.75rem;
+  cursor: move;
+  transition: all 0.2s;
 }
 
-.lesson-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+.student-seat:hover {
+  border-color: #2563eb;
+  transform: scale(1.02);
 }
 ```
 
-#### Standards Tags
+#### Timer Display
 ```css
-.standards-tag {
-  background: #ede9fe;
-  color: #6d28d9;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
+.timer-display {
+  font-size: 4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.025em;
+}
+
+.timer-warning {
+  color: #f59e0b;
+  animation: pulse 2s infinite;
+}
+
+.timer-critical {
+  color: #dc2626;
+  animation: pulse 1s infinite;
 }
 ```
 
-#### Grade Level Indicators
-- K-2: Soft green (#10b981)
-- 3-5: Warm blue (#3b82f6)
-- 6-8: Purple (#8b5cf6)
-- 9-12: Deep orange (#f59e0b)
+#### Hall Pass Status
+```css
+.hall-pass-active {
+  background: #dbeafe;
+  border-left: 4px solid #0891b2;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.hall-pass-warning {
+  background: #fef3c7;
+  border-left-color: #f59e0b;
+}
+
+.hall-pass-alert {
+  background: #fee2e2;
+  border-left-color: #dc2626;
+}
+```
+
+#### Random Picker Wheel
+```css
+.picker-wheel {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+  animation: spin var(--spin-duration) ease-out;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(var(--spin-amount)); }
+}
+```
 
 ## Responsive Design
 
@@ -160,9 +208,9 @@ Based on 8px grid for consistency:
 
 ### Mobile Adaptations
 - Increase touch targets to 48px minimum
-- Stack navigation vertically
-- Simplify dashboard to single column
-- Use bottom sheet pattern for actions
+- Stack dashboard widgets vertically
+- Simplify seating chart to list view
+- Full-screen timer mode
 
 ## Dark Mode (Future Enhancement)
 
@@ -190,16 +238,18 @@ packages/volto-project-title/src/theme/
 ├── components/
 │   └── [component].overrides
 └── extras/
-    └── educational.less
+    └── classroom.less
 ```
 
 ### Custom Properties
 Use CSS-in-JS with theme provider:
 ```javascript
-const educationalTheme = {
+const classroomTheme = {
   colors: {
     primary: '#2563eb',
-    educational: '#059669',
+    success: '#059669',
+    warning: '#f59e0b',
+    alert: '#dc2626',
     // ...
   },
   spacing: {
@@ -214,8 +264,8 @@ const educationalTheme = {
 1. **Consistency**: Use design tokens for all values
 2. **Performance**: Prefer CSS transforms over layout changes
 3. **Accessibility**: Test with screen readers and keyboard navigation
-4. **Print Styles**: Ensure lesson plans print cleanly
-5. **Loading States**: Use skeleton screens for better perceived performance
+4. **Print Styles**: Ensure seating charts and passes print cleanly
+5. **Loading States**: Use skeleton screens for dashboard updates
 
 ## Common Pitfalls to Avoid
 
@@ -225,4 +275,4 @@ const educationalTheme = {
 4. Low contrast text on colored backgrounds
 5. Fixed pixel values that break responsive design
 
-This theme system creates a professional yet approachable educational platform that teachers will find both functional and delightful to use daily. 
+This theme system creates a professional classroom management interface that teachers will find both functional and efficient for daily use. 

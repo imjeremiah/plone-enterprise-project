@@ -1,0 +1,30 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="project.title">
+
+  <!-- Seating Chart Browser Views for drag-drop functionality -->
+  <browser:page
+    name="update-position"
+    for="project.title.content.seating_chart.ISeatingChart"
+    class=".seating_views.SeatingChartUpdateView"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
+    name="update-grid"
+    for="project.title.content.seating_chart.ISeatingChart"
+    class=".seating_views.SeatingChartUpdateView"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <browser:page
+    name="seating-stats"
+    for="project.title.content.seating_chart.ISeatingChart"
+    class=".seating_views.SeatingChartStatsView"
+    permission="zope2.View"
+    />
+
+  <!-- -*- extra stuff goes here -*- -->
+
+</configure> 

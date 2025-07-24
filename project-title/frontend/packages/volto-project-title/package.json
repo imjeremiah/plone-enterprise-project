@@ -27,7 +27,11 @@
     "release-alpha": "release-it --preRelease=alpha"
   },
   "addons": [],
-  "dependencies": {},
+  "dependencies": {
+    "react-dnd": "5.0.0",
+    "react-dnd-html5-backend": "5.0.1",
+    "react-dnd-touch-backend": "^16.0.1"
+  },
   "peerDependencies": {
     "react": "18.2.0",
     "react-dom": "18.2.0"

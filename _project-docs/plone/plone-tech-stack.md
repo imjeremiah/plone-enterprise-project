@@ -1,8 +1,8 @@
-# Plone 6 Technology Stack: K-12 Educational Platform Implementation
+# Plone 6 Technology Stack: K-12 Classroom Management Platform Implementation
 
 ## Overview
 
-This document details the **actual technology stack** powering our K-12 Educational Content Platform, built on Plone 6.1.2. Rather than cataloging all possible Plone technologies, this focuses on what's **currently implemented** and **planned for implementation** in our educational platform for under-resourced U.S. public schools.
+This document details the **actual technology stack** powering our K-12 Classroom Management Platform, built on Plone 6.1.2. Rather than cataloging all possible Plone technologies, this focuses on what's **currently implemented** and **planned for implementation** in our classroom management platform for K-12 teachers.
 
 ---
 
@@ -10,7 +10,7 @@ This document details the **actual technology stack** powering our K-12 Educatio
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│         K-12 EDUCATIONAL PLATFORM TECH STACK                 │
+│         K-12 CLASSROOM MANAGEMENT PLATFORM TECH STACK        │
 ├──────────────────────────────────────────────────────────────┤
 │  Frontend Layer     │  Development Tools                     │
 │  ├─ Volto (React)   │  ├─ uv (Python packages)               │
@@ -53,7 +53,7 @@ Python 3.12 (Project standard)
 
 **Current Status**: ✅ Fully implemented with Python 3.12 and uv package manager
 
-**Educational Platform Context**: Simplified dependency management allows teachers/schools to deploy updates without complex buildout knowledge.
+**Classroom Platform Context**: Simplified dependency management allows school IT staff to deploy updates without complex buildout knowledge.
 
 #### **Zope Application Server**
 ```python
@@ -80,7 +80,7 @@ Zope 5.11 (via Plone 6.1.2)
 **Implementation Notes**: 
 - Using standard Plone ZCML patterns
 - Custom package (`project.title`) has minimal configuration
-- Planning to add educational-specific components in Phase 2
+- Planning to add classroom-specific components in Phase 2
 
 ### Database Layer
 
@@ -93,11 +93,11 @@ ZODB 6.2
 ├─ 3.2MB current database size
 └─ Standard ZODB configuration
 
-# Planned Educational Features
-├─ Lesson plan versioning
-├─ Collaborative editing support
-├─ Standards alignment tracking
-└─ Analytics data storage
+# Planned Classroom Features
+├─ Seating chart persistence
+├─ Hall pass tracking
+├─ Timer state storage
+└─ Dashboard cache data
 ```
 
 **Performance Baseline**: 
@@ -123,12 +123,12 @@ Products.CMFPlone 6.1.2
 ├─ Basic workflow (private/published)
 └─ Default security settings
 
-# Planned Educational Content Types (Phase 2-3)
-├─ Lesson Plan (with standards alignment)
-├─ Learning Resource (sharable materials)
-├─ Assessment (quiz/test content)
-├─ Student Portfolio (work samples)
-└─ Standards Vocabulary (Common Core)
+# Planned Classroom Content Types (Phase 2-3)
+├─ SeatingChart (drag-drop grid storage)
+├─ HallPass (QR code tracking)
+├─ SubstituteFolder (auto-generated)
+├─ TimerPreset (reusable timers)
+└─ ClassroomDashboard (aggregated view)
 ```
 
 ### Security & Authentication
@@ -142,12 +142,16 @@ AccessControl 7.2
 ├─ CSRF protection enabled
 └─ Admin user configured
 
-# Planned Security Enhancements (Phase 2)
-├─ Google OAuth integration (SSO)
-├─ Teacher/Student/Admin roles
-├─ School/District hierarchies
-├─ FERPA compliance features
-└─ Audit logging for compliance
+# Implemented Features
+├─ Google OAuth integration (SSO) ✅
+├─ Teacher/Admin roles
+└─ School-based permissions
+
+# Planned Security Enhancements (Phase 3)
+├─ Substitute teacher access
+├─ Student privacy protections
+├─ Hall pass audit logging
+└─ Dashboard access controls
 ```
 
 ### REST API Layer
@@ -167,12 +171,13 @@ GET    /api/@search       # Content search
 GET    /api/@types        # Type information
 GET    /api/@workflow     # Workflow states
 
-# Planned Educational API Endpoints
-POST   /api/@lessons              # Lesson management
-GET    /api/@standards            # Standards vocabulary
-POST   /api/@collaborate          # Sharing features
-GET    /api/@analytics            # Usage metrics
-POST   /api/@sync/google         # External integration
+# Planned Classroom API Endpoints
+GET    /api/@dashboard     # Real-time classroom data
+POST   /api/@seating       # Update student positions
+POST   /api/@picker        # Fair selection algorithm
+POST   /api/@hallpass      # Issue/return passes
+GET    /api/@timer         # Timer state management
+POST   /api/@substitute    # Generate sub folder
 ```
 
 ---
@@ -200,29 +205,30 @@ pnpm 9.1.1
 // Current Frontend Features
 ├─ Basic Volto configuration
 ├─ Language settings (English)
-├─ No custom blocks yet
+├─ Google SSO integration ✅
 └─ Standard Volto theme
 ```
 
 **Development Status**:
 - ✅ Basic Volto installation complete
-- ⏳ Custom educational UI components planned
-- ⏳ Mobile-responsive customizations planned
+- ✅ Google SSO authentication working
+- ⏳ Custom classroom UI components planned
+- ⏳ Interactive JavaScript widgets planned
 
 #### **Planned Frontend Technologies (Phase 2-3)**
 ```javascript
-// Educational UI Components
-├─ Standards alignment widget
-├─ Lesson plan builder
-├─ Collaborative editing UI
-├─ Mobile-optimized views
-└─ Analytics dashboards
+// Classroom Management Components
+├─ Seating chart drag-drop interface
+├─ Random picker animation wheel
+├─ Timer widget with audio alerts
+├─ QR code display components
+└─ Real-time dashboard updates
 
-// Accessibility Features
-├─ WCAG 2.1 AA compliance
-├─ Screen reader optimization
-├─ Keyboard navigation
-└─ High contrast themes
+// Interactive Features
+├─ Touch-optimized for tablets
+├─ Offline timer functionality
+├─ WebSocket considerations
+└─ Progressive Web App features
 ```
 
 ---
@@ -342,9 +348,10 @@ pytest with pytest-plone
 
 # Current Test Coverage
 ├─ ✅ Basic setup tests
+├─ ✅ Google SSO tests
 ├─ ⏳ Feature tests planned
 ├─ ⏳ API tests planned
-└─ ⏳ Security tests planned
+└─ ⏳ Performance tests planned
 ```
 
 #### **Frontend Testing**
@@ -356,9 +363,9 @@ Jest (via Volto)
 └─ Standard Volto tests pass
 
 // Planned Testing (Phase 3)
-├─ Cypress E2E tests
-├─ Accessibility testing
-├─ Performance testing
+├─ JavaScript widget tests
+├─ Drag-drop interaction tests
+├─ Timer accuracy tests
 └─ Cross-browser testing
 ```
 
@@ -400,28 +407,28 @@ pytest-plone = ">=0.5.0"
 
 ---
 
-## 🎯 Educational Platform Features (Technology Mapping)
+## 🎯 Classroom Management Features (Technology Mapping)
 
-### Phase 2: MVP Technologies
+### Phase 2: Core Features
 | Feature | Technologies | Status |
 |---------|-------------|--------|
-| Google SSO | OAuth2, pas.plugins.oauth | ⏳ Planned |
-| Standards System | plone.app.vocabularies, Dexterity behaviors | ⏳ Planned |
-| Mobile UI | Volto customization, CSS Grid, React hooks | ⏳ Planned |
+| ✅ Google SSO | OAuth2, pas.plugins.oauth | ✅ Complete |
+| Seating Chart | Dexterity, Drag-drop JS, JSON storage | ⏳ Planned |
+| Random Picker | Browser view, Fairness algorithm, CSS animations | ⏳ Planned |
 
-### Phase 3: Feature Implementation
+### Phase 3: Advanced Features
 | Feature | Technologies | Status |
 |---------|-------------|--------|
-| Advanced Search | Portal Catalog, ElasticSearch integration | 📋 Designed |
-| Analytics Dashboard | React charts, plone.restapi extensions | 📋 Designed |
-| Google Classroom Sync | Google APIs, Celery tasks | 📋 Designed |
+| Hall Pass | QR codes, Python qrcode library, Time tracking | 📋 Designed |
+| Timer Widget | JavaScript, Web Audio API, localStorage | 📋 Designed |
+| Sub Folder | plone.api, Content aggregation, Templates | 📋 Designed |
 
-### Phase 4: Production Technologies
+### Phase 4: Integration
 | Feature | Technologies | Status |
 |---------|-------------|--------|
-| AWS Deployment | ECS, RDS, CloudFront | 💭 Conceptual |
-| Monitoring | Sentry, New Relic, CloudWatch | 💭 Conceptual |
-| Backup System | S3, automated ZODB backups | 💭 Conceptual |
+| Dashboard | Browser view, AJAX polling, Chart.js | 💭 Conceptual |
+| Real-time Updates | plone.restapi, Caching, WebSockets | 💭 Conceptual |
+| Mobile PWA | Service Workers, Offline support | 💭 Conceptual |
 
 ---
 
@@ -459,7 +466,7 @@ make stack-stop          # Stop all services
 - **School Infrastructure**: Must work on older hardware, limited bandwidth
 - **IT Expertise**: Deployable by school IT staff, not just developers
 - **Security Requirements**: FERPA compliance, student data protection
-- **Accessibility**: WCAG 2.1 AA required for public education
+- **Accessibility**: Touch-friendly for tablets, works on school networks
 
 ---
 
@@ -470,9 +477,9 @@ make stack-stop          # Stop all services
 |--------|---------|------------------|
 | Page Load | 2.5-4.2s | <2s |
 | API Response | <200ms | <150ms |
-| Memory Usage | 180MB | <250MB |
-| Docker Image | ~1GB | <800MB |
-| Build Time | ~30s | <20s |
+| Dashboard Refresh | N/A | <200ms |
+| Drag-drop Response | N/A | <50ms |
+| Timer Accuracy | N/A | ±100ms |
 
 ---
 
@@ -481,35 +488,35 @@ make stack-stop          # Stop all services
 ### Current Implementation
 - Standard Plone security model
 - CSRF protection enabled
-- Basic authentication only
-- Admin-only access
+- Google OAuth SSO ✅
+- Teacher role-based access
 
 ### Planned Security Stack (Phase 2-3)
 ```python
 # Authentication
-├─ Google OAuth 2.0 (SSO)
+├─ Google OAuth 2.0 (SSO) ✅
 ├─ JWT tokens for API
 ├─ Session management
-└─ Remember me functionality
+└─ Substitute teacher access
 
 # Authorization  
-├─ Teacher/Student/Admin roles
-├─ School-based permissions
-├─ Content sharing rules
-└─ API key management
+├─ Teacher/Sub/Admin roles
+├─ Feature-based permissions
+├─ Dashboard access controls
+└─ API rate limiting
 
-# Compliance
-├─ FERPA requirements
-├─ Audit logging
-├─ Data retention policies
-└─ Privacy controls
+# Privacy
+├─ No PII in QR codes
+├─ Anonymized picker data
+├─ Secure timer states
+└─ Audit logging
 ```
 
 ---
 
 ## 📝 Summary
 
-This technology stack represents the **actual implementation** of our K-12 Educational Content Platform, not just Plone's theoretical capabilities.
+This technology stack represents the **actual implementation** of our K-12 Classroom Management Platform, not just Plone's theoretical capabilities.
 
 ### **What We Have Now**
 - ✅ Plone 6.1.2 with modern Python 3.12
@@ -517,21 +524,22 @@ This technology stack represents the **actual implementation** of our K-12 Educa
 - ✅ Docker-based development environment
 - ✅ Cookieplone project structure
 - ✅ RESTful API foundation
+- ✅ Google SSO authentication
 
 ### **What We're Building**
-- 🚧 Educational content types and workflows
-- 🚧 Standards alignment system
-- 🚧 Mobile-responsive teacher interface
-- 🚧 Google Classroom integration
-- 🚧 Analytics and reporting
+- 🚧 Interactive classroom management tools
+- 🚧 Real-time dashboard aggregation
+- 🚧 Touch-optimized tablet interface
+- 🚧 Offline-capable timer functionality
+- 🚧 Fair participation tracking
 
 ### **Technology Philosophy**
-- **Proven over trendy**: Using Plone's 25-year foundation
-- **Simple over complex**: School IT staff can maintain
-- **Accessible by default**: WCAG 2.1 AA compliance
-- **Data privacy first**: FERPA-compliant architecture
-- **Performance matters**: Fast on school networks
+- **Real-time over batch**: Instant classroom updates
+- **Simple over complex**: Teachers can understand the tools
+- **Touch-first**: Designed for classroom tablets
+- **Privacy-first**: Protect student information
+- **Performance matters**: Sub-second interactions
 
-This stack provides enterprise reliability while focusing on the specific needs of K-12 education, teacher workflows, and school infrastructure constraints.
+This stack provides enterprise reliability while focusing on the specific needs of daily classroom management, teacher workflows, and school infrastructure constraints.
 
 *Technical specifications based on actual project implementation as of Phase 1 completion.* 

@@ -1,0 +1,542 @@
+/*
+Random Student Picker Styles for Classroom Management
+
+Provides engaging visual design for fair student selection with 
+spinner animation and clear statistical display.
+*/
+
+/* Page Layout */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Main Container */
+.random-picker-interface {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    align-items: start;
+}
+
+/* Header */
+.classroom-header {
+    text-align: center;
+    margin: 0 auto 30px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    max-width: 1200px;
+}
+
+.classroom-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.classroom-header i {
+    margin-right: 15px;
+    font-size: 2.8rem;
+}
+
+.classroom-header .documentDescription {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Picker Wheel Section */
+.picker-wheel-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-height: 500px;
+    position: relative;
+}
+
+/* Picker Wheel */
+.picker-wheel {
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    position: relative;
+    margin: 0 auto 30px auto;
+    background: conic-gradient(
+        #ff6b6b 0deg 45deg,
+        #4ecdc4 45deg 90deg,
+        #45b7d1 90deg 135deg,
+        #96ceb4 135deg 180deg,
+        #feca57 180deg 225deg,
+        #ff9ff3 225deg 270deg,
+        #a8e6cf 270deg 315deg,
+        #ff8b94 315deg 360deg
+    );
+    border: 8px solid #2c3e50;
+    overflow: hidden;
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.picker-wheel.spinning {
+    animation: spin-wheel 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+@keyframes spin-wheel {
+    0% { 
+        transform: rotate(0deg); 
+    }
+    100% { 
+        transform: rotate(calc(720deg + var(--final-rotation, 0deg))); 
+    }
+}
+
+.wheel-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.student-segment {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 6px 12px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #2c3e50;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+    border: 2px solid rgba(44, 62, 80, 0.1);
+    white-space: nowrap;
+    pointer-events: none;
+    transform-origin: center center;
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 40px;
+    color: #2c3e50;
+    z-index: 10;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Controls */
+.picker-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.btn-large {
+    padding: 16px 32px;
+    font-size: 18px;
+}
+
+/* Statistics Panel */
+.picker-stats-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.picker-stats-panel h3, .picker-stats-panel h4 {
+    margin: 0 0 20px 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 10px;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.stat-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+/* Recent Picks */
+.recent-picks-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.recent-picks-list li {
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    background: #e9ecef;
+    border-radius: 6px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.recent-picks-list li:first-child {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+}
+
+/* History Table */
+.history-table-container {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.history-table th,
+.history-table td {
+    padding: 10px 8px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.history-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+.history-table tr:hover {
+    background: #f8f9fa;
+}
+
+/* Selection Modal */
+.selection-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.selection-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    animation: modal-appear 0.3s ease;
+}
+
+@keyframes modal-appear {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 15px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.selected-student-display {
+    margin-bottom: 20px;
+}
+
+.student-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    color: white;
+    font-size: 36px;
+}
+
+.selected-student-display h3 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+.selection-time {
+    color: #6c757d;
+    font-size: 14px;
+    margin: 0;
+}
+
+.fairness-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.loading-overlay.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+    font-size: 18px;
+    color: #495057;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 15px;
+    }
+    
+    .random-picker-interface {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px;
+        margin: 0 auto;
+    }
+    
+    .picker-wheel {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .picker-wheel-section {
+        padding: 30px 15px;
+        min-height: 400px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+    
+    .classroom-header {
+        margin: 0 0 20px 0;
+        padding: 15px;
+    }
+    
+    .classroom-header h1 {
+        font-size: 2rem;
+    }
+    
+    .picker-controls {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+        max-width: 300px;
+    }
+}
+
+/* Touch-friendly enhancements for tablets */
+@media (pointer: coarse) {
+    .btn {
+        min-height: 48px;
+        padding: 16px 24px;
+    }
+    
+    .history-table th,
+    .history-table td {
+        padding: 12px 10px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .picker-wheel {
+        border-width: 4px;
+        border-color: #000;
+    }
+    
+    .btn-primary {
+        background: #0066cc;
+        border: 2px solid #004499;
+    }
+    
+    .stat-item {
+        border: 1px solid #666;
+    }
+}
+
+/* Print styles */
+@media print {
+    .picker-wheel-section,
+    .modal-content,
+    .loading-overlay {
+        display: none;
+    }
+    
+    .picker-stats-panel {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+} 

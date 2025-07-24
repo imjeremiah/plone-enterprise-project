@@ -17,6 +17,8 @@
   <include file="permissions.zcml" />
 
   <include package=".behaviors" />
+  <include package=".browser" />
+  <include package=".content" />
   <include package=".controlpanel" />
   <include package=".indexers" />
   <include package=".serializers" />

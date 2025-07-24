@@ -1,665 +1,672 @@
-# Educational Platform Feature Integration Map
+ # Classroom Management Platform Feature Integration Map
 
 ## Overview
-This document maps how each of our 6 educational features integrates with Plone 6.1.2's architecture, identifying specific integration points, required components, and implementation approaches that leverage Plone's evolved platform capabilities.
+This document maps how each of our 7 classroom management features integrates with Plone 6.1.2's architecture, identifying specific integration points, required components, and implementation approaches that leverage Plone's modern capabilities for real-time classroom tools.
 
 ## Integration Architecture Philosophy
-Rather than retrofitting features onto legacy systems, our implementation leverages Plone 6.1.2's modern architecture:
-- **ZCA (Zope Component Architecture)** for pluggable components
-- **Dexterity** for flexible content types and behaviors
-- **plone.restapi** for API-first development
-- **Volto** for modern React frontend
-- **Portal Catalog** for advanced search and indexing
+Our implementation leverages Plone 6.1.2's modern architecture for interactive classroom management:
+- **Dexterity** for flexible content types (seating charts, hall passes)
+- **Browser Views** for real-time dashboards and displays
+- **JavaScript Integration** via Plone patterns and resources
+- **plone.restapi** for AJAX updates and real-time features
+- **Portal Catalog** for efficient data aggregation
 
 ---
 
-## Feature 1: Modern Authentication (Google OAuth/SSO)
+## Feature 1: Google SSO (Authentication)
 
 ### Integration Points
 - **Primary**: `pas.plugins.authomatic` package (Pluggable Authentication Service)
 - **Secondary**: `plone.app.users` for user management
 - **Frontend**: Volto login components and authentication flow
 
+### Status: ✅ **COMPLETED**
+
+---
+
+## Feature 2: Seating Chart Generator
+
+### Integration Points
+- **Primary**: Dexterity content type with custom schema
+- **Secondary**: JavaScript drag-drop library integration
+- **Storage**: JSON field for flexible grid positioning
+- **UI**: Browser view with interactive interface
+
 ### Required Components
 
 #### Backend Components
 ```python
-# Authentication Plugin
-pas.plugins.authomatic >= 1.1.0
-├─ OAuth2 provider integration
-├─ User factory for Google accounts
-├─ Role mapping for educational context
-└─ Session management
-
-# Configuration Structure
+# Seating Chart Structure
 backend/src/project/title/
-├─ auth/
+├─ content/
 │   ├─ __init__.py
-│   ├─ oauth_config.py      # Google OAuth configuration
-│   ├─ user_factory.py      # Teacher user creation
-│   └─ role_mapping.py      # Map Google domain to teacher role
+│   ├─ seating_chart.py         # Dexterity type definition
+│   └─ configure.zcml           # Type registration
+├─ browser/
+│   ├─ __init__.py
+│   ├─ seating_chart_view.py   # Interactive view
+│   ├─ templates/
+│   │   └─ seating_chart.pt    # View template
+│   └─ configure.zcml           # View registration
 ├─ profiles/default/
-│   └─ pas.xml              # PAS plugin configuration
-└─ configure.zcml           # Component registration
-```
-
-#### Frontend Components
-```jsx
-// Volto Authentication Components
-frontend/packages/volto-project-title/src/
-├─ components/
-│   ├─ LoginForm/
-│   │   ├─ LoginForm.jsx           # Enhanced with Google button
-│   │   └─ GoogleLoginButton.jsx   # OAuth flow initiation
-│   └─ UserMenu/
-│       └─ UserProfile.jsx         # Display Google profile info
-└─ config.js                      # OAuth redirect configuration
+│   └─ types/
+│       └─ SeatingChart.xml     # FTI configuration
+└─ browser/static/
+    ├─ seating-chart.js         # Drag-drop logic
+    └─ seating-chart.css        # Grid styling
 ```
 
 ### Integration Pattern
 ```python
-# PAS Plugin Registration (backend/src/project/title/auth/oauth_config.py)
-@implementer(IAuthomaticPlugin)
-class GoogleOAuthPlugin:
-    """Google OAuth integration for educational platform"""
-    
-    def __init__(self):
-        self.config = {
-            'google': {
-                'class_': GoogleOAuth2,
-                'consumer_key': os.environ['GOOGLE_CLIENT_ID'],
-                'consumer_secret': os.environ['GOOGLE_CLIENT_SECRET'],
-                'scope': ['openid', 'email', 'profile'],
-                'access_headers': {'User-Agent': 'Plone Educational Platform'},
-            }
-        }
-```
-
-### Risk Assessment
-- **🟡 Medium Risk**: OAuth misconfiguration can break all authentication
-- **Mitigation**: Maintain admin backdoor account, staged rollout
-- **Fallback**: Disable plugin to restore standard authentication
-
-### Implementation Approach
-1. **Phase 1**: Install and configure `pas.plugins.authomatic`
-2. **Phase 2**: Create Google Cloud project and OAuth credentials
-3. **Phase 3**: Implement user factory for teacher domain mapping
-4. **Phase 4**: Customize Volto login components
-5. **Phase 5**: Test authentication flow thoroughly
-
----
-
-## Feature 2: Standards Alignment System
-
-### Integration Points
-- **Primary**: Dexterity behaviors system for reusable functionality
-- **Secondary**: `plone.app.vocabularies` for standards taxonomy
-- **Indexing**: Portal Catalog custom indexes for search/filtering
-
-### Required Components
-
-#### Backend Components
-```python
-# Behavior Structure
-backend/src/project/title/
-├─ behaviors/
-│   ├─ __init__.py
-│   ├─ standards_aligned.py      # IStandardsAligned behavior
-│   └─ configure.zcml            # Behavior registration
-├─ vocabularies/
-│   ├─ __init__.py
-│   ├─ standards.py              # Educational standards vocabulary
-│   ├─ grade_levels.py           # K-12 grade levels
-│   ├─ subjects.py               # Subject areas
-│   └─ configure.zcml            # Vocabulary registration
-├─ indexers/
-│   ├─ __init__.py
-│   ├─ standards_indexer.py      # Custom catalog indexers
-│   └─ configure.zcml            # Indexer registration
-└─ profiles/default/
-    ├─ catalog.xml               # New catalog indexes
-    ├─ behaviors.xml             # Behavior definitions
-    └─ vocabularies.xml          # Vocabulary configuration
-```
-
-#### Frontend Components
-```jsx
-// Volto Standards Components
-frontend/packages/volto-project-title/src/
-├─ components/
-│   ├─ Widgets/
-│   │   ├─ StandardsSelectWidget.jsx    # Multi-select standards
-│   │   ├─ GradeLevelWidget.jsx         # Grade level picker
-│   │   └─ SubjectAreaWidget.jsx        # Subject selection
-│   ├─ Blocks/
-│   │   ├─ StandardsDisplay/            # Show aligned standards
-│   │   └─ StandardsFilter/             # Filter by standards
-│   └─ Views/
-│       └─ StandardsReport.jsx          # Analytics view
-```
-
-### Integration Pattern
-```python
-# Standards Aligned Behavior (backend/src/project/title/behaviors/standards_aligned.py)
-from plone.autoform import directives
-from plone.dexterity.interfaces import IDexterityContent
+# Seating Chart Type (backend/src/project/title/content/seating_chart.py)
+from plone.dexterity.content import Container
 from plone.supermodel import model
-from zope.interface import implementer
+from zope import schema
+import json
 
-class IStandardsAligned(model.Schema):
-    """Behavior for educational standards alignment"""
+class ISeatingChart(model.Schema):
+    """Seating chart with drag-drop student positioning"""
     
-    model.fieldset(
-        'standards',
-        label=u'Educational Standards',
-        fields=['aligned_standards', 'grade_levels', 'subject_areas']
+    title = schema.TextLine(
+        title=u"Class Name",
+        required=True
     )
     
-    aligned_standards = schema.List(
-        title=u"Aligned Standards",
-        description=u"Common Core or state standards addressed",
-        value_type=schema.Choice(
-            vocabulary="project.title.vocabularies.Standards"
-        ),
+    grid_data = schema.Text(
+        title=u"Seating Grid Data",
+        description=u"JSON data storing student positions",
         required=False,
+        default=u'{"rows": 5, "cols": 6, "students": {}}'
     )
     
-    grade_levels = schema.List(
-        title=u"Grade Levels",
-        description=u"Target grade levels (K-12)",
-        value_type=schema.Choice(
-            vocabulary="project.title.vocabularies.GradeLevels"
-        ),
-        required=False,
-    )
-    
-    subject_areas = schema.List(
-        title=u"Subject Areas",
-        description=u"Academic subject areas covered",
-        value_type=schema.Choice(
-            vocabulary="project.title.vocabularies.SubjectAreas"
-        ),
-        required=False,
+    students = schema.List(
+        title=u"Class Roster",
+        value_type=schema.TextLine(),
+        required=False
     )
 
-@implementer(IStandardsAligned)
-@adapter(IDexterityContent)
-class StandardsAligned:
-    """Standards alignment behavior implementation"""
+class SeatingChart(Container):
+    """Seating chart implementation"""
     
-    def __init__(self, context):
-        self.context = context
+    def get_grid(self):
+        """Parse grid data as Python object"""
+        return json.loads(self.grid_data or '{}')
+    
+    def update_position(self, student_id, row, col):
+        """Update student position in grid"""
+        grid = self.get_grid()
+        grid['students'][student_id] = {'row': row, 'col': col}
+        self.grid_data = json.dumps(grid)
 ```
 
 ### Risk Assessment
-- **🟢 Low Risk**: Behaviors are isolated and don't affect core functionality
-- **Mitigation**: Graceful degradation if vocabulary loading fails
-- **Fallback**: Disable behavior to restore standard content editing
-
-### Implementation Approach
-1. **Phase 1**: Create vocabulary infrastructure with sample data
-2. **Phase 2**: Implement standards alignment behavior
-3. **Phase 3**: Add custom catalog indexes for search
-4. **Phase 4**: Build Volto widgets for standards selection
-5. **Phase 5**: Integrate with lesson plan content types
+- **🟢 Low Risk**: Self-contained content type with no core modifications
+- **Mitigation**: Graceful degradation to list view if JavaScript fails
+- **Fallback**: Manual position entry if drag-drop unavailable
 
 ---
 
-## Feature 3: Enhanced Search & Filtering
+## Feature 3: Random Student Picker
 
 ### Integration Points
-- **Primary**: Portal Catalog (`ZCatalog`) for advanced indexing
-- **Secondary**: `plone.app.search` for search interface customization
-- **Frontend**: Volto search components and faceted filtering
+- **Primary**: Browser view with JavaScript widget
+- **Secondary**: AJAX endpoint for participation tracking
+- **Storage**: Annotation storage for pick history
+- **UI**: Animated selection interface
 
 ### Required Components
 
 #### Backend Components
 ```python
-# Search Enhancement Structure
+# Random Picker Structure
 backend/src/project/title/
-├─ catalog/
-│   ├─ __init__.py
-│   ├─ indexes.py               # Custom search indexes
-│   ├─ metadata.py              # Additional metadata columns
-│   └─ configure.zcml           # Catalog configuration
+├─ browser/
+│   ├─ random_picker.py         # View and AJAX handler
+│   ├─ templates/
+│   │   └─ picker.pt           # Picker template
+│   └─ configure.zcml          # Registration
 ├─ api/
 │   ├─ services/
-│   │   ├─ __init__.py
-│   │   └─ search.py            # Enhanced search service
-│   └─ configure.zcml           # API service registration
+│   │   └─ picker_service.py   # REST endpoint
+│   └─ configure.zcml          # API registration
+└─ browser/static/
+    ├─ picker-wheel.js         # Animation logic
+    └─ picker-wheel.css        # Spinner styling
+```
+
+### Integration Pattern
+```python
+# Random Picker View (backend/src/project/title/browser/random_picker.py)
+from Products.Five.browser import BrowserView
+from plone import api
+import json
+import random
+from datetime import datetime
+
+class RandomStudentPicker(BrowserView):
+    """Interactive student picker with fairness tracking"""
+    
+    def __call__(self):
+        if self.request.get('pick_student'):
+            return self.pick_student()
+        return self.index()
+    
+    def get_students(self):
+        """Get student list from context (e.g., seating chart)"""
+        if hasattr(self.context, 'students'):
+            return self.context.students
+        return []
+    
+    def pick_student(self):
+        """Pick random student with fairness algorithm"""
+        students = self.get_students()
+        history = self.get_pick_history()
+        
+        # Weight selection by least recently picked
+        weights = []
+        for student in students:
+            last_picked = history.get(student, 0)
+            weight = datetime.now().timestamp() - last_picked
+            weights.append(weight)
+        
+        # Weighted random selection
+        selected = random.choices(students, weights=weights)[0]
+        
+        # Update history
+        history[selected] = datetime.now().timestamp()
+        self.save_pick_history(history)
+        
+        return json.dumps({
+            'selected': selected,
+            'timestamp': datetime.now().isoformat()
+        })
+```
+
+### Risk Assessment
+- **🟢 Low Risk**: JavaScript enhancement with server-side fallback
+- **Mitigation**: Basic random selection works without animation
+- **Fallback**: Simple list randomization if JavaScript disabled
+
+---
+
+## Feature 4: Substitute Folder Generator
+
+### Integration Points
+- **Primary**: Content creation API via plone.api
+- **Secondary**: Folder copy/organization patterns
+- **Automation**: Browser view action for one-click generation
+- **Templates**: Configurable folder structure
+
+### Required Components
+
+#### Backend Components
+```python
+# Substitute Folder Structure
+backend/src/project/title/
+├─ browser/
+│   ├─ substitute_folder.py    # Generation logic
+│   ├─ templates/
+│   │   └─ configure.pt        # Configuration form
+│   └─ configure.zcml          # Action registration
+├─ content/
+│   ├─ substitute_template.py  # Template storage
+│   └─ configure.zcml          # Type registration
 └─ profiles/default/
-    ├─ catalog.xml              # Index definitions
-    └─ registry.xml             # Search configuration
-```
-
-#### Frontend Components
-```jsx
-// Volto Search Enhancement
-frontend/packages/volto-project-title/src/
-├─ components/
-│   ├─ Search/
-│   │   ├─ EducationalSearchForm.jsx    # Enhanced search form
-│   │   ├─ FacetedFilter.jsx            # Standards/grade filters
-│   │   ├─ SearchResultsView.jsx        # Educational metadata display
-│   │   └─ SavedSearches.jsx            # Teacher search presets
-│   └─ Listings/
-│       ├─ LessonPlanListing.jsx        # Specialized listings
-│       └─ ResourceListing.jsx          # Resource-specific views
+    └─ actions.xml             # Toolbar action
 ```
 
 ### Integration Pattern
 ```python
-# Enhanced Search Service (backend/src/project/title/api/services/search.py)
-from plone.restapi.services import Service
-from plone.restapi.interfaces import ISerializeToJson
-from zope.component import getMultiAdapter
-
-class EducationalSearchService(Service):
-    """Enhanced search with educational metadata"""
-    
-    def reply(self):
-        """Search with standards and grade level filtering"""
-        catalog = self.context.portal_catalog
-        
-        # Build educational query
-        query = self.build_educational_query()
-        
-        # Execute search
-        brains = catalog(**query)
-        
-        # Serialize results with educational metadata
-        results = []
-        for brain in brains:
-            # Include standards alignment in results
-            item = {
-                '@id': brain.getURL(),
-                'title': brain.Title,
-                'description': brain.Description,
-                'portal_type': brain.portal_type,
-                'standards': getattr(brain, 'aligned_standards', []),
-                'grade_levels': getattr(brain, 'grade_levels', []),
-                'subject_areas': getattr(brain, 'subject_areas', []),
-            }
-            results.append(item)
-            
-        return {
-            'items': results,
-            'items_total': len(results),
-            'facets': self.get_search_facets(brains)
-        }
-```
-
-### Risk Assessment
-- **🟢 Low Risk**: Search enhancements don't affect content storage
-- **Mitigation**: Fallback to standard Plone search if custom search fails
-- **Fallback**: Disable custom indexes to restore default search behavior
-
-### Implementation Approach
-1. **Phase 1**: Add custom catalog indexes for educational metadata
-2. **Phase 2**: Create enhanced search service with faceting
-3. **Phase 3**: Build Volto search interface with educational filters
-4. **Phase 4**: Implement saved searches and search presets
-5. **Phase 5**: Add advanced analytics on search usage
-
----
-
-## Feature 4: Mobile-Responsive Design (Volto UX)
-
-### Integration Points
-- **Primary**: Volto theme system for responsive design
-- **Secondary**: Semantic UI customization for mobile optimization
-- **Components**: Custom Volto blocks optimized for tablets/phones
-
-### Required Components
-
-#### Frontend Components
-```jsx
-// Mobile-Optimized Theme Structure
-frontend/packages/volto-project-title/src/
-├─ theme/
-│   ├─ globals/
-│   │   └─ site.overrides         # Mobile-first CSS
-│   ├─ collections/
-│   │   ├─ menu.overrides         # Touch-friendly navigation
-│   │   └─ breadcrumb.overrides   # Compact breadcrumbs
-│   ├─ elements/
-│   │   ├─ button.overrides       # Touch-target sizing
-│   │   └─ input.overrides        # Mobile form inputs
-│   └─ views/
-│       ├─ card.overrides         # Responsive content cards
-│       └─ item.overrides         # Mobile content layout
-├─ components/
-│   ├─ Blocks/
-│   │   ├─ MobileFriendlyText/    # Readable text blocks
-│   │   ├─ TouchOptimizedButton/  # Large touch targets
-│   │   └─ SwipeableGallery/      # Touch gestures
-│   └─ Layout/
-│       ├─ MobileNavigation.jsx   # Responsive navigation
-│       ├─ TabletToolbar.jsx      # Teacher tablet interface
-│       └─ ResponsiveGrid.jsx     # Adaptive grid layouts
-```
-
-#### Theme Configuration
-```scss
-// Mobile-First SCSS (frontend/packages/volto-project-title/src/theme/globals/site.overrides)
-// Educational Platform Mobile Theme
-@media only screen and (max-width: 767px) {
-  .ui.container {
-    width: auto !important;
-    margin-left: 1em !important;
-    margin-right: 1em !important;
-  }
-  
-  // Touch-friendly lesson plan editing
-  .lesson-plan-editor {
-    .ui.form .field {
-      margin-bottom: 1.5em;
-    }
-    
-    .ui.button {
-      min-height: 44px; // iOS touch target
-      padding: 0.8em 1.5em;
-    }
-  }
-  
-  // Standards selection on mobile
-  .standards-widget {
-    .ui.dropdown {
-      font-size: 1.1em;
-      padding: 0.8em;
-    }
-  }
-}
-
-// Tablet-specific optimizations
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
-  .teacher-dashboard {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1em;
-  }
-  
-  .lesson-editor-sidebar {
-    position: sticky;
-    top: 1em;
-  }
-}
-```
-
-### Integration Pattern
-```jsx
-// Responsive Block Example (frontend/packages/volto-project-title/src/components/Blocks/MobileFriendlyText/View.jsx)
-import React from 'react';
-import { Container } from 'semantic-ui-react';
-
-const MobileFriendlyTextView = ({ data, mode = 'view' }) => {
-  return (
-    <Container
-      className={`mobile-text-block ${mode === 'edit' ? 'edit-mode' : ''}`}
-      style={{
-        fontSize: data.mobile_font_size || '1.1em',
-        lineHeight: data.line_height || '1.6',
-        padding: data.mobile_padding || '1em',
-      }}
-    >
-      <div
-        dangerouslySetInnerHTML={{
-          __html: data.text?.data || data.text || '',
-        }}
-      />
-    </Container>
-  );
-};
-
-export default MobileFriendlyTextView;
-```
-
-### Risk Assessment
-- **🟢 Low Risk**: Theme changes don't affect backend functionality
-- **Mitigation**: CSS-only changes can be easily reverted
-- **Fallback**: Default Volto theme as backup if custom theme breaks
-
-### Implementation Approach
-1. **Phase 1**: Create mobile-first base theme with responsive breakpoints
-2. **Phase 2**: Optimize navigation and toolbar for touch interfaces
-3. **Phase 3**: Build tablet-specific lesson editing interface
-4. **Phase 4**: Implement swipe gestures and touch interactions
-5. **Phase 5**: Performance optimization for mobile networks
-
----
-
-## Feature 5: Teacher Dashboard & Analytics
-
-### Integration Points
-- **Primary**: Volto blocks system for dashboard widgets
-- **Secondary**: `plone.restapi` for analytics data endpoints
-- **Data**: Portal Catalog aggregation for usage metrics
-
-### Required Components
-
-#### Backend Components
-```python
-# Analytics Infrastructure
-backend/src/project/title/
-├─ api/
-│   ├─ services/
-│   │   ├─ analytics.py          # Dashboard data service
-│   │   ├─ metrics.py            # Usage metrics collection
-│   │   └─ reports.py            # Teacher reports
-│   └─ configure.zcml            # API service registration
-├─ analytics/
-│   ├─ __init__.py
-│   ├─ collectors.py             # Data collection utilities
-│   ├─ aggregators.py            # Metrics aggregation
-│   └─ exporters.py              # Report generation
-└─ subscribers/
-    ├─ __init__.py
-    ├─ usage_tracking.py         # Event-based tracking
-    └─ configure.zcml            # Event subscriber registration
-```
-
-#### Frontend Components
-```jsx
-// Dashboard Components
-frontend/packages/volto-project-title/src/
-├─ components/
-│   ├─ Dashboard/
-│   │   ├─ TeacherDashboard.jsx          # Main dashboard view
-│   │   ├─ DashboardGrid.jsx             # Responsive widget grid
-│   │   └─ WidgetContainer.jsx           # Widget wrapper
-│   ├─ Widgets/
-│   │   ├─ LessonPlanStats.jsx           # Lesson creation metrics
-│   │   ├─ StandardsCoverage.jsx         # Standards alignment chart
-│   │   ├─ RecentActivity.jsx            # Activity timeline
-│   │   ├─ PopularResources.jsx          # Most-used resources
-│   │   └─ CollaborationMetrics.jsx      # Sharing statistics
-│   └─ Blocks/
-│       ├─ AnalyticsBlock/               # Dashboard block type
-│       ├─ MetricsChart/                 # Chart visualization
-│       └─ ProgressIndicator/            # Progress tracking
-```
-
-### Integration Pattern
-```python
-# Analytics Service (backend/src/project/title/api/services/analytics.py)
-from plone.restapi.services import Service
-from collections import Counter, defaultdict
+# Substitute Folder Generator (backend/src/project/title/browser/substitute_folder.py)
+from Products.Five.browser import BrowserView
+from plone import api
 from datetime import datetime, timedelta
+import transaction
 
-class TeacherAnalyticsService(Service):
-    """Teacher dashboard analytics data"""
+class SubstituteFolderGenerator(BrowserView):
+    """Generate organized folder for substitute teachers"""
     
-    def reply(self):
-        """Generate dashboard metrics for current teacher"""
-        catalog = self.context.portal_catalog
-        user = self.request.principal
+    def __call__(self):
+        if self.request.get('generate'):
+            return self.generate_folder()
+        return self.index()
+    
+    def generate_folder(self):
+        """Create substitute folder with today's materials"""
+        # Create folder
+        date_str = datetime.now().strftime('%Y-%m-%d')
+        folder_id = f'substitute-{date_str}'
+        folder_title = f'Substitute Materials - {date_str}'
         
-        # Get teacher's content
-        teacher_content = catalog(
-            Creator=user.getId(),
-            portal_type=['LessonPlan', 'EducationalResource']
+        with api.env.adopt_roles(['Manager']):
+            folder = api.content.create(
+                container=self.context,
+                type='Folder',
+                id=folder_id,
+                title=folder_title
+            )
+            
+            # Add sections
+            sections = [
+                ('schedule', 'Daily Schedule'),
+                ('lesson-plans', "Today's Lessons"),
+                ('seating-charts', 'Seating Charts'),
+                ('emergency', 'Emergency Procedures'),
+                ('contacts', 'Important Contacts')
+            ]
+            
+            for section_id, section_title in sections:
+                api.content.create(
+                    container=folder,
+                    type='Folder',
+                    id=section_id,
+                    title=section_title
+                )
+            
+            # Copy today's content
+            self.populate_folder(folder)
+            
+            transaction.commit()
+        
+        return self.request.response.redirect(folder.absolute_url())
+    
+    def populate_folder(self, folder):
+        """Copy relevant materials to substitute folder"""
+        catalog = api.portal.get_tool('portal_catalog')
+        
+        # Find today's lessons
+        today_start = datetime.now().replace(hour=0, minute=0)
+        today_end = today_start + timedelta(days=1)
+        
+        lessons = catalog(
+            portal_type='Document',
+            created={'query': [today_start, today_end], 'range': 'min:max'}
         )
         
-        # Calculate metrics
-        metrics = {
-            'lesson_count': len([b for b in teacher_content if b.portal_type == 'LessonPlan']),
-            'resource_count': len([b for b in teacher_content if b.portal_type == 'EducationalResource']),
-            'standards_coverage': self.calculate_standards_coverage(teacher_content),
-            'collaboration_stats': self.get_collaboration_metrics(teacher_content),
-            'recent_activity': self.get_recent_activity(user.getId()),
-            'popular_content': self.get_popular_content(teacher_content),
-        }
-        
-        return {
-            '@id': f"{self.context.absolute_url()}/@analytics",
-            'teacher': user.getId(),
-            'generated': datetime.now().isoformat(),
-            'metrics': metrics,
-        }
-    
-    def calculate_standards_coverage(self, content):
-        """Calculate which standards are covered"""
-        standards_count = Counter()
-        for brain in content:
+        # Copy to appropriate sections
+        for brain in lessons:
             obj = brain.getObject()
-            standards = getattr(obj, 'aligned_standards', [])
-            standards_count.update(standards)
-        
-        return {
-            'total_standards': len(standards_count),
-            'most_used': standards_count.most_common(5),
-            'coverage_by_subject': self.group_by_subject(standards_count),
-        }
+            api.content.copy(
+                source=obj,
+                target=folder['lesson-plans']
+            )
 ```
 
 ### Risk Assessment
-- **🟡 Medium Risk**: Analytics collection could affect performance
-- **Mitigation**: Cache analytics data, async processing
-- **Fallback**: Disable analytics collection if performance degrades
-
-### Implementation Approach
-1. **Phase 1**: Create basic analytics data collection infrastructure
-2. **Phase 2**: Build dashboard widget system with Volto blocks
-3. **Phase 3**: Implement real-time metrics and caching
-4. **Phase 4**: Add advanced visualizations and reports
-5. **Phase 5**: Integrate with external analytics tools
+- **🟢 Low Risk**: Uses standard Plone content APIs
+- **Mitigation**: Transaction rollback on error
+- **Fallback**: Manual folder creation if automation fails
 
 ---
 
-## Feature 6: Google Classroom Integration
+## Feature 5: Lesson Timer Widget
 
 ### Integration Points
-- **Primary**: External API client for Google Classroom API
-- **Secondary**: Content adapters for format conversion
-- **Authentication**: Leverage Google OAuth from Feature 1
+- **Primary**: JavaScript widget as browser resource
+- **Secondary**: Browser view for timer display
+- **Features**: Audio alerts, fullscreen mode
+- **Storage**: localStorage for timer state
+
+### Required Components
+
+#### Frontend Components
+```javascript
+// Timer Widget Structure
+browser/static/
+├─ lesson-timer.js       # Timer logic
+├─ timer-sounds/        # Alert sounds
+│   ├─ start.mp3
+│   ├─ warning.mp3
+│   └─ end.mp3
+└─ lesson-timer.css     # Timer styling
+```
+
+### Integration Pattern
+```javascript
+// Lesson Timer Widget (browser/static/lesson-timer.js)
+class LessonTimer {
+    constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        this.duration = 0;
+        this.remaining = 0;
+        this.interval = null;
+        this.audio = new Audio();
+        
+        this.init();
+    }
+    
+    init() {
+        this.render();
+        this.loadState();
+        this.bindEvents();
+    }
+    
+    render() {
+        this.container.innerHTML = `
+            <div class="lesson-timer">
+                <div class="timer-display">
+                    <span class="minutes">00</span>:<span class="seconds">00</span>
+                </div>
+                <div class="timer-controls">
+                    <input type="number" class="duration-input" placeholder="Minutes" />
+                    <button class="start-btn">Start</button>
+                    <button class="pause-btn">Pause</button>
+                    <button class="reset-btn">Reset</button>
+                    <button class="fullscreen-btn">⛶</button>
+                </div>
+                <div class="timer-presets">
+                    <button data-minutes="5">5 min</button>
+                    <button data-minutes="10">10 min</button>
+                    <button data-minutes="15">15 min</button>
+                    <button data-minutes="20">20 min</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    startTimer() {
+        this.interval = setInterval(() => {
+            this.remaining--;
+            this.updateDisplay();
+            
+            // Alerts
+            if (this.remaining === 120) {
+                this.playSound('warning');
+            } else if (this.remaining === 0) {
+                this.playSound('end');
+                this.stopTimer();
+            }
+            
+            this.saveState();
+        }, 1000);
+    }
+    
+    updateDisplay() {
+        const minutes = Math.floor(this.remaining / 60);
+        const seconds = this.remaining % 60;
+        this.container.querySelector('.minutes').textContent = 
+            minutes.toString().padStart(2, '0');
+        this.container.querySelector('.seconds').textContent = 
+            seconds.toString().padStart(2, '0');
+    }
+    
+    saveState() {
+        localStorage.setItem('lessonTimer', JSON.stringify({
+            duration: this.duration,
+            remaining: this.remaining,
+            running: !!this.interval
+        }));
+    }
+}
+```
+
+### Risk Assessment
+- **🟢 Low Risk**: Pure JavaScript, no backend dependencies
+- **Mitigation**: Fallback to simple countdown without sounds
+- **Fallback**: Manual time tracking if timer fails
+
+---
+
+## Feature 6: Digital Hall Pass
+
+### Integration Points
+- **Primary**: Dexterity content type for pass records
+- **Secondary**: QR code generation via Python library
+- **Tracking**: Time-based validation and return tracking
+- **UI**: Print-friendly pass display
 
 ### Required Components
 
 #### Backend Components
 ```python
-# Google Classroom Integration
+# Hall Pass Structure
 backend/src/project/title/
-├─ integrations/
-│   ├─ __init__.py
-│   ├─ google_classroom.py       # Google Classroom API client
-│   ├─ adapters.py               # Content format adapters
-│   └─ sync_handlers.py          # Bi-directional sync
-├─ api/
-│   ├─ services/
-│   │   ├─ classroom_sync.py     # Sync API endpoint
-│   │   └─ classroom_export.py   # Export to Classroom
-├─ behaviors/
-│   ├─ google_exportable.py      # Content export behavior
-│   └─ configure.zcml            # Behavior registration
-└─ subscribers/
-    ├─ classroom_events.py       # Auto-sync on content changes
-    └─ configure.zcml            # Event registration
-```
-
-#### Integration Dependencies
-```python
-# requirements.txt additions
-google-api-python-client==2.100.0
-google-auth-httplib2==0.1.1
-google-auth-oauthlib==1.1.0
-google-auth==2.22.0
+├─ content/
+│   ├─ hall_pass.py            # Pass content type
+│   └─ configure.zcml          # Registration
+├─ browser/
+│   ├─ hall_pass_view.py       # QR generation view
+│   ├─ templates/
+│   │   └─ pass_display.pt     # Pass template
+│   └─ configure.zcml          # View registration
+├─ utilities/
+│   ├─ qr_generator.py         # QR code utility
+│   └─ configure.zcml          # Utility registration
+└─ profiles/default/
+    └─ types/
+        └─ HallPass.xml        # Type configuration
 ```
 
 ### Integration Pattern
 ```python
-# Google Classroom Client (backend/src/project/title/integrations/google_classroom.py)
-from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
-from zope.interface import implementer
-from zope.component import adapter
+# Hall Pass Type (backend/src/project/title/content/hall_pass.py)
+from plone.dexterity.content import Item
+from plone.supermodel import model
+from zope import schema
+from datetime import datetime
+import qrcode
+import io
+import base64
 
-@implementer(IGoogleClassroomClient)
-class GoogleClassroomClient:
-    """Google Classroom API integration"""
+class IHallPass(model.Schema):
+    """Digital hall pass with QR tracking"""
     
-    def __init__(self, user_credentials):
-        self.credentials = Credentials(
-            token=user_credentials['access_token'],
-            refresh_token=user_credentials['refresh_token'],
-            token_uri=user_credentials['token_uri'],
-            client_id=user_credentials['client_id'],
-            client_secret=user_credentials['client_secret'],
+    student_name = schema.TextLine(
+        title=u"Student Name",
+        required=True
+    )
+    
+    destination = schema.Choice(
+        title=u"Destination",
+        values=[u'Restroom', u'Office', u'Nurse', u'Library', u'Other'],
+        required=True
+    )
+    
+    issue_time = schema.Datetime(
+        title=u"Issue Time",
+        required=True,
+        defaultFactory=datetime.now
+    )
+    
+    return_time = schema.Datetime(
+        title=u"Return Time",
+        required=False
+    )
+    
+    pass_code = schema.TextLine(
+        title=u"Pass Code",
+        description=u"Unique code for QR",
+        required=False
+    )
+
+class HallPass(Item):
+    """Hall pass implementation"""
+    
+    def generate_qr_code(self):
+        """Generate QR code for this pass"""
+        # Create pass data
+        pass_data = {
+            'id': self.getId(),
+            'student': self.student_name,
+            'time': self.issue_time.isoformat(),
+            'destination': self.destination
+        }
+        
+        # Generate QR
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
         )
-        self.service = build('classroom', 'v1', credentials=self.credentials)
-    
-    def create_assignment(self, course_id, lesson_plan):
-        """Create Google Classroom assignment from lesson plan"""
-        assignment = {
-            'title': lesson_plan.title,
-            'description': self.convert_to_classroom_format(lesson_plan.text),
-            'materials': self.extract_materials(lesson_plan),
-            'workType': 'ASSIGNMENT',
-            'state': 'DRAFT',
-        }
+        qr.add_data(str(pass_data))
+        qr.make(fit=True)
         
-        # Add standards as private note for teacher
-        if hasattr(lesson_plan, 'aligned_standards'):
-            assignment['description'] += f"\n\nAligned Standards: {', '.join(lesson_plan.aligned_standards)}"
+        # Create image
+        img = qr.make_image(fill_color="black", back_color="white")
         
-        return self.service.courses().courseWork().create(
-            courseId=course_id,
-            body=assignment
-        ).execute()
-
-@implementer(IGoogleExportable)
-@adapter(ILessonPlan)
-class LessonPlanGoogleAdapter:
-    """Adapt lesson plans for Google Classroom export"""
+        # Convert to base64
+        buffer = io.BytesIO()
+        img.save(buffer, format='PNG')
+        img_str = base64.b64encode(buffer.getvalue()).decode()
+        
+        return f"data:image/png;base64,{img_str}"
     
-    def __init__(self, context):
-        self.context = context
-    
-    def to_classroom_format(self):
-        """Convert lesson plan to Google Classroom format"""
-        return {
-            'title': self.context.title,
-            'description': self.format_description(),
-            'materials': self.extract_materials(),
-            'metadata': {
-                'standards': getattr(self.context, 'aligned_standards', []),
-                'grade_levels': getattr(self.context, 'grade_levels', []),
-                'subject_areas': getattr(self.context, 'subject_areas', []),
-            }
-        }
+    def mark_returned(self):
+        """Mark pass as returned"""
+        self.return_time = datetime.now()
 ```
 
 ### Risk Assessment
-- **🟡 Medium Risk**: External API dependency and authentication complexity
-- **Mitigation**: Graceful handling of API failures, retry mechanisms
-- **Fallback**: Manual export/import if automatic sync fails
+- **🟡 Medium Risk**: External library dependency (qrcode)
+- **Mitigation**: Fallback to text-based pass codes
+- **Fallback**: Traditional paper passes if QR fails
 
-### Implementation Approach
-1. **Phase 1**: Set up Google Classroom API credentials and basic client
-2. **Phase 2**: Implement content adapters for format conversion
-3. **Phase 3**: Build sync service with conflict resolution
-4. **Phase 4**: Add automatic sync triggers and batch operations
-5. **Phase 5**: Implement bi-directional sync and change detection
+---
+
+## Feature 7: Teacher's Daily Command Center Dashboard
+
+### Integration Points
+- **Primary**: Browser view aggregating all features
+- **Secondary**: Catalog queries for real-time data
+- **Visualization**: Chart.js for statistics
+- **Updates**: AJAX polling for live data
+
+### Required Components
+
+#### Backend Components
+```python
+# Dashboard Structure
+backend/src/project/title/
+├─ browser/
+│   ├─ dashboard.py            # Main dashboard view
+│   ├─ templates/
+│   │   └─ dashboard.pt        # Dashboard layout
+│   ├─ api/
+│   │   └─ dashboard_data.py  # AJAX data endpoints
+│   └─ configure.zcml          # Registration
+└─ browser/static/
+    ├─ dashboard.js            # Update logic
+    ├─ dashboard.css           # Responsive grid
+    └─ chart-config.js         # Chart.js setup
+```
+
+### Integration Pattern
+```python
+# Dashboard View (backend/src/project/title/browser/dashboard.py)
+from Products.Five.browser import BrowserView
+from plone import api
+from datetime import datetime, timedelta
+import json
+
+class TeacherDashboard(BrowserView):
+    """Command center aggregating classroom data"""
+    
+    def __call__(self):
+        if self.request.get('ajax_update'):
+            return self.get_dashboard_data()
+        return self.index()
+    
+    def get_dashboard_data(self):
+        """Aggregate all classroom management data"""
+        catalog = api.portal.get_tool('portal_catalog')
+        
+        data = {
+            'timestamp': datetime.now().isoformat(),
+            'seating': self.get_current_seating(),
+            'hall_passes': self.get_active_passes(),
+            'participation': self.get_participation_stats(),
+            'timers': self.get_active_timers(),
+            'alerts': self.get_classroom_alerts()
+        }
+        
+        self.request.response.setHeader('Content-Type', 'application/json')
+        return json.dumps(data)
+    
+    def get_current_seating(self):
+        """Get active seating chart"""
+        charts = catalog(
+            portal_type='SeatingChart',
+            sort_on='modified',
+            sort_order='descending',
+            limit=1
+        )
+        
+        if charts:
+            chart = charts[0].getObject()
+            return {
+                'title': chart.title,
+                'grid': chart.get_grid(),
+                'url': chart.absolute_url()
+            }
+        return None
+    
+    def get_active_passes(self):
+        """Get unreturned hall passes"""
+        now = datetime.now()
+        passes = catalog(
+            portal_type='HallPass',
+            issue_time={'query': now - timedelta(hours=1), 'range': 'min'},
+            return_time=None
+        )
+        
+        active = []
+        for brain in passes:
+            pass_obj = brain.getObject()
+            duration = (now - pass_obj.issue_time).seconds // 60
+            
+            active.append({
+                'student': pass_obj.student_name,
+                'destination': pass_obj.destination,
+                'duration': duration,
+                'alert': duration > 10  # Alert if gone > 10 min
+            })
+        
+        return active
+    
+    def get_participation_stats(self):
+        """Get today's participation data"""
+        # Would integrate with random picker history
+        return {
+            'total_picks': 0,
+            'unique_students': 0,
+            'least_called': [],
+            'most_called': []
+        }
+    
+    def get_classroom_alerts(self):
+        """Generate relevant alerts"""
+        alerts = []
+        
+        # Check for long hall passes
+        passes = self.get_active_passes()
+        for p in passes:
+            if p['alert']:
+                alerts.append({
+                    'type': 'warning',
+                    'message': f"{p['student']} has been out for {p['duration']} minutes"
+                })
+        
+        # Check for substitute folder
+        tomorrow = datetime.now() + timedelta(days=1)
+        if tomorrow.weekday() < 5:  # Weekday
+            sub_folders = catalog(
+                portal_type='Folder',
+                Title=f'Substitute Materials - {tomorrow.strftime("%Y-%m-%d")}'
+            )
+            if not sub_folders:
+                alerts.append({
+                    'type': 'info',
+                    'message': 'Remember to generate substitute folder for tomorrow'
+                })
+        
+        return alerts
+```
+
+### Risk Assessment
+- **🟡 Medium Risk**: Performance impact from multiple queries
+- **Mitigation**: Caching and query optimization
+- **Fallback**: Static dashboard if real-time updates fail
 
 ---
 
@@ -667,67 +674,69 @@ class LessonPlanGoogleAdapter:
 
 ### Dependency Matrix
 ```
-Feature 1 (OAuth) ──────┐
-                       ├──→ Feature 6 (Google Classroom)
-Feature 2 (Standards) ──┼──→ Feature 3 (Search)
-                       ├──→ Feature 5 (Dashboard)
-                       └──→ Feature 6 (Google Classroom)
+Feature 1 (Google SSO) ──────── (Completed) ──→ All features benefit
 
-Feature 4 (Mobile UX) ──────→ All Features (UI layer)
+Feature 2 (Seating Chart) ────┐
+                             ├──→ Feature 7 (Dashboard)
+Feature 3 (Random Picker) ────┤
+                             │
+Feature 4 (Sub Folder) ───────┤
+                             │
+Feature 5 (Timer) ────────────┤
+                             │
+Feature 6 (Hall Pass) ────────┘
 ```
 
 ### Recommended Implementation Order
-1. **Feature 1**: Google OAuth (Foundation for Google integration)
-2. **Feature 2**: Standards Alignment (Core educational functionality)
-3. **Feature 4**: Mobile UX (Parallel with content features)
-4. **Feature 3**: Enhanced Search (Depends on standards data)
-5. **Feature 5**: Dashboard (Aggregates data from other features)
-6. **Feature 6**: Google Classroom (Depends on OAuth and standards)
+1. **Day 5 Morning**: Seating Chart (foundation for class management)
+2. **Day 5 Afternoon**: Random Picker (builds on student list)
+3. **Day 6 Morning**: Hall Pass (critical safety feature)
+4. **Day 6 Afternoon**: Timer Widget & Substitute Folder
+5. **Day 7**: Dashboard (aggregates all features)
 
 ---
 
 ## Risk Mitigation Strategies
 
 ### Overall Risk Management
-- **🟢 Low Risk Features**: Standards (2), Mobile UX (4), Search (3)
-- **🟡 Medium Risk Features**: OAuth (1), Dashboard (5), Google Integration (6)
+- **🟢 Low Risk Features**: Seating Chart, Random Picker, Timer, Sub Folder
+- **🟡 Medium Risk Features**: Hall Pass (QR library), Dashboard (performance)
 
 ### Mitigation Approaches
-1. **Incremental Rollout**: Deploy features in isolated environments first
-2. **Feature Flags**: Enable/disable features without code changes
-3. **Graceful Degradation**: Ensure core Plone functionality always works
-4. **Monitoring**: Track feature usage and performance impact
-5. **Rollback Plan**: Quick disable mechanism for each feature
+1. **Graceful Degradation**: All features work without JavaScript
+2. **Performance Monitoring**: Dashboard queries optimized and cached
+3. **Error Handling**: Features fail independently without affecting others
+4. **Simple Rollback**: Each feature can be disabled via portal_types
 
 ### Testing Strategy
 ```python
 # Feature-specific test structure
 tests/
+├─ unit/
+│   ├─ test_seating_chart.py      # Drag-drop logic
+│   ├─ test_random_picker.py      # Fairness algorithm
+│   ├─ test_substitute_folder.py  # Content aggregation
+│   ├─ test_timer_widget.py       # Timer accuracy
+│   ├─ test_hall_pass.py          # QR generation
+│   └─ test_dashboard.py          # Data aggregation
 ├─ integration/
-│   ├─ test_oauth_flow.py          # Feature 1 tests
-│   ├─ test_standards_behavior.py  # Feature 2 tests
-│   ├─ test_search_enhancement.py  # Feature 3 tests
-│   ├─ test_mobile_responsive.py   # Feature 4 tests
-│   ├─ test_dashboard_widgets.py   # Feature 5 tests
-│   └─ test_google_classroom.py    # Feature 6 tests
-├─ performance/
-│   ├─ test_catalog_performance.py
-│   └─ test_mobile_performance.py
-└─ e2e/
-    ├─ teacher_workflow.cy.js      # Complete teacher journey
-    └─ mobile_usage.cy.js          # Mobile-specific workflows
+│   ├─ test_classroom_workflow.py # Full teacher flow
+│   └─ test_feature_interaction.py # Features work together
+└─ browser/
+    ├─ test_javascript.py         # JS functionality
+    └─ test_responsive.py         # Mobile/tablet UI
 ```
 
 ---
 
 ## Conclusion
 
-This feature integration map demonstrates how our 6 educational features leverage Plone 6.1.2's evolved architecture rather than fighting against legacy constraints. Each feature uses established Plone patterns:
+This feature integration map demonstrates how our 7 classroom management features leverage Plone 6.1.2's architecture for real-time, interactive tools:
 
-- **Component-based design** via ZCA for modularity
-- **Behavior-driven content types** for reusable functionality  
-- **API-first development** with plone.restapi
-- **Modern frontend** with Volto React components
-- **Extensible search** via Portal Catalog customization
+- **Content Types** via Dexterity for structured data
+- **Browser Views** for interactive interfaces
+- **JavaScript Integration** for modern UX
+- **REST API** for real-time updates
+- **Catalog Queries** for efficient data access
 
-The integration approach ensures that adding educational functionality enhances rather than compromises Plone's core capabilities, providing a solid foundation for the K-12 educational platform. 
+The integration approach ensures each feature enhances classroom management while maintaining Plone's stability and extensibility. 

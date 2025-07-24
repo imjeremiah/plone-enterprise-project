@@ -1,11 +1,11 @@
 
-# Project Development Rules for K-12 Educational Platform
+# Project Development Rules for K-12 Classroom Management Platform
 
-This document defines the development standards and conventions for our K-12 Educational Content Platform built on Plone 6.1.2. These rules ensure **consistency**, **maintainability**, and **AI-tool compatibility** while respecting Plone's architecture and supporting our educational mission.
+This document defines the development standards and conventions for our K-12 Classroom Management Platform built on Plone 6.1.2. These rules ensure **consistency**, **maintainability**, and **AI-tool compatibility** while respecting Plone's architecture and supporting teachers' daily classroom operations.
 
 ## Core Development Principles
 
-1. **Educational Context First**: Every decision should consider teachers in under-resourced schools
+1. **Classroom Operations First**: Every decision should consider real-time classroom needs
 2. **Legacy Respect**: Never break core Plone functionality - extend, don't modify
 3. **AI-Friendly Code**: Structure for semantic search and automated assistance
 4. **Progressive Enhancement**: Basic features work everywhere, advanced features enhance experience
@@ -14,7 +14,7 @@ This document defines the development standards and conventions for our K-12 Edu
 
 ## Directory Structure
 
-Our project follows the cookieplone-generated structure with educational-specific organization:
+Our project follows the cookieplone-generated structure with classroom management organization:
 
 ### Project Root Structure
 ```
@@ -37,35 +37,43 @@ backend/src/project/title/
 │   └── default/
 │       ├── metadata.xml
 │       ├── types.xml           # Content type definitions
-│       └── workflows.xml       # Educational workflows
+│       └── workflows.xml       # Management workflows
 ├── content/                    # Content types
 │   ├── __init__.py
-│   ├── lesson_plan.py          # Lesson plan content type
-│   ├── educational_resource.py # Resource content type
-│   └── standards_alignment.py  # Standards content type
+│   ├── seating_chart.py        # Seating chart content type
+│   ├── hall_pass.py            # Digital hall pass type
+│   └── substitute_folder.py    # Substitute materials
 ├── behaviors/                  # Reusable behaviors
 │   ├── __init__.py
-│   ├── collaborative.py        # Co-teaching behavior
-│   ├── standards_aligned.py   # Standards alignment
-│   └── google_exportable.py   # Google Classroom export
+│   ├── timer_enabled.py        # Add timers to content
+│   ├── qr_enabled.py           # QR code generation
+│   └── trackable.py            # Usage tracking behavior
 ├── vocabularies/              # Dynamic vocabularies
 │   ├── __init__.py
-│   ├── grade_levels.py        # K-12 grade levels
-│   ├── subjects.py            # Subject areas
-│   └── standards.py           # Educational standards
+│   ├── classroom_locations.py  # Destinations for passes
+│   ├── student_roster.py       # Student lists
+│   └── timer_presets.py        # Common timer durations
 ├── api/                       # REST API extensions
 │   ├── __init__.py
 │   ├── services/              # Custom API endpoints
-│   │   ├── google_sync.py     # Google Classroom sync
-│   │   └── analytics.py       # Usage analytics
+│   │   ├── dashboard_data.py  # Real-time dashboard
+│   │   └── picker_service.py  # Fair selection algorithm
 │   └── serializers/           # Content serializers
-│       └── lesson_plan.py     # Lesson JSON format
-├── browser/                   # Browser views (if needed)
-│   └── controlpanel.py        # School settings panel
+│       └── seating_chart.py   # Grid JSON format
+├── browser/                   # Browser views
+│   ├── views/
+│   │   ├── dashboard.py       # Teacher command center
+│   │   ├── random_picker.py   # Student selection
+│   │   └── timer_widget.py    # Lesson timer
+│   ├── static/               # JavaScript/CSS
+│   │   ├── seating-chart.js  # Drag-drop logic
+│   │   ├── picker-wheel.js    # Animation
+│   │   └── timer.js          # Timer functionality
+│   └── templates/            # Page templates
 └── tests/                     # Backend tests
-    ├── test_behaviors.py
-    ├── test_content_types.py
-    └── test_api.py
+    ├── test_seating_chart.py
+    ├── test_hall_pass.py
+    └── test_dashboard.py
 ```
 
 ### Frontend Structure (Volto)
@@ -75,29 +83,29 @@ frontend/packages/volto-project-title/src/
 ├── config.js                  # Volto configuration
 ├── components/                # React components
 │   ├── Blocks/               # Custom Volto blocks
-│   │   ├── LessonObjective/  # Learning objective block
-│   │   ├── StandardsTag/     # Standards alignment block
-│   │   └── ResourceAttachment/ # File attachment block
+│   │   ├── TimerBlock/       # Timer widget block
+│   │   ├── SeatingGrid/      # Seating chart block
+│   │   └── HallPassStatus/   # Active passes block
 │   ├── Views/                # Content type views
-│   │   ├── LessonPlanView.jsx
-│   │   └── ResourceView.jsx
+│   │   ├── SeatingChartView.jsx
+│   │   └── DashboardView.jsx
 │   └── Widgets/              # Form widgets
-│       ├── GradeLevelWidget.jsx
-│       └── StandardsWidget.jsx
+│       ├── StudentPickerWidget.jsx
+│       └── QRDisplayWidget.jsx
 ├── actions/                  # Redux actions
-│   ├── lessonPlan.js
-│   └── googleSync.js
+│   ├── classroom.js
+│   └── timer.js
 ├── reducers/                 # Redux reducers
-│   ├── educational.js
-│   └── analytics.js
-├── theme/                    # Educational theme
+│   ├── management.js
+│   └── realtime.js
+├── theme/                    # Classroom theme
 │   ├── extras/
-│   │   └── educational.less
+│   │   └── classroom.less
 │   └── globals/
 │       └── site.overrides
 └── helpers/                  # Utility functions
-    ├── educational.js        # Education helpers
-    └── standards.js          # Standards utilities
+    ├── fairness.js           # Picker algorithm
+    └── qrGenerator.js        # QR utilities
 ```
 
 ### Documentation Structure
@@ -115,22 +123,22 @@ docs/
 
 ### Python (Backend)
 - **Files**: `snake_case.py` - descriptive, purposeful names
-- **Classes**: `PascalCase` - e.g., `LessonPlanContent`
-- **Interfaces**: `I` prefix - e.g., `IStandardsAligned`
-- **Tests**: `test_` prefix - e.g., `test_lesson_workflow.py`
+- **Classes**: `PascalCase` - e.g., `SeatingChartContent`
+- **Interfaces**: `I` prefix - e.g., `ITimerEnabled`
+- **Tests**: `test_` prefix - e.g., `test_hall_pass_tracking.py`
 
 ### JavaScript/React (Frontend)
-- **Components**: `PascalCase.jsx` - e.g., `LessonPlanView.jsx`
-- **Utilities**: `camelCase.js` - e.g., `formatStandards.js`
-- **Actions/Reducers**: `camelCase.js` - e.g., `lessonPlanActions.js`
-- **Tests**: `.test.js` suffix - e.g., `LessonPlanView.test.js`
+- **Components**: `PascalCase.jsx` - e.g., `RandomPicker.jsx`
+- **Utilities**: `camelCase.js` - e.g., `calculateFairness.js`
+- **Actions/Reducers**: `camelCase.js` - e.g., `timerActions.js`
+- **Tests**: `.test.js` suffix - e.g., `SeatingChart.test.js`
 
 ### Examples from Current Implementation
 ```python
 # Good: Descriptive and purposeful
-lesson_plan.py              # Clear content type
-standards_behavior.py       # Specific behavior
-google_classroom_api.py     # Integration purpose
+seating_chart.py            # Clear content type
+hall_pass_tracker.py        # Specific functionality
+dashboard_aggregator.py     # Data aggregation purpose
 
 # Bad: Too generic or unclear
 utils.py                    # What utilities?
@@ -146,70 +154,70 @@ data.py                     # What kind of data?
 - **Maximum 500 lines** per file for AI readability
 - Split large files by concern:
   ```python
-  # Instead of one large lesson_plan.py:
-  lesson_plan_content.py      # Content type definition
-  lesson_plan_api.py          # API endpoints
-  lesson_plan_workflow.py     # Workflow handlers
+  # Instead of one large dashboard.py:
+  dashboard_view.py           # View logic
+  dashboard_data.py           # Data aggregation
+  dashboard_widgets.py        # Widget components
   ```
 
 ### 2. Function Documentation
 Every function must have clear docstrings:
 ```python
-def align_to_standards(lesson_plan, standards):
-    """Align a lesson plan to educational standards.
+def select_random_student(roster, history=None):
+    """Select a student using fairness algorithm.
     
-    Links the lesson plan to Common Core or state standards,
-    enabling filtered searches and curriculum mapping.
+    Ensures equitable participation by weighting selection
+    based on recent participation history.
     
     Args:
-        lesson_plan: ILessonPlan content object
-        standards: List of standard identifiers (e.g., ['CCSS.Math.1.OA.1'])
+        roster: List of student IDs in the class
+        history: Dict mapping student_id to last_selected timestamp
         
     Returns:
-        dict: Mapping of standards to lesson objectives
+        dict: Selected student info with timestamp
         
     Raises:
-        InvalidStandardError: If standard ID is not recognized
+        EmptyRosterError: If no students available
     """
 ```
 
 ### 3. Component Structure
 React components follow consistent patterns:
 ```jsx
-// LessonPlanView.jsx
+// SeatingChartView.jsx
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Container } from 'semantic-ui-react';
 
 /**
- * Displays a lesson plan with educational metadata.
- * Supports teacher view with edit capabilities and
- * student view with simplified interface.
+ * Interactive seating chart with drag-drop student positioning.
+ * Supports real-time updates and integrates with random picker.
  */
-const LessonPlanView = ({ content, isTeacher }) => {
+const SeatingChartView = ({ content, isEditable }) => {
   // Component logic here
 };
 
-LessonPlanView.propTypes = {
+SeatingChartView.propTypes = {
   content: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    grade_level: PropTypes.string,
-    standards: PropTypes.arrayOf(PropTypes.string),
+    grid_data: PropTypes.object,
+    students: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
-  isTeacher: PropTypes.bool,
+  isEditable: PropTypes.bool,
 };
 
-export default LessonPlanView;
+export default SeatingChartView;
 ```
 
 ### 4. Configuration Management
 Use clear configuration patterns:
 ```python
 # config.py
-EDUCATIONAL_CONFIG = {
-    'grade_levels': ['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-    'max_file_size': 10 * 1024 * 1024,  # 10MB
-    'google_sync_interval': 300,  # 5 minutes
+CLASSROOM_CONFIG = {
+    'max_hall_pass_duration': 15,  # minutes
+    'timer_warning_threshold': 2,   # minutes
+    'picker_animation_duration': 3,  # seconds
+    'dashboard_refresh_interval': 30,  # seconds
 }
 ```
 
@@ -221,39 +229,39 @@ EDUCATIONAL_CONFIG = {
 ```xml
 <!-- configure.zcml -->
 <plone:behavior
-    title="Standards Aligned"
-    description="Add educational standards alignment to content"
-    provides=".behaviors.standards_aligned.IStandardsAligned"
-    factory=".behaviors.standards_aligned.StandardsAligned"
+    title="Timer Enabled"
+    description="Add timer functionality to content"
+    provides=".behaviors.timer_enabled.ITimerEnabled"
+    factory=".behaviors.timer_enabled.TimerEnabled"
     for="plone.dexterity.interfaces.IDexterityContent"
     />
 ```
 
 ### 2. API Endpoint Registration
 ```python
-# api/services/google_sync.py
+# api/services/dashboard_data.py
 @implementer(IPublishTraverse)
-@adapter(ILessonPlan, IRequest)
-class GoogleSyncService(Service):
-    """Sync lesson plans with Google Classroom."""
+@adapter(IFolder, IRequest)
+class DashboardDataService(Service):
+    """Provide real-time classroom data."""
     
     def reply(self):
-        """Export lesson to Google Classroom format."""
+        """Aggregate classroom status data."""
         # Implementation
 ```
 
 ### 3. Redux Integration
 ```javascript
-// actions/lessonPlan.js
-export const SAVE_LESSON = 'SAVE_LESSON';
+// actions/classroom.js
+export const UPDATE_SEATING = 'UPDATE_SEATING';
 
-export function saveLesson(lessonData) {
+export function updateSeating(studentId, position) {
   return {
-    type: SAVE_LESSON,
+    type: UPDATE_SEATING,
     request: {
-      op: 'post',
-      path: '/lessons',
-      data: lessonData,
+      op: 'patch',
+      path: '/seating-chart',
+      data: { studentId, position },
     },
   };
 }
@@ -270,20 +278,20 @@ export function saveLesson(lessonData) {
 
 ### 2. Test Naming
 ```python
-# test_lesson_plan.py
-class TestLessonPlanContent(unittest.TestCase):
-    """Test lesson plan content type."""
+# test_seating_chart.py
+class TestSeatingChartContent(unittest.TestCase):
+    """Test seating chart functionality."""
     
-    def test_lesson_plan_creation(self):
-        """Test creating a lesson plan with required fields."""
+    def test_drag_drop_student_position(self):
+        """Test updating student position via drag-drop."""
         
-    def test_standards_alignment_behavior(self):
-        """Test adding standards alignment to lesson plan."""
+    def test_grid_data_persistence(self):
+        """Test that seating arrangements persist."""
 ```
 
 ### 3. Coverage Requirements
 - Minimum 80% code coverage
-- 100% coverage for critical paths (auth, permissions)
+- 100% coverage for critical paths (timers, tracking)
 - Document why uncovered code is acceptable
 
 ---
@@ -292,35 +300,35 @@ class TestLessonPlanContent(unittest.TestCase):
 
 ### 1. Query Optimization
 ```python
-# Good: Use catalog for searches
+# Good: Use catalog for dashboard aggregation
 catalog = api.portal.get_tool('portal_catalog')
-results = catalog(
-    portal_type='LessonPlan',
-    grade_level='5',
-    sort_on='modified',
+active_passes = catalog(
+    portal_type='HallPass',
+    review_state='active',
+    sort_on='created',
     sort_limit=10,
 )
 
 # Bad: Loading all objects
-lessons = [obj for obj in folder.objectValues() 
-           if obj.portal_type == 'LessonPlan']
+passes = [obj for obj in folder.objectValues() 
+          if obj.portal_type == 'HallPass' and obj.is_active]
 ```
 
 ### 2. Caching Strategy
 ```python
-# Use plone.memoize for expensive operations
+# Use plone.memoize for dashboard data
 from plone.memoize import ram
 
-@ram.cache(lambda method, grade: f'standards-{grade}')
-def get_standards_for_grade(grade):
-    """Cache standards by grade level."""
-    # Expensive computation
+@ram.cache(lambda method, classroom_id: f'dashboard-{classroom_id}')
+def get_dashboard_data(classroom_id):
+    """Cache dashboard data for performance."""
+    # Expensive aggregation
 ```
 
-### 3. Asset Optimization
-- Images: Max 1MB, use responsive formats
-- JavaScript: Bundle and minify
-- CSS: Use CSS-in-JS or CSS Modules
+### 3. Real-time Updates
+- Use AJAX polling for dashboard (30s intervals)
+- WebSocket consideration for future
+- Optimize payload size for mobile
 
 ---
 
@@ -331,27 +339,26 @@ Always verify permissions in code:
 ```python
 from plone import api
 
-def share_lesson(lesson_id, teacher_emails):
-    """Share lesson with other teachers."""
-    if not api.user.has_permission('Modify portal content', obj=lesson):
-        raise Unauthorized("Cannot share lesson")
+def issue_hall_pass(student_id):
+    """Issue digital hall pass."""
+    if not api.user.has_permission('Manage classroom', obj=self.context):
+        raise Unauthorized("Only teachers can issue passes")
 ```
 
 ### 2. Input Validation
 ```python
 from zope.schema import ValidationError
 
-def validate_grade_level(value):
-    """Validate grade level is K-12."""
-    valid_grades = ['K'] + [str(i) for i in range(1, 13)]
-    if value not in valid_grades:
-        raise ValidationError(f"Invalid grade: {value}")
+def validate_timer_duration(value):
+    """Validate timer duration is reasonable."""
+    if value < 1 or value > 90:
+        raise ValidationError(f"Invalid duration: {value} minutes")
 ```
 
 ### 3. Data Privacy
-- Never log student PII
-- Anonymize analytics data
-- Follow COPPA/FERPA requirements
+- Never log student PII in QR codes
+- Anonymize participation data
+- Follow FERPA requirements
 
 ---
 
@@ -364,9 +371,9 @@ def validate_grade_level(value):
 5. **Poor Names**: Be specific and descriptive
 6. **Large Files**: Keep under 500 lines
 7. **No Documentation**: Every public API needs docs
-8. **Synchronous External Calls**: Use async for Google API
+8. **Synchronous Long Operations**: Use async for dashboard updates
 9. **Hardcoded Values**: Use configuration
-10. **Ignoring Mobile**: Test on actual devices
+10. **Ignoring Touch Devices**: Test on tablets
 
 ---
 
@@ -389,8 +396,8 @@ make test-frontend
 - [ ] Has clear documentation
 - [ ] Respects file size limits
 - [ ] Handles errors gracefully
-- [ ] Considers mobile users
-- [ ] Maintains backwards compatibility
+- [ ] Considers tablet/mobile users
+- [ ] Maintains real-time performance
 
 ### 3. Deployment Preparation
 - Use Docker for consistency
@@ -400,4 +407,4 @@ make test-frontend
 
 ---
 
-This ruleset ensures our K-12 Educational Platform maintains high quality while serving teachers effectively. When in doubt, prioritize teacher needs and code clarity. 
+This ruleset ensures our K-12 Classroom Management Platform maintains high quality while helping teachers manage their classrooms effectively. When in doubt, prioritize real-time performance and teacher usability. 
