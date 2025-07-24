@@ -1,8 +1,19 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
     i18n_domain="project.title">
 
-  <!-- Content types are registered via FTI files in profiles/default/types/ -->
-  <!-- No additional configuration needed here -->
+  <!-- Import content type classes to ensure they're available -->
+  <five:registerClass
+      class=".hall_pass.HallPass"
+      meta_type="HallPass"
+      permission="cmf.AddPortalContent"
+      />
+      
+  <five:registerClass
+      class=".seating_chart.SeatingChart"
+      meta_type="SeatingChart"
+      permission="cmf.AddPortalContent"
+      />
 
 </configure> 

@@ -41,6 +41,35 @@
     permission="zope2.View"
     />
 
+  <!-- Hall Pass Management Views - Demo Mode -->
+  <browser:page
+    name="hall-pass-manager"
+    for="*"
+    class=".hall_pass_views.HallPassManagerView"
+    permission="zope.Public"
+    />
+
+  <browser:page
+    name="hall-pass-data"
+    for="*"
+    class=".hall_pass_views.HallPassManagerView"
+    permission="zope.Public"
+    />
+
+  <browser:page
+    name="return-pass"
+    for="*"
+    class=".hall_pass_views.HallPassReturnView"
+    permission="zope.Public"
+    />
+
+  <browser:page
+    name="pass-display"
+    for="*"
+    class=".hall_pass_views.HallPassDisplayView"
+    permission="zope.Public"
+    />
+
   <!-- Static Resource Directory -->
   <browser:resourceDirectory
     name="project.title"

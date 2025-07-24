@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<object meta_type="Dexterity FTI"
+        name="HallPass"
+        xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        i18n:domain="project.title">
+
+  <!-- Basic Content Type Information -->
+  <property name="title" i18n:translate="">Digital Hall Pass</property>
+  <property name="description" i18n:translate="">Digital hall pass with QR code tracking for student movement and time accountability</property>
+  <property name="icon_expr">string:${portal_url}/++resource++project.title/hall-pass-icon.png</property>
+  <property name="factory">HallPass</property>
+  <property name="add_view_expr">string:${folder_url}/++add++HallPass</property>
+  <property name="link_target"></property>
+  <property name="immediate_view">view</property>
+  <property name="global_allow">True</property>
+  <property name="filter_content_types">True</property>
+  <property name="allowed_content_types"/>
+  <property name="allow_discussion">False</property>
+  <property name="default_view">view</property>
+  <property name="view_methods">
+    <element value="view"/>
+    <element value="pass_display"/>
+  </property>
+  <property name="default_view_fallback">False</property>
+  <property name="add_permission">project.title.AddHallPass</property>
+  <property name="klass">project.title.content.hall_pass.HallPass</property>
+  <property name="schema">project.title.content.hall_pass.IHallPass</property>
+  
+  <!-- Classroom Management Behaviors -->
+  <property name="behaviors">
+    <element value="plone.basic"/>
+    <element value="plone.categorization"/>
+    <element value="plone.dublincore"/>
+    <element value="plone.namefromtitle"/>
+    <element value="plone.ownership"/>
+    <element value="plone.publication"/>
+    <element value="plone.shortname"/>
+    <element value="plone.excludefromnavigation"/>
+  </property>
+
+  <!-- Model Source -->
+  <property name="model_source"></property>
+  <property name="model_file"></property>
+
+  <!-- Security -->
+  <property name="schema_policy">dexterity</property>
+
+</object> 

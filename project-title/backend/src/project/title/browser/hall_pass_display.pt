@@ -1,0 +1,210 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="project.title">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+    <div class="hall-pass-display">
+        <h1 tal:content="context/title">Hall Pass</h1>
+        
+        <div class="pass-info">
+            <div class="pass-header">
+                <h2>Digital Hall Pass</h2>
+                <div class="pass-code" tal:condition="context/pass_code">
+                    <strong>Pass Code:</strong> 
+                    <span tal:content="context/pass_code" class="code-display">ABC123</span>
+                </div>
+            </div>
+            
+            <div class="pass-details">
+                <div class="detail-row">
+                    <strong>Student:</strong> 
+                    <span tal:content="context/student_name">Student Name</span>
+                </div>
+                
+                <div class="detail-row">
+                    <strong>Destination:</strong> 
+                    <span tal:content="context/destination">Restroom</span>
+                </div>
+                
+                <div class="detail-row">
+                    <strong>Issued:</strong> 
+                    <span tal:content="python:context.issue_time.strftime('%Y-%m-%d %H:%M') if context.issue_time else 'Unknown'">
+                        2024-01-15 10:30
+                    </span>
+                </div>
+                
+                <div class="detail-row" tal:condition="context/return_time">
+                    <strong>Returned:</strong> 
+                    <span tal:content="python:context.return_time.strftime('%Y-%m-%d %H:%M')">
+                        2024-01-15 10:45
+                    </span>
+                </div>
+                
+                <div class="detail-row" tal:condition="context/expected_duration">
+                    <strong>Expected Duration:</strong> 
+                    <span tal:content="context/expected_duration">5</span> minutes
+                </div>
+                
+                <div class="detail-row">
+                    <strong>Current Duration:</strong> 
+                    <span tal:content="view/get_duration_display">15 minutes</span>
+                </div>
+                
+                <div class="detail-row" tal:condition="context/notes">
+                    <strong>Notes:</strong> 
+                    <span tal:content="context/notes">Teacher notes</span>
+                </div>
+            </div>
+            
+            <div class="pass-status" tal:define="status_class view/get_status_class">
+                <div tal:attributes="class string:status-indicator ${status_class}">
+                    <span tal:condition="context/return_time">✓ Returned</span>
+                    <span tal:condition="not:context/return_time">⏰ Active</span>
+                </div>
+            </div>
+            
+            <div class="qr-code-section" tal:condition="view/get_qr_code">
+                <h3>QR Code</h3>
+                <div class="qr-code-display">
+                    <img tal:attributes="src view/get_qr_code" 
+                         alt="Hall Pass QR Code"
+                         style="max-width: 200px; border: 2px solid #ddd; border-radius: 8px;" />
+                </div>
+                <p class="qr-instructions">
+                    Show this QR code to verify the hall pass
+                </p>
+            </div>
+            
+            <div class="pass-actions" tal:condition="not:context/return_time">
+                <a tal:attributes="href string:${context/absolute_url}/@@return-pass" 
+                   class="return-button">
+                    Mark as Returned
+                </a>
+            </div>
+        </div>
+        
+        <style>
+            .hall-pass-display {
+                max-width: 600px;
+                margin: 20px auto;
+                padding: 20px;
+                font-family: Arial, sans-serif;
+            }
+            
+            .pass-info {
+                background: white;
+                border: 2px solid #ddd;
+                border-radius: 12px;
+                padding: 20px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            
+            .pass-header {
+                border-bottom: 2px solid #eee;
+                padding-bottom: 15px;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+            
+            .pass-code {
+                margin-top: 10px;
+            }
+            
+            .code-display {
+                font-family: monospace;
+                background: #f8f9fa;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            
+            .pass-details {
+                margin: 20px 0;
+            }
+            
+            .detail-row {
+                margin: 10px 0;
+                padding: 8px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .detail-row:last-child {
+                border-bottom: none;
+            }
+            
+            .pass-status {
+                text-align: center;
+                margin: 20px 0;
+            }
+            
+            .status-indicator {
+                display: inline-block;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: bold;
+            }
+            
+            .status-green {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+            
+            .status-yellow {
+                background: #fff3cd;
+                color: #856404;
+                border: 1px solid #ffeaa7;
+            }
+            
+            .status-red {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+            
+            .qr-code-section {
+                text-align: center;
+                margin: 30px 0;
+                padding: 20px;
+                background: #f8f9fa;
+                border-radius: 8px;
+            }
+            
+            .qr-instructions {
+                margin-top: 10px;
+                color: #666;
+                font-style: italic;
+            }
+            
+            .pass-actions {
+                text-align: center;
+                margin-top: 20px;
+            }
+            
+            .return-button {
+                display: inline-block;
+                padding: 10px 20px;
+                background: #28a745;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            
+            .return-button:hover {
+                background: #218838;
+                color: white;
+                text-decoration: none;
+            }
+        </style>
+    </div>
+</metal:content-core>
+
+</body>
+</html> 

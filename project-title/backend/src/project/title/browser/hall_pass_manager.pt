@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="project.title">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+    <div class="hall-pass-manager-template">
+        <h1>Digital Hall Pass Manager</h1>
+        
+        <p>This is the backend template for the Hall Pass Manager. 
+           In a Volto frontend, this would be replaced by the React component.</p>
+        
+        <div class="backend-features">
+            <h2>Available Features:</h2>
+            <ul>
+                <li>Issue new hall passes</li>
+                <li>Track active passes</li>
+                <li>Mark passes as returned</li>
+                <li>Generate QR codes</li>
+                <li>View pass history</li>
+            </ul>
+        </div>
+        
+        <div class="api-endpoints">
+            <h3>API Endpoints:</h3>
+            <ul>
+                <li><code>@@hall-pass-manager</code> - This management interface</li>
+                <li><code>@@hall-pass-data?ajax_data=1</code> - JSON data for frontend</li>
+                <li><code>@@return-pass</code> - Mark a pass as returned (on HallPass objects)</li>
+            </ul>
+        </div>
+        
+        <style>
+            .hall-pass-manager-template {
+                padding: 20px;
+                font-family: Arial, sans-serif;
+            }
+            .backend-features, .api-endpoints {
+                margin: 20px 0;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 5px;
+            }
+            .api-endpoints code {
+                background: #e9ecef;
+                padding: 2px 4px;
+                border-radius: 3px;
+                font-family: monospace;
+            }
+        </style>
+    </div>
+</metal:content-core>
+
+</body>
+</html> 

@@ -34,4 +34,11 @@
     provides="zope.schema.interfaces.IVocabularyFactory"
   />
 
+  <!-- Hall Pass Vocabularies for Classroom Management -->
+  <utility
+    name="project.title.vocabularies.hall_pass_destinations"
+    component=".hall_pass.hall_pass_destinations_vocabulary_factory"
+    provides="zope.schema.interfaces.IVocabularyFactory"
+  />
+
 </configure>

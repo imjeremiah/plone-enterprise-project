@@ -1,0 +1,413 @@
+/* ========================================
+   PASS CARD COMPONENT STYLES
+   Individual Hall Pass Display Cards
+   ======================================== */
+
+.pass-card {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+  margin: 15px auto !important;
+  transition: all 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+  max-width: 420px;
+}
+
+.pass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ========================================
+   ALERT LEVEL COLORS
+   ======================================== */
+
+.pass-card.green {
+  border-left: 5px solid #21ba45 !important;
+  background: linear-gradient(135deg, #f0fff4 0%, #e6ffed 100%) !important;
+}
+
+.pass-card.yellow {
+  border-left: 5px solid #fbbd08 !important;
+  background: linear-gradient(135deg, #fffef0 0%, #fff9e6 100%) !important;
+}
+
+.pass-card.red {
+  border-left: 5px solid #db2828 !important;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%) !important;
+  animation: pulseRed 2s infinite;
+}
+
+@keyframes pulseRed {
+  0% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+  50% { box-shadow: 0 4px 12px rgba(219, 40, 40, 0.3); }
+  100% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+}
+
+/* ========================================
+   COMPACT CARD STYLE
+   ======================================== */
+
+.pass-card.compact {
+  margin-bottom: 8px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+.pass-card.compact .content {
+  padding: 12px !important;
+}
+
+.pass-card.compact .header {
+  font-size: 0.95em !important;
+  margin-bottom: 4px !important;
+}
+
+.pass-card.compact .meta {
+  font-size: 0.85em !important;
+  color: #666 !important;
+}
+
+/* ========================================
+   CARD HEADER STYLING
+   ======================================== */
+
+.pass-card .content .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600 !important;
+  color: #333 !important;
+  margin-bottom: 8px !important;
+}
+
+.pass-card .content .header .icon {
+  margin-right: 8px !important;
+  color: #667eea !important;
+}
+
+.pass-card .content .meta {
+  color: #666 !important;
+  font-size: 0.9em !important;
+  margin-bottom: 12px !important;
+}
+
+.pass-card .content .meta .icon {
+  margin-right: 6px !important;
+  color: #888 !important;
+}
+
+/* ========================================
+   PASS DETAILS SECTION
+   ======================================== */
+
+.pass-details {
+  line-height: 1.6;
+}
+
+.pass-details > div {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.pass-details > div:last-child {
+  margin-bottom: 0;
+}
+
+.pass-details .icon {
+  margin-right: 8px !important;
+  width: 16px;
+  color: #667eea !important;
+  flex-shrink: 0;
+}
+
+.pass-details strong {
+  margin-right: 6px;
+  color: #333;
+}
+
+.pass-details .expected {
+  color: #888;
+  font-size: 0.85em;
+  font-style: italic;
+}
+
+.pass-details .notes {
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 6px;
+  margin: 8px 0;
+  border-left: 3px solid #667eea;
+}
+
+.pass-details .pass-code {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.pass-details .pass-code .icon {
+  color: white !important;
+}
+
+/* ========================================
+   PASS ACTIONS SECTION
+   ======================================== */
+
+.pass-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.pass-actions .ui.button {
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  padding: 8px 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.pass-actions .ui.button.small {
+  font-size: 0.85em !important;
+}
+
+.pass-actions .ui.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pass-actions .ui.button .icon {
+  margin-right: 6px !important;
+}
+
+/* QR Code Button */
+.pass-actions .ui.button:not(.color) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.pass-actions .ui.button:not(.color):hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #667eea 100%) !important;
+}
+
+/* Return Button - Green */
+.pass-actions .ui.button.green {
+  background: linear-gradient(135deg, #21ba45 0%, #16ab39 100%) !important;
+  color: white !important;
+}
+
+.pass-actions .ui.button.green:hover {
+  background: linear-gradient(135deg, #16ab39 0%, #0ea432 100%) !important;
+}
+
+/* Return Button - Red (Overdue) */
+.pass-actions .ui.button.red {
+  background: linear-gradient(135deg, #db2828 0%, #b21e2e 100%) !important;
+  color: white !important;
+  animation: pulseButton 1.5s infinite;
+}
+
+@keyframes pulseButton {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* ========================================
+   STATUS LABELS
+   ======================================== */
+
+.pass-card .ui.label {
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.8em !important;
+  padding: 6px 12px !important;
+}
+
+.pass-card .ui.label.green {
+  background: linear-gradient(135deg, #21ba45 0%, #16ab39 100%) !important;
+  color: white !important;
+}
+
+.pass-card .ui.label.yellow {
+  background: linear-gradient(135deg, #fbbd08 0%, #f2c037 100%) !important;
+  color: #663c00 !important;
+}
+
+.pass-card .ui.label.red {
+  background: linear-gradient(135deg, #db2828 0%, #b21e2e 100%) !important;
+  color: white !important;
+}
+
+/* ========================================
+   QR CODE MODAL STYLING
+   ======================================== */
+
+.ui.modal .header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+}
+
+.ui.modal .content {
+  background: #fafbfc !important;
+}
+
+.ui.modal .content .ui.statistic.group {
+  margin: 0 !important;
+}
+
+.ui.modal .content .ui.statistic {
+  margin: 8px !important;
+}
+
+.ui.modal .content .ui.statistic .value {
+  color: #333 !important;
+  font-size: 1.2em !important;
+}
+
+.ui.modal .content .ui.statistic .label {
+  color: #666 !important;
+  font-size: 0.8em !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ========================================
+   TIME TRACKING ANIMATIONS
+   ======================================== */
+
+.pass-card .time-info {
+  position: relative;
+}
+
+.pass-card.red .time-info::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 100%;
+  background: #db2828;
+  animation: timeAlert 1s infinite;
+}
+
+@keyframes timeAlert {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .pass-card .content {
+    padding: 15px !important;
+  }
+  
+  .pass-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .pass-actions .ui.button {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .pass-details > div {
+    flex-wrap: wrap;
+    font-size: 0.85em;
+  }
+  
+  .ui.modal .content .ui.grid .column {
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pass-card .content .header {
+    font-size: 1em !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .pass-card .content .header .ui.label {
+    align-self: flex-end;
+  }
+  
+  .pass-details .pass-code {
+    font-size: 0.8em;
+    padding: 4px 8px;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+.pass-card .ui.button:focus {
+  outline: 2px solid #667eea !important;
+  outline-offset: 2px !important;
+}
+
+.pass-card[tabindex]:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* ========================================
+   HIGH CONTRAST MODE SUPPORT
+   ======================================== */
+
+@media (prefers-contrast: high) {
+  .pass-card {
+    border: 2px solid #000 !important;
+    background: #fff !important;
+  }
+  
+  .pass-card.red {
+    border-color: #db2828 !important;
+    background: #fff !important;
+  }
+  
+  .pass-card .content .header {
+    color: #000 !important;
+  }
+  
+  .pass-details strong {
+    color: #000 !important;
+  }
+}
+
+/* ========================================
+   REDUCED MOTION SUPPORT
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .pass-card,
+  .pass-card *,
+  .pass-actions .ui.button {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .pass-card:hover,
+  .pass-actions .ui.button:hover {
+    transform: none !important;
+  }
+} 

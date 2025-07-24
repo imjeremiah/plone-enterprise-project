@@ -25,4 +25,9 @@
           filename="types/SeatingChart.xml"
   />
   
+  <object meta_type="Dexterity FTI"
+          name="HallPass"
+          filename="types/HallPass.xml"
+  />
+  
 </object>

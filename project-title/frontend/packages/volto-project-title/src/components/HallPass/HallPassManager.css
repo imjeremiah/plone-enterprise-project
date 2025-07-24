@@ -1,0 +1,420 @@
+/* ========================================
+   HALL PASS MANAGER COMPONENT STYLES
+   Digital Hall Pass System for Classroom Management
+   ======================================== */
+
+.hall-pass-manager {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}
+
+.hall-pass-manager .ui.header.dividing {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  text-align: center !important;
+}
+
+.hall-pass-manager .ui.header.dividing .content {
+  text-align: center !important;
+}
+
+.hall-pass-manager .ui.header.dividing h1 {
+  text-align: center !important;
+}
+
+.hall-pass-manager .ui.header.dividing .icon {
+  display: inline-block !important;
+  margin-right: 0.5em !important;
+}
+
+.hall-pass-manager .ui.header.dividing .header {
+  display: inline-block !important;
+  text-align: center !important;
+}
+
+.hall-pass-manager .ui.header .sub.header {
+  color: #666;
+  font-weight: 400;
+  margin-top: 8px;
+  text-align: center !important;
+}
+
+/* Force center alignment for all header elements */
+.hall-pass-manager h1,
+.hall-pass-manager .ui.header,
+.hall-pass-manager .ui.header.dividing {
+  text-align: center !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* NEW: Main header section with proper centering */
+.hall-pass-manager .main-header {
+  text-align: center !important;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+.hall-pass-manager .main-title {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  color: #333 !important;
+  margin: 0 0 10px 0 !important;
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.hall-pass-manager .main-title .icon {
+  margin-right: 0.5em !important;
+  color: #4A90E2 !important;
+  display: inline-block !important;
+}
+
+.hall-pass-manager .main-subtitle {
+  font-size: 1.1rem !important;
+  color: #666 !important;
+  margin: 10px 0 20px 0 !important;
+  text-align: center !important;
+  font-weight: 400 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block !important;
+}
+
+.hall-pass-manager .title-divider {
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #ddd, transparent);
+  margin: 20px auto;
+  width: 60%;
+}
+
+/* Override any parent container text alignment */
+.hall-pass-manager,
+.hall-pass-manager * {
+  box-sizing: border-box;
+}
+
+.hall-pass-manager .main-header * {
+  text-align: center !important;
+}
+
+/* Ensure the main container overrides any parent styles */
+.hall-pass-manager {
+  display: block !important;
+  position: relative !important;
+}
+
+/* ========================================
+   STATISTICS SECTION
+   ======================================== */
+
+.hall-pass-manager .ui.statistic {
+  margin: 0 !important;
+}
+
+.hall-pass-manager .ui.statistic .value {
+  font-size: 2em !important;
+}
+
+.hall-pass-manager .ui.statistic .label {
+  font-size: 0.9em !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hall-pass-manager .last-update {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.85em;
+  color: #888;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+/* Center alignment for grid and segments */
+.hall-pass-manager .ui.grid {
+  justify-content: center;
+}
+
+.hall-pass-manager .ui.grid > .column {
+  text-align: left;
+}
+
+.hall-pass-manager .ui.segment {
+  text-align: left;
+}
+
+.hall-pass-manager .ui.header.dividing {
+  text-align: center;
+}
+
+/* Active passes section */
+.hall-pass-manager .active-passes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.hall-pass-manager .active-passes .ui.card {
+  margin: 0 !important;
+}
+
+.hall-pass-manager .last-update .icon {
+  margin-right: 5px;
+}
+
+/* ========================================
+   ALERTS SECTION
+   ======================================== */
+
+.hall-pass-manager .ui.segment.orange {
+  border-left: 4px solid #f2711c !important;
+}
+
+.hall-pass-manager .ui.list .item {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.hall-pass-manager .ui.list .item:last-child {
+  border-bottom: none;
+}
+
+.hall-pass-manager .ui.label.small {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* ========================================
+   ACTIVE PASSES SECTION
+   ======================================== */
+
+.hall-pass-manager .active-passes {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hall-pass-manager .recent-passes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ========================================
+   ISSUE PASS MODAL
+   ======================================== */
+
+.hall-pass-manager .ui.modal .header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
+  border-radius: 8px 8px 0 0;
+}
+
+.hall-pass-manager .ui.modal .header .icon {
+  margin-right: 10px;
+}
+
+.hall-pass-manager .ui.form .field > label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.hall-pass-manager .ui.form .field input[type="text"],
+.hall-pass-manager .ui.form .field input[type="number"],
+.hall-pass-manager .ui.form .field textarea {
+  border-radius: 6px;
+  border: 2px solid #e1e8ed;
+  padding: 12px;
+  font-size: 1em;
+  transition: border-color 0.3s ease;
+}
+
+.hall-pass-manager .ui.form .field input:focus,
+.hall-pass-manager .ui.form .field textarea:focus {
+  border-color: #667eea;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* ========================================
+   ISSUE PASS BUTTON
+   ======================================== */
+
+.hall-pass-manager .ui.button.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.hall-pass-manager .ui.button.primary:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.hall-pass-manager .ui.button.primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .hall-pass-manager {
+    padding: 10px;
+  }
+  
+  .hall-pass-manager .ui.grid .column {
+    margin-bottom: 20px;
+  }
+  
+  .hall-pass-manager .ui.statistic.group .statistic {
+    margin-bottom: 15px !important;
+  }
+  
+  .hall-pass-manager .ui.button.large {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hall-pass-manager .ui.header.dividing h1 {
+    font-size: 1.5em !important;
+  }
+  
+  .hall-pass-manager .ui.header .sub.header {
+    font-size: 0.9em;
+  }
+  
+  .hall-pass-manager .ui.statistic .value {
+    font-size: 1.5em !important;
+  }
+  
+  .hall-pass-manager .ui.statistic .label {
+    font-size: 0.8em !important;
+  }
+}
+
+/* ========================================
+   LOADING AND ERROR STATES
+   ======================================== */
+
+.hall-pass-manager .ui.message.info {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-left: 4px solid #2196f3;
+  color: #0d47a1;
+}
+
+.hall-pass-manager .ui.message.info .icon {
+  color: #2196f3;
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+.hall-pass-manager .ui.button:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.hall-pass-manager .ui.modal .content {
+  padding: 25px;
+}
+
+.hall-pass-manager .ui.modal .actions {
+  padding: 20px 25px;
+  background: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+/* ========================================
+   ANIMATION EFFECTS
+   ======================================== */
+
+.hall-pass-manager .active-passes .pass-card {
+  animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hall-pass-manager .ui.segment {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e8ed;
+}
+
+.hall-pass-manager .ui.segment.clearing {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* ========================================
+   HIGH CONTRAST MODE SUPPORT
+   ======================================== */
+
+@media (prefers-contrast: high) {
+  .hall-pass-manager .ui.button.primary {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+  }
+  
+  .hall-pass-manager .ui.segment {
+    border: 2px solid #000 !important;
+  }
+  
+  .hall-pass-manager .ui.statistic .value {
+    color: #000 !important;
+  }
+}
+
+/* ========================================
+   REDUCED MOTION SUPPORT
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .hall-pass-manager * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .hall-pass-manager .ui.button:hover {
+    transform: none;
+  }
+} 

@@ -2,6 +2,8 @@ import LoginComponent from './components/Login';
 import StandardsWidget from './components/StandardsWidget';
 import SeatingChartView from './components/Views/SeatingChartView';
 import RandomStudentPicker from './components/RandomPicker/RandomStudentPicker';
+import HallPassManager from './components/HallPass/HallPassManager';
+import HallPassManagerRoute from './components/HallPass/HallPassManagerRoute';
 
 const applyConfig = (config) => {
   console.log('🚀 Edu Plone addon loading...');
@@ -42,7 +44,10 @@ const applyConfig = (config) => {
   // Register SeatingChart view for classroom management
   config.views.contentTypesViews.SeatingChart = SeatingChartView;
   
-  // Add random picker route for standalone access
+  // Register HallPass view for digital hall pass management
+  config.views.contentTypesViews.HallPass = HallPassManager;
+  
+  // Add standalone routes for classroom management tools
   config.addonRoutes = [
     {
       path: '/login',
@@ -54,19 +59,26 @@ const applyConfig = (config) => {
       component: RandomStudentPicker,
       exact: true,
     },
+          {
+        path: '/hall-pass-manager',
+        component: HallPassManagerRoute,
+      exact: true,
+    },
     ...(config.addonRoutes || []),
   ];
   
-  // Register RandomStudentPicker as a reusable component
+  // Register classroom management components as reusable
   if (!config.components) {
     config.components = {};
   }
   config.components.RandomStudentPicker = RandomStudentPicker;
+  config.components.HallPassManager = HallPassManager;
   
   console.log('✅ Custom Login component registered');
   console.log('✅ Standards Widget registered for educational content');
   console.log('✅ SeatingChart view registered for classroom management');
   console.log('✅ Random Student Picker component registered');
+  console.log('✅ Digital Hall Pass Manager component registered');
 
   return config;
 };
