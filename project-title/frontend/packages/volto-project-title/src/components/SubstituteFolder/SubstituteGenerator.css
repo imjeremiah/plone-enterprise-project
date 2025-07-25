@@ -1,0 +1,282 @@
+/**
+ * Substitute Generator Component Styles
+ * Modern styling for the substitute folder generation interface
+ */
+
+.substitute-generator {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.substitute-generator .ui.segment {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  border: none;
+  padding: 30px;
+}
+
+.substitute-generator .ui.header.icon {
+  margin-bottom: 30px;
+}
+
+.substitute-generator .ui.header.icon .icon {
+  color: #2185d0;
+  margin-bottom: 15px;
+}
+
+.substitute-generator .ui.header .content {
+  color: #2c3e50;
+}
+
+.substitute-generator .ui.header .sub.header {
+  color: #7f8c8d;
+  font-size: 1.1em;
+  margin-top: 10px;
+}
+
+/* Form Styling */
+.substitute-generator .ui.form {
+  margin-bottom: 25px;
+}
+
+.substitute-generator .ui.form .field > label {
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 8px;
+  font-size: 1.1em;
+}
+
+.substitute-generator .ui.form textarea {
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.substitute-generator .ui.form textarea:focus {
+  border-color: #2185d0;
+  box-shadow: 0 0 0 3px rgba(33, 133, 208, 0.1);
+  outline: none;
+}
+
+.substitute-generator .ui.button.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 14px 25px;
+  font-weight: 600;
+  text-transform: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.substitute-generator .ui.button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+}
+
+.substitute-generator .ui.button.primary:active {
+  transform: translateY(0);
+}
+
+/* Message Styling */
+.substitute-generator .ui.message {
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
+
+.substitute-generator .ui.message.positive {
+  background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+  color: white;
+}
+
+.substitute-generator .ui.message.positive .header {
+  color: white;
+  font-weight: 600;
+}
+
+.substitute-generator .ui.message.negative {
+  background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+  color: white;
+}
+
+.substitute-generator .ui.message.negative .header {
+  color: white;
+  font-weight: 600;
+}
+
+.substitute-generator .ui.message.info {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  color: white;
+}
+
+.substitute-generator .ui.message.info .header {
+  color: white;
+  font-weight: 600;
+}
+
+/* Label Styling */
+.substitute-generator .ui.label {
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-weight: 600;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.substitute-generator .ui.label.green {
+  background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.substitute-generator .ui.label.green:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 184, 148, 0.3);
+}
+
+/* Grid and Layout */
+.substitute-generator .ui.grid.divided:not(.vertically) > .column {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.substitute-generator .ui.list .item {
+  padding: 8px 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.substitute-generator .ui.list .item:last-child {
+  border-bottom: none;
+}
+
+.substitute-generator .ui.list .item .icon {
+  margin-right: 10px;
+}
+
+/* Button Variations */
+.substitute-generator .ui.button:not(.primary) {
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  background: white;
+  color: #495057;
+  transition: all 0.3s ease;
+}
+
+.substitute-generator .ui.button:not(.primary):hover {
+  border-color: #2185d0;
+  color: #2185d0;
+  background: #f8f9fa;
+}
+
+.substitute-generator .ui.button.blue {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  color: white;
+  border: none;
+}
+
+.substitute-generator .ui.button.blue:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(116, 185, 255, 0.4);
+}
+
+/* Loader Styling */
+.substitute-generator .ui.loader {
+  color: #2185d0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .substitute-generator {
+    padding: 10px;
+  }
+  
+  .substitute-generator .ui.segment {
+    padding: 20px;
+  }
+  
+  .substitute-generator .ui.grid.columns {
+    display: block !important;
+  }
+  
+  .substitute-generator .ui.grid > .column {
+    width: 100% !important;
+    margin-bottom: 15px;
+  }
+  
+  .substitute-generator .ui.header.icon .content {
+    font-size: 1.8em;
+  }
+  
+  .substitute-generator .ui.header.icon .sub.header {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .substitute-generator .ui.button.large {
+    font-size: 1em;
+    padding: 12px 20px;
+  }
+  
+  .substitute-generator .ui.form textarea {
+    min-height: 100px;
+  }
+}
+
+/* Animation for success state */
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.substitute-generator .ui.message.positive {
+  animation: slideInFromTop 0.5s ease-out;
+}
+
+/* Loading state */
+.substitute-generator .ui.button.loading {
+  position: relative;
+  cursor: default;
+  pointer-events: none;
+}
+
+.substitute-generator .ui.button.loading:before {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Accessibility improvements */
+.substitute-generator .ui.button:focus {
+  outline: 2px solid #2185d0;
+  outline-offset: 2px;
+}
+
+.substitute-generator .ui.form textarea:focus {
+  outline: none;
+}
+
+/* Print styles */
+@media print {
+  .substitute-generator .ui.button {
+    display: none;
+  }
+  
+  .substitute-generator .ui.segment {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+} 

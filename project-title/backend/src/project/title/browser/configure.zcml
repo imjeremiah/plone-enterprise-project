@@ -70,10 +70,57 @@
     permission="zope.Public"
     />
 
+  <!-- Timer Presets Management Views -->
+  <browser:page
+    name="timer-presets"
+    for="*"
+    class=".timer_presets.TimerPresetsView"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="timer-sounds"
+    for="*"
+    class=".timer_presets.TimerPresetsView"
+    attribute="get_timer_sounds"
+    permission="zope2.View"
+    />
+
+  <!-- Substitute Folder Generator Views -->
+  <browser:page
+    name="generate-substitute-folder"
+    for="*"
+    class=".substitute_folder.SubstituteFolderGenerator"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="substitute-folder-info"
+    for="*"
+    class=".substitute_folder.SubstituteFolderGenerator"
+    permission="zope2.View"
+    />
+
   <!-- Static Resource Directory -->
   <browser:resourceDirectory
     name="project.title"
     directory="static"
+    />
+
+  <!-- New Substitute Materials Generator Views -->
+  <browser:page
+    name="substitute-materials"
+    for="*"
+    class=".substitute_materials.SubstituteMaterialsView"
+    permission="zope2.View"
+    />
+
+  <!-- Teacher Dashboard Views -->
+  <browser:page
+    name="teacher-dashboard"
+    for="*"
+    class=".dashboard.TeacherDashboard"
+    permission="zope2.View"
     />
 
   <!-- -*- extra stuff goes here -*- -->

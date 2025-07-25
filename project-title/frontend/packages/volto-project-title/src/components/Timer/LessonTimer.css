@@ -1,0 +1,520 @@
+/**
+ * Lesson Timer CSS Styles
+ * 
+ * Designed for classroom visibility with large fonts, clear colors,
+ * and fullscreen support for projector displays.
+ */
+
+/* Main Timer Container */
+.lesson-timer {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.lesson-timer .timer-main {
+  padding: 24px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  background: white !important;
+}
+
+/* Force center alignment for timer header */
+.lesson-timer .timer-main .ui.header {
+  text-align: center !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.lesson-timer .timer-main .ui.header h3 {
+  text-align: center !important;
+  width: 100% !important;
+}
+
+/* Timer Display */
+.timer-display {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.timer-display .time {
+  font-size: 5rem !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums;
+  margin: 20px 0 !important;
+  transition: all 0.3s ease;
+  color: #2185d0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timer-display .time.running {
+  color: #21ba45;
+}
+
+.timer-display .time.urgent {
+  color: #db2828 !important;
+  animation: pulse-urgent 1s infinite;
+}
+
+@keyframes pulse-urgent {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: scale(1.05);
+  }
+}
+
+.timer-info {
+  margin-top: 15px;
+}
+
+/* Duration Setup */
+.duration-setup {
+  margin: 25px 0;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.duration-setup h4 {
+  margin-bottom: 20px !important;
+  text-align: center;
+  color: #495057;
+}
+
+.custom-duration,
+.preset-selector {
+  margin-bottom: 15px;
+}
+
+.custom-duration label,
+.preset-selector label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #495057;
+}
+
+/* Timer Controls */
+.timer-controls {
+  margin: 25px 0;
+}
+
+.timer-controls .ui.button {
+  margin: 5px;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+.timer-controls .ui.button.large {
+  padding: 12px 24px !important;
+  font-size: 1.1rem !important;
+}
+
+.timer-controls .ui.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Timer Options */
+.timer-options {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.timer-options .ui.button.small {
+  font-size: 0.9rem !important;
+  padding: 8px 12px !important;
+}
+
+/* Compact Timer Mode */
+.lesson-timer.compact {
+  max-width: 250px;
+  margin: 0;
+}
+
+.timer-display-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.timer-display-compact .time-compact {
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #2185d0;
+  margin-right: 15px;
+}
+
+.timer-display-compact .time-compact.urgent {
+  color: #db2828;
+  animation: pulse-urgent 1s infinite;
+}
+
+.timer-controls-compact {
+  display: flex;
+  gap: 5px;
+}
+
+.timer-controls-compact .ui.button.mini {
+  padding: 6px 8px !important;
+  margin: 0 !important;
+}
+
+/* Fullscreen Timer */
+.timer-fullscreen .ui.modal.fullscreen {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+  color: white !important;
+}
+
+.fullscreen-timer {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-gap: 40px;
+  align-items: center;
+  height: 100vh;
+  padding: 60px 40px 40px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.fullscreen-time-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.fullscreen-timer .huge-time {
+  font-size: 18vw !important;
+  font-weight: 200 !important;
+  font-variant-numeric: tabular-nums;
+  margin: 0 !important;
+  color: #ffffff !important;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 255, 255, 0.1);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  /* Prevent layout shift */
+  width: 100%;
+  height: auto;
+  display: block;
+  /* Stabilize positioning */
+  transform: translateZ(0);
+  will-change: color;
+  transition: color 0.3s ease;
+  /* Ensure visibility */
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+}
+
+.fullscreen-timer .huge-time.urgent {
+  color: #ff4444 !important;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 50px rgba(255, 68, 68, 0.6);
+  animation: pulse-fullscreen-smooth 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(255, 68, 68, 0.5));
+}
+
+@keyframes pulse-fullscreen-smooth {
+  0%, 100% { 
+    opacity: 1; 
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 50px rgba(255, 68, 68, 0.6);
+  }
+  50% { 
+    opacity: 0.9; 
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 80px rgba(255, 68, 68, 0.9);
+  }
+}
+
+.fullscreen-progress {
+  margin: 40px 0 20px 0;
+  max-width: 60%;
+  width: 100%;
+}
+
+.fullscreen-progress .ui.progress {
+  margin: 0 !important;
+  height: 8px !important;
+  border-radius: 4px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.fullscreen-progress .ui.progress .bar {
+  min-width: 0 !important;
+  border-radius: 4px !important;
+  height: 8px !important;
+}
+
+.fullscreen-status {
+  margin: 20px 0;
+  /* Fixed positioning to prevent layout shift */
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-status .ui.label.big {
+  font-size: 1.5rem !important;
+  padding: 12px 24px !important;
+  border-radius: 30px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px);
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.fullscreen-controls {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  /* Fixed height to prevent layout shift */
+  min-height: 80px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.fullscreen-controls .ui.button.huge {
+  font-size: 1.3rem !important;
+  padding: 16px 32px !important;
+  border-radius: 50px !important;
+  font-weight: 500 !important;
+  margin: 8px !important;
+  min-width: 140px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.fullscreen-controls .ui.button.huge:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+.fullscreen-controls .ui.button.huge.primary {
+  background: rgba(33, 186, 69, 0.8) !important;
+  border-color: rgba(33, 186, 69, 1) !important;
+}
+
+.fullscreen-controls .ui.button.huge.primary:hover {
+  background: rgba(33, 186, 69, 1) !important;
+}
+
+.fullscreen-controls .ui.button.huge.secondary {
+  background: rgba(255, 193, 7, 0.8) !important;
+  border-color: rgba(255, 193, 7, 1) !important;
+  color: #1a1a1a !important;
+}
+
+.fullscreen-controls .ui.button.huge.secondary:hover {
+  background: rgba(255, 193, 7, 1) !important;
+  color: #1a1a1a !important;
+}
+
+/* Timer Complete Flash Animation */
+body.timer-complete {
+  animation: flash-complete 0.5s 3;
+  background-color: #fff3cd !important;
+}
+
+@keyframes flash-complete {
+  0%, 100% { 
+    background-color: inherit; 
+  }
+  50% { 
+    background-color: #fff3cd !important; 
+  }
+}
+
+/* Progress Bar Customizations */
+.lesson-timer .ui.progress {
+  border-radius: 8px !important;
+}
+
+.lesson-timer .ui.progress .bar {
+  border-radius: 8px !important;
+  transition: width 1s ease !important;
+}
+
+.lesson-timer .ui.progress.green .bar {
+  background: linear-gradient(90deg, #21ba45, #16ab39) !important;
+}
+
+.lesson-timer .ui.progress.yellow .bar {
+  background: linear-gradient(90deg, #fbbd08, #f2c037) !important;
+}
+
+.lesson-timer .ui.progress.red .bar {
+  background: linear-gradient(90deg, #db2828, #d01919) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .lesson-timer .timer-main {
+    padding: 16px !important;
+    margin: 10px !important;
+  }
+  
+  .timer-display .time {
+    font-size: 3.5rem !important;
+  }
+  
+  .timer-controls .ui.button.large {
+    font-size: 1rem !important;
+    padding: 10px 20px !important;
+  }
+  
+  .duration-setup {
+    margin: 15px 0;
+    padding: 15px;
+  }
+  
+  /* Mobile fullscreen adjustments */
+  .fullscreen-timer {
+    padding: 40px 20px 20px 20px;
+    grid-gap: 20px;
+  }
+  
+  .fullscreen-timer .huge-time {
+    font-size: 22vw !important;
+  }
+  
+  .fullscreen-controls {
+    gap: 12px;
+    min-height: 70px;
+  }
+  
+  .fullscreen-controls .ui.button.huge {
+    font-size: 1.1rem !important;
+    padding: 12px 20px !important;
+    margin: 4px !important;
+    min-width: 120px;
+    height: 50px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  
+  .fullscreen-progress {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 480px) {
+  .timer-display .time {
+    font-size: 2.8rem !important;
+  }
+  
+  .duration-setup .ui.grid.columns {
+    flex-direction: column;
+  }
+  
+  .timer-controls .ui.grid.columns {
+    flex-direction: column;
+  }
+  
+  .timer-controls .ui.button.large {
+    width: 100%;
+    margin: 8px 0 !important;
+  }
+}
+
+/* Accessibility Improvements */
+.lesson-timer button:focus,
+.lesson-timer input:focus,
+.lesson-timer .ui.dropdown:focus {
+  outline: 3px solid #4285f4 !important;
+  outline-offset: 2px !important;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .lesson-timer .timer-main {
+    border: 2px solid #000 !important;
+  }
+  
+  .timer-display .time {
+    text-shadow: none !important;
+    color: #000 !important;
+  }
+  
+  .timer-display .time.urgent {
+    color: #d00 !important;
+  }
+  
+  .timer-display .time.running {
+    color: #080 !important;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .timer-display .time,
+  .timer-controls .ui.button,
+  .fullscreen-timer .huge-time,
+  .fullscreen-controls .ui.button.huge {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .timer-display .time.urgent,
+  .fullscreen-timer .huge-time.urgent {
+    animation: none !important;
+    color: #db2828 !important;
+    text-shadow: none !important;
+  }
+  
+  body.timer-complete {
+    animation: none !important;
+    background-color: #fff3cd !important;
+  }
+  
+  .fullscreen-controls .ui.button.huge:hover {
+    transform: none !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .lesson-timer {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .timer-controls,
+  .timer-options,
+  .fullscreen-controls {
+    display: none !important;
+  }
+  
+  .timer-display .time {
+    color: black !important;
+    text-shadow: none !important;
+  }
+} 

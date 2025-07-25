@@ -4,6 +4,10 @@ import SeatingChartView from './components/Views/SeatingChartView';
 import RandomStudentPicker from './components/RandomPicker/RandomStudentPicker';
 import HallPassManager from './components/HallPass/HallPassManager';
 import HallPassManagerRoute from './components/HallPass/HallPassManagerRoute';
+import LessonTimer from './components/Timer/LessonTimer';
+import TimerPage from './components/Timer/TimerPage';
+import SubstitutePage from './components/SubstituteFolder/SubstitutePage';
+import TeacherDashboard from './components/Dashboard/TeacherDashboard';
 
 const applyConfig = (config) => {
   console.log('🚀 Edu Plone addon loading...');
@@ -59,9 +63,24 @@ const applyConfig = (config) => {
       component: RandomStudentPicker,
       exact: true,
     },
-          {
-        path: '/hall-pass-manager',
-        component: HallPassManagerRoute,
+    {
+      path: '/hall-pass-manager',
+      component: HallPassManagerRoute,
+      exact: true,
+    },
+    {
+      path: '/timer',
+      component: TimerPage,
+      exact: true,
+    },
+    {
+      path: '/substitute-folder',
+      component: SubstitutePage,
+      exact: true,
+    },
+    {
+      path: '/dashboard',
+      component: TeacherDashboard,
       exact: true,
     },
     ...(config.addonRoutes || []),
@@ -73,12 +92,16 @@ const applyConfig = (config) => {
   }
   config.components.RandomStudentPicker = RandomStudentPicker;
   config.components.HallPassManager = HallPassManager;
+  config.components.LessonTimer = LessonTimer;
   
   console.log('✅ Custom Login component registered');
   console.log('✅ Standards Widget registered for educational content');
   console.log('✅ SeatingChart view registered for classroom management');
   console.log('✅ Random Student Picker component registered');
   console.log('✅ Digital Hall Pass Manager component registered');
+  console.log('✅ Lesson Timer tool registered for classroom activities');
+  console.log('✅ Substitute Folder Generator registered for emergency preparation');
+  console.log('✅ Teacher Dashboard registered for real-time classroom management');
 
   return config;
 };

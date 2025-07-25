@@ -1,0 +1,290 @@
+/**
+ * Teacher Dashboard Styles
+ * 
+ * Modern, responsive styling for the classroom command center dashboard
+ * with widget-based layout, color coding, and professional appearance.
+ */
+
+.teacher-dashboard {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Dashboard Header */
+.teacher-dashboard .ui.header {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin: 0 !important;
+  text-align: center !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+.teacher-dashboard .ui.header.h1 {
+  margin: 0 !important;
+  text-align: center !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Stats Bar */
+.teacher-dashboard .stats-bar {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 15px !important;
+}
+
+.teacher-dashboard .stats-bar .ui.statistic {
+  color: white;
+}
+
+.teacher-dashboard .stats-bar .ui.statistic > .value {
+  color: white;
+}
+
+.teacher-dashboard .stats-bar .ui.statistic > .label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Dashboard Widgets */
+.dashboard-widget {
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease;
+  background: white;
+  padding: 15px !important;
+  margin-bottom: 15px !important;
+}
+
+/* Grid column padding override for compactness */
+.teacher-dashboard .ui.grid > .column {
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.dashboard-widget:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.dashboard-widget .ui.header {
+  border-bottom: 2px solid #f8f9fa;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+/* Widget-specific styling */
+.seating-widget {
+  border-left: 4px solid #2185d0;
+}
+
+.hall-pass-widget {
+  border-left: 4px solid #f2711c;
+}
+
+.participation-widget {
+  border-left: 4px solid #a333c8;
+}
+
+.quick-actions-widget {
+  border-left: 4px solid #fbbd08;
+}
+
+.timer-widget {
+  border-left: 4px solid #21ba45;
+}
+
+.substitute-widget {
+  border-left: 4px solid #00b5ad;
+}
+
+/* Alerts Widget Specific */
+.alerts-widget .ui.message {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.alerts-widget .ui.message.warning {
+  border-left: 4px solid #f2711c;
+}
+
+.alerts-widget .ui.message.negative {
+  border-left: 4px solid #db2828;
+}
+
+.alerts-widget .ui.message.info {
+  border-left: 4px solid #2185d0;
+}
+
+/* Hall Pass Widget */
+.hall-pass-widget .ui.list .item {
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 5px;
+  background: #fafafa;
+  transition: background 0.2s ease;
+}
+
+.hall-pass-widget .ui.list .item:hover {
+  background: #f0f0f0;
+}
+
+/* Participation Widget */
+.participation-widget .ui.progress {
+  border-radius: 20px;
+}
+
+.participation-widget .ui.progress .bar {
+  border-radius: 20px;
+}
+
+/* Timer Widget */
+.timer-widget .ui.statistic .value {
+  font-family: 'Monaco', 'Consolas', monospace;
+}
+
+.timer-widget .ui.progress {
+  border-radius: 10px;
+}
+
+/* Quick Actions Widget */
+.quick-actions-widget .ui.button {
+  border-radius: 8px !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.quick-actions-widget .ui.button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Substitute Widget */
+.substitute-widget .ui.message {
+  border-radius: 8px;
+}
+
+.substitute-widget .ui.list .item {
+  padding: 5px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .teacher-dashboard .ui.container.fluid {
+    padding: 8px !important;
+  }
+  
+  .teacher-dashboard .stats-bar {
+    padding: 10px !important;
+  }
+  
+  .teacher-dashboard .stats-bar .ui.statistic.group {
+    margin: 0;
+  }
+  
+  .teacher-dashboard .stats-bar .ui.statistic {
+    margin: 0.3em 0;
+  }
+  
+  .dashboard-widget {
+    margin-bottom: 10px !important;
+    padding: 12px !important;
+  }
+  
+  .dashboard-widget .ui.header {
+    font-size: 1.1rem;
+  }
+  
+  .quick-actions-widget .ui.grid .column {
+    padding: 0.3rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .teacher-dashboard .ui.header.h1 {
+    font-size: 1.3rem;
+  }
+  
+  .teacher-dashboard .stats-bar {
+    padding: 8px !important;
+  }
+  
+  .teacher-dashboard .stats-bar .ui.statistic {
+    font-size: 0.75rem;
+  }
+  
+  .dashboard-widget {
+    padding: 10px !important;
+    margin-bottom: 8px !important;
+  }
+}
+
+/* Animation for real-time updates */
+@keyframes pulse-update {
+  0% { background-color: #e8f5e8; }
+  50% { background-color: #d4edda; }
+  100% { background-color: white; }
+}
+
+.dashboard-widget.updating {
+  animation: pulse-update 1s ease;
+}
+
+/* Loading states */
+.dashboard-widget .ui.loader {
+  color: #666;
+}
+
+/* Color-coded labels */
+.label-green {
+  background-color: #21ba45 !important;
+  color: white !important;
+}
+
+.label-yellow {
+  background-color: #fbbd08 !important;
+  color: white !important;
+}
+
+.label-red {
+  background-color: #db2828 !important;
+  color: white !important;
+}
+
+/* Status indicators */
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-indicator.green {
+  background-color: #21ba45;
+}
+
+.status-indicator.yellow {
+  background-color: #fbbd08;
+}
+
+.status-indicator.red {
+  background-color: #db2828;
+}
+
+/* Footer styling */
+.teacher-dashboard .dashboard-footer {
+  margin-top: 40px;
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  border-top: 1px solid #e8e8e8;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+} 
