@@ -11,3 +11,10 @@ collective.plonedistribution
 .reports/*.md
 __pycache__/
 .venv
+
+# Exclude template files from IDE processing to prevent linting errors
+# These files contain cookiecutter variables that are invalid until rendered
+.vscode/settings.json.template
+templates/*/{{ cookiecutter.* }}/
+**/{{ cookiecutter.* }}/**
+templates/**/*.j2

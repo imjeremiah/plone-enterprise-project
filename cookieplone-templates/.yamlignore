@@ -1,0 +1,25 @@
+# Exclude template files with cookiecutter variables from YAML linting
+# These files contain {{ cookiecutter.* }} and Jinja2 syntax that's invalid until rendered
+
+# All template directories with cookiecutter variables in filenames/content
+templates/**/{{ cookiecutter.* }}/**
+templates/**/*{{ cookiecutter.* }}*
+
+# Specific problematic template files
+templates/projects/monorepo/{{ cookiecutter.__folder_name }}/.github/workflows/*.yml
+templates/projects/classic/{{ cookiecutter.__folder_name }}/.github/workflows/*.yml
+
+# Other template files with cookiecutter syntax
+templates/**/devops/**/*.yml
+templates/**/devops/**/*.yaml
+templates/**/*.yml.j2
+templates/**/*.yaml.j2
+
+# Template configuration files
+templates/**/ansible.cfg
+templates/**/Dockerfile*
+templates/**/requirements*.txt
+templates/**/package.json
+
+# Any file in a template directory that might contain cookiecutter variables
+templates/**/*cookiecutter* 

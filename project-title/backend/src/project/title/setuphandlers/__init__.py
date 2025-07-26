@@ -16,4 +16,3 @@ def post_install(context):
     """Post install script"""
     # Skip the readDataFile check as it's causing issues
     # Simple post-install setup
-    pass 

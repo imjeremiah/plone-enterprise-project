@@ -1,6 +1,6 @@
 /**
  * Pass Card Component for Digital Hall Pass Display
- * 
+ *
  * Displays individual hall pass information including QR code,
  * time tracking, and return functionality.
  */
@@ -16,19 +16,19 @@ import {
   Modal,
   Header,
   Grid,
-  Statistic
+  Statistic,
 } from 'semantic-ui-react';
 import WorkflowStatus from './WorkflowStatus';
 import './PassCard.css';
 
-const PassCard = ({ 
-  pass, 
-  onReturn, 
-  showReturnButton = true, 
-  compact = false 
+const PassCard = ({
+  pass,
+  onReturn,
+  showReturnButton = true,
+  compact = false,
 }) => {
   const [showQRModal, setShowQRModal] = useState(false);
-  
+
   // Calculate initial duration safely
   const calculateDuration = () => {
     if (pass.return_time) {
@@ -36,17 +36,17 @@ const PassCard = ({
       const returnTime = new Date(pass.return_time);
       return Math.floor((returnTime - issueTime) / (1000 * 60));
     }
-    
+
     if (pass.duration_minutes !== undefined && pass.duration_minutes !== null) {
       return pass.duration_minutes;
     }
-    
+
     // Calculate from issue_time if duration_minutes is missing
     const issueTime = new Date(pass.issue_time);
     const now = new Date();
     return Math.floor((now - issueTime) / (1000 * 60));
   };
-  
+
   const [currentDuration, setCurrentDuration] = useState(calculateDuration);
   const [workflowState, setWorkflowState] = useState('unknown');
 
@@ -75,7 +75,7 @@ const PassCard = ({
     } catch (error) {
       // Workflow endpoint not available - use fallback
     }
-    
+
     // Use fallback workflow state determination
     return getWorkflowStateFromPass(pass);
   };
@@ -89,33 +89,36 @@ const PassCard = ({
         const returnTime = new Date(pass.return_time);
         return Math.floor((returnTime - issueTime) / (1000 * 60));
       }
-      
-      if (pass.duration_minutes !== undefined && pass.duration_minutes !== null) {
+
+      if (
+        pass.duration_minutes !== undefined &&
+        pass.duration_minutes !== null
+      ) {
         return pass.duration_minutes;
       }
-      
+
       // Calculate from issue_time if duration_minutes is missing
       const issueTime = new Date(pass.issue_time);
       const now = new Date();
       return Math.floor((now - issueTime) / (1000 * 60));
     };
-    
+
     // Set initial duration
     setCurrentDuration(calculateCurrentDuration());
-    
+
     // Set initial workflow state from pass data (immediate)
     const initialState = getWorkflowStateFromPass(pass);
     setWorkflowState(initialState);
-    
+
     // Try to enhance with backend workflow state (optional)
     if (pass.id) {
-      fetchWorkflowState(pass.id).then(state => {
+      fetchWorkflowState(pass.id).then((state) => {
         if (state !== initialState) {
           setWorkflowState(state);
         }
       });
     }
-    
+
     if (!pass.is_active) return;
 
     const interval = setInterval(() => {
@@ -123,18 +126,23 @@ const PassCard = ({
     }, 30000); // Update every 30 seconds
 
     return () => clearInterval(interval);
-  }, [pass.is_active, pass.issue_time, pass.duration_minutes, pass.return_time]);
+  }, [
+    pass.is_active,
+    pass.issue_time,
+    pass.duration_minutes,
+    pass.return_time,
+  ]);
 
   /**
    * Get time difference display
    */
   const getTimeDifference = () => {
     const duration = currentDuration || 0;
-    
+
     if (duration === 0) {
-      return "just now";
+      return 'just now';
     } else if (duration === 1) {
-      return "1 minute";
+      return '1 minute';
     } else {
       return `${duration} minutes`;
     }
@@ -147,10 +155,10 @@ const PassCard = ({
     if (pass.return_time) {
       return { color: 'green', text: 'Returned' };
     }
-    
+
     const duration = currentDuration;
     const expected = pass.expected_duration || 5;
-    
+
     if (duration > expected + 10) {
       return { color: 'red', text: 'Very Overdue' };
     } else if (duration > expected + 5) {
@@ -167,11 +175,11 @@ const PassCard = ({
    */
   const formatTime = (timeString) => {
     if (!timeString) return 'Unknown';
-    
+
     const time = new Date(timeString);
     return time.toLocaleTimeString([], {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -179,8 +187,8 @@ const PassCard = ({
    * Render QR code modal
    */
   const renderQRModal = () => (
-    <Modal 
-      open={showQRModal} 
+    <Modal
+      open={showQRModal}
       onClose={() => setShowQRModal(false)}
       size="small"
     >
@@ -188,19 +196,19 @@ const PassCard = ({
         <Icon name="qrcode" />
         Hall Pass QR Code
       </Modal.Header>
-      
+
       <Modal.Content style={{ textAlign: 'center' }}>
         <Grid centered>
           <Grid.Column width={8}>
             {pass.qr_code && (
-              <Image 
-                src={pass.qr_code} 
+              <Image
+                src={pass.qr_code}
                 alt="Hall Pass QR Code"
-                style={{ 
-                  maxWidth: '200px', 
+                style={{
+                  maxWidth: '200px',
                   margin: '0 auto',
                   border: '2px solid #ddd',
-                  borderRadius: '8px'
+                  borderRadius: '8px',
                 }}
               />
             )}
@@ -211,17 +219,17 @@ const PassCard = ({
                 <Statistic.Value>{pass.student_name}</Statistic.Value>
                 <Statistic.Label>Student</Statistic.Label>
               </Statistic>
-              
+
               <Statistic>
                 <Statistic.Value>{pass.destination}</Statistic.Value>
                 <Statistic.Label>Destination</Statistic.Label>
               </Statistic>
-              
+
               <Statistic>
                 <Statistic.Value>{pass.pass_code}</Statistic.Value>
                 <Statistic.Label>Pass Code</Statistic.Label>
               </Statistic>
-              
+
               <Statistic>
                 <Statistic.Value>{formatTime(pass.issue_time)}</Statistic.Value>
                 <Statistic.Label>Issued</Statistic.Label>
@@ -229,12 +237,12 @@ const PassCard = ({
             </Statistic.Group>
           </Grid.Column>
         </Grid>
-        
+
         <div style={{ marginTop: '15px', fontSize: '0.9em', color: '#666' }}>
           Show this QR code to verify the hall pass
         </div>
       </Modal.Content>
-      
+
       <Modal.Actions>
         <Button onClick={() => setShowQRModal(false)}>
           <Icon name="close" />
@@ -271,18 +279,21 @@ const PassCard = ({
 
   return (
     <>
-      <Card className={`pass-card ${alertLevel.color}`} color={alertLevel.color}>
+      <Card
+        className={`pass-card ${alertLevel.color}`}
+        color={alertLevel.color}
+      >
         <Card.Content>
           <Card.Header>
             <Icon name="user" />
             {pass.student_name}
             <div style={{ float: 'right' }}>
-              <WorkflowStatus 
-                workflowState={workflowState} 
-                duration={currentDuration} 
+              <WorkflowStatus
+                workflowState={workflowState}
+                duration={currentDuration}
               />
-              <Label 
-                color={alertLevel.color} 
+              <Label
+                color={alertLevel.color}
                 size="small"
                 style={{ marginLeft: '5px' }}
               >
@@ -290,12 +301,12 @@ const PassCard = ({
               </Label>
             </div>
           </Card.Header>
-          
+
           <Card.Meta>
             <Icon name="map marker" />
             {pass.destination}
           </Card.Meta>
-          
+
           <Card.Description>
             <div className="pass-details">
               <div className="time-info">
@@ -303,30 +314,31 @@ const PassCard = ({
                 <strong>Duration:</strong> {getTimeDifference()}
                 {pass.expected_duration && (
                   <span className="expected">
-                    {' '}(expected {pass.expected_duration} min)
+                    {' '}
+                    (expected {pass.expected_duration} min)
                   </span>
                 )}
               </div>
-              
+
               <div className="issue-time">
                 <Icon name="calendar" />
                 <strong>Issued:</strong> {formatTime(pass.issue_time)}
               </div>
-              
+
               {pass.return_time && (
                 <div className="return-time">
                   <Icon name="check circle" color="green" />
                   <strong>Returned:</strong> {formatTime(pass.return_time)}
                 </div>
               )}
-              
+
               {pass.notes && (
                 <div className="notes">
                   <Icon name="sticky note" />
                   <strong>Notes:</strong> {pass.notes}
                 </div>
               )}
-              
+
               <div className="pass-code">
                 <Icon name="key" />
                 <strong>Pass Code:</strong> {pass.pass_code}
@@ -334,19 +346,16 @@ const PassCard = ({
             </div>
           </Card.Description>
         </Card.Content>
-        
+
         <Card.Content extra>
           <div className="pass-actions">
-            <Button 
-              size="small"
-              onClick={() => setShowQRModal(true)}
-            >
+            <Button size="small" onClick={() => setShowQRModal(true)}>
               <Icon name="qrcode" />
               Show QR Code
             </Button>
-            
+
             {showReturnButton && pass.is_active && onReturn && (
-              <Button 
+              <Button
                 color={alertLevel.color === 'red' ? 'red' : 'green'}
                 size="small"
                 onClick={onReturn}
@@ -355,7 +364,7 @@ const PassCard = ({
                 Mark Returned
               </Button>
             )}
-            
+
             {!pass.is_active && (
               <Label color="green" size="small">
                 <Icon name="check" />
@@ -365,7 +374,7 @@ const PassCard = ({
           </div>
         </Card.Content>
       </Card>
-      
+
       {renderQRModal()}
     </>
   );
@@ -385,11 +394,11 @@ PassCard.propTypes = {
     pass_code: PropTypes.string,
     qr_code: PropTypes.string,
     notes: PropTypes.string,
-    url: PropTypes.string
+    url: PropTypes.string,
   }).isRequired,
   onReturn: PropTypes.func,
   showReturnButton: PropTypes.bool,
-  compact: PropTypes.bool
+  compact: PropTypes.bool,
 };
 
-export default PassCard; 
+export default PassCard;

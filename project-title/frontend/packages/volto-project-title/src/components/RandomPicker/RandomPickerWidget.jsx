@@ -1,6 +1,6 @@
 /**
  * Random Picker Widget for Embedding in Other Views
- * 
+ *
  * A compact version of the Random Student Picker that can be
  * embedded within seating charts or other classroom management views.
  */
@@ -14,14 +14,14 @@ import {
   Icon,
   Modal,
   Statistic,
-  Message
+  Message,
 } from 'semantic-ui-react';
 
-const RandomPickerWidget = ({ 
-  students = [], 
+const RandomPickerWidget = ({
+  students = [],
   contentUrl,
   compact = false,
-  onStudentSelected
+  onStudentSelected,
 }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -38,7 +38,7 @@ const RandomPickerWidget = ({
 
     try {
       // Quick visual feedback
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Make API call or local selection
       let result;
@@ -47,9 +47,9 @@ const RandomPickerWidget = ({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
           },
-          credentials: 'include'
+          credentials: 'include',
         });
 
         if (response.ok) {
@@ -64,14 +64,14 @@ const RandomPickerWidget = ({
           success: true,
           selected: selected,
           timestamp: new Date().toISOString(),
-          fairness_score: 100
+          fairness_score: 100,
         };
       }
 
       if (result.success) {
         setSelectedStudent(result.selected);
         setFairnessScore(result.fairness_score);
-        
+
         // Callback for parent component
         if (onStudentSelected) {
           onStudentSelected(result.selected, result);
@@ -80,23 +80,23 @@ const RandomPickerWidget = ({
         // Show result
         if (compact) {
           // For compact mode, just highlight briefly
-          await new Promise(resolve => setTimeout(resolve, 1500));
+          await new Promise((resolve) => setTimeout(resolve, 1500));
         } else {
           // For normal mode, show modal
           setShowModal(true);
         }
       }
-
     } catch (error) {
       console.error('Selection failed:', error);
       // Fallback local selection
-      const fallbackStudent = students[Math.floor(Math.random() * students.length)];
+      const fallbackStudent =
+        students[Math.floor(Math.random() * students.length)];
       setSelectedStudent(fallbackStudent);
-      
+
       if (onStudentSelected) {
         onStudentSelected(fallbackStudent, { selected: fallbackStudent });
       }
-      
+
       if (!compact) {
         setShowModal(true);
       }
@@ -121,14 +121,14 @@ const RandomPickerWidget = ({
         <Icon name="dice" />
         {isSpinning ? 'Selecting...' : 'Pick Random Student'}
       </Button>
-      
+
       {selectedStudent && !isSpinning && (
         <Message positive size="small" style={{ marginTop: '10px' }}>
           <Icon name="trophy" />
           <strong>{selectedStudent}</strong> was selected!
         </Message>
       )}
-      
+
       {students.length === 0 && (
         <Message warning size="small" style={{ marginTop: '10px' }}>
           No students available
@@ -152,7 +152,10 @@ const RandomPickerWidget = ({
         </Header.Content>
       </Header>
 
-      <div className="widget-controls" style={{ textAlign: 'center', marginBottom: '15px' }}>
+      <div
+        className="widget-controls"
+        style={{ textAlign: 'center', marginBottom: '15px' }}
+      >
         <Button
           primary
           loading={isSpinning}
@@ -215,4 +218,4 @@ RandomPickerWidget.propTypes = {
   onStudentSelected: PropTypes.func,
 };
 
-export default RandomPickerWidget; 
+export default RandomPickerWidget;

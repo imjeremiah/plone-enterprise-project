@@ -1,6 +1,6 @@
 /**
  * Seating Grid Component with Drag-Drop (react-dnd v5)
- * 
+ *
  * Interactive grid for drag-drop student positioning in classroom seating charts.
  * Uses react-dnd v5 HOC approach for compatibility with Volto core.
  */
@@ -39,25 +39,30 @@ const collectSource = (connect, monitor) => ({
  */
 const formatStudentName = (fullName) => {
   if (!fullName) return '';
-  
+
   const nameParts = fullName.trim().split(' ');
   if (nameParts.length === 1) {
     return nameParts[0]; // Just first name if only one part
   }
-  
+
   const firstName = nameParts[0];
   const lastName = nameParts[nameParts.length - 1];
   const lastInitial = lastName.charAt(0).toUpperCase();
-  
+
   return `${firstName} ${lastInitial}.`;
 };
 
 /**
  * Individual draggable student component
  */
-const DraggableStudentComponent = ({ student, editable, connectDragSource, isDragging }) => {
+const DraggableStudentComponent = ({
+  student,
+  editable,
+  connectDragSource,
+  isDragging,
+}) => {
   const displayName = formatStudentName(student);
-  
+
   return connectDragSource(
     <div
       className={`student-token seating-chart-student-token ${isDragging ? 'dragging' : ''} ${editable ? 'draggable' : ''}`}
@@ -67,16 +72,25 @@ const DraggableStudentComponent = ({ student, editable, connectDragSource, isDra
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        textAlign: 'center'
+        textAlign: 'center',
       }}
     >
       <Icon name="user" size="small" />
-      <span className="student-name seating-chart-student-name" style={{textAlign: 'center', marginLeft: '4px'}}>{displayName}</span>
-    </div>
+      <span
+        className="student-name seating-chart-student-name"
+        style={{ textAlign: 'center', marginLeft: '4px' }}
+      >
+        {displayName}
+      </span>
+    </div>,
   );
 };
 
-const DraggableStudent = DragSource(STUDENT_TYPE, studentSource, collectSource)(DraggableStudentComponent);
+const DraggableStudent = DragSource(
+  STUDENT_TYPE,
+  studentSource,
+  collectSource,
+)(DraggableStudentComponent);
 
 /**
  * Drop target specification for desk slots
@@ -105,20 +119,25 @@ const collectTarget = (connect, monitor) => ({
 /**
  * Droppable desk slot component
  */
-const DeskSlotComponent = ({ 
-  row, 
-  col, 
-  student, 
-  editable, 
-  isEmpty, 
-  connectDropTarget, 
-  isOver, 
+const DeskSlotComponent = ({
+  row,
+  col,
+  student,
+  editable,
+  isEmpty,
+  connectDropTarget,
+  isOver,
   canDrop,
-  hideInViewMode
+  hideInViewMode,
 }) => {
   // Hide empty desks in view mode by rendering invisible placeholder
   if (hideInViewMode) {
-    return <div className="desk-slot hidden-empty" style={{ visibility: 'hidden' }}></div>;
+    return (
+      <div
+        className="desk-slot hidden-empty"
+        style={{ visibility: 'hidden' }}
+      ></div>
+    );
   }
 
   let deskClass = 'desk-slot';
@@ -129,17 +148,8 @@ const DeskSlotComponent = ({
   if (!canDrop && isOver) deskClass += ' drag-invalid';
 
   return connectDropTarget(
-    <div
-      className={deskClass}
-      data-row={row}
-      data-col={col}
-    >
-      {student && (
-        <DraggableStudent 
-          student={student} 
-          editable={editable}
-        />
-      )}
+    <div className={deskClass} data-row={row} data-col={col}>
+      {student && <DraggableStudent student={student} editable={editable} />}
       {isEmpty && !editable && (
         <div className="empty-label">
           <Icon name="ban" color="grey" />
@@ -157,11 +167,15 @@ const DeskSlotComponent = ({
           <Icon name="circle outline" color="grey" />
         </div>
       )}
-    </div>
+    </div>,
   );
 };
 
-const DeskSlot = DropTarget(STUDENT_TYPE, deskTarget, collectTarget)(DeskSlotComponent);
+const DeskSlot = DropTarget(
+  STUDENT_TYPE,
+  deskTarget,
+  collectTarget,
+)(DeskSlotComponent);
 
 /**
  * Drop target specification for the unassigned students pool
@@ -190,18 +204,20 @@ const collectUnassignedTarget = (connect, monitor) => ({
 /**
  * Droppable unassigned students pool component
  */
-const UnassignedStudentsPoolComponent = ({ 
-  editable, 
-  students, 
-  gridData, 
-  connectDropTarget, 
-  isOver, 
-  canDrop 
+const UnassignedStudentsPoolComponent = ({
+  editable,
+  students,
+  gridData,
+  connectDropTarget,
+  isOver,
+  canDrop,
 }) => {
   if (!editable || !students) return null;
 
   const assignedStudents = Object.values(gridData.students);
-  const unassigned = students.filter(student => !assignedStudents.includes(student));
+  const unassigned = students.filter(
+    (student) => !assignedStudents.includes(student),
+  );
 
   if (unassigned.length === 0 && !isOver) return null;
 
@@ -215,8 +231,17 @@ const UnassignedStudentsPoolComponent = ({
         <Icon name="users" />
         <strong>Unassigned Students ({unassigned.length})</strong>
       </div>
-      <div className="student-pool seating-chart-student-pool" style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-        {unassigned.map(student => (
+      <div
+        className="student-pool seating-chart-student-pool"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          alignItems: 'center',
+          textAlign: 'center',
+        }}
+      >
+        {unassigned.map((student) => (
           <DraggableStudent
             key={student}
             student={student}
@@ -227,16 +252,28 @@ const UnassignedStudentsPoolComponent = ({
           <div className="drop-hint">Drop student here to unassign</div>
         )}
       </div>
-    </div>
+    </div>,
   );
 };
 
-const UnassignedStudentsPool = DropTarget(STUDENT_TYPE, unassignedPoolTarget, collectUnassignedTarget)(UnassignedStudentsPoolComponent);
+const UnassignedStudentsPool = DropTarget(
+  STUDENT_TYPE,
+  unassignedPoolTarget,
+  collectUnassignedTarget,
+)(UnassignedStudentsPoolComponent);
 
 /**
  * Main seating grid with drag-drop functionality
  */
-const SeatingGrid = ({ gridData, students, rows, cols, onMove, onUnassign, editable }) => {
+const SeatingGrid = ({
+  gridData,
+  students,
+  rows,
+  cols,
+  onMove,
+  onUnassign,
+  editable,
+}) => {
   /**
    * Find student at specific grid position
    */
@@ -262,7 +299,7 @@ const SeatingGrid = ({ gridData, students, rows, cols, onMove, onUnassign, edita
       for (let col = 0; col < cols; col++) {
         const student = getStudentAt(row, col);
         const isEmpty = isEmptyDesk(row, col);
-        
+
         slots.push(
           <DeskSlot
             key={`${row}-${col}`}
@@ -273,7 +310,7 @@ const SeatingGrid = ({ gridData, students, rows, cols, onMove, onUnassign, edita
             onDrop={onMove}
             editable={editable}
             hideInViewMode={isEmpty && !editable}
-          />
+          />,
         );
       }
     }
@@ -315,8 +352,8 @@ const SeatingGrid = ({ gridData, students, rows, cols, onMove, onUnassign, edita
         <div className="grid-instructions">
           <Icon name="info circle" color="blue" />
           <span>
-            Drag students from the pool above or between desks to arrange seating. 
-            Drag back to pool to unassign.
+            Drag students from the pool above or between desks to arrange
+            seating. Drag back to pool to unassign.
           </span>
         </div>
       )}
@@ -357,4 +394,4 @@ DeskSlotComponent.propTypes = {
   hideInViewMode: PropTypes.bool,
 };
 
-export default SeatingGrid; 
+export default SeatingGrid;

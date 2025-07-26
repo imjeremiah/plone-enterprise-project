@@ -3,4 +3,4 @@
  */
 
 export { default } from './StandardsWidget';
-export { default as StandardsWidget } from './StandardsWidget'; 
+export { default as StandardsWidget } from './StandardsWidget';

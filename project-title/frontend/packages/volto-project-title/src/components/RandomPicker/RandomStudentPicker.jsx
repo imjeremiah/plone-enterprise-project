@@ -1,6 +1,6 @@
 /**
  * Random Student Picker React Component for Volto Integration
- * 
+ *
  * Provides fair random student selection with spinning animation
  * and real-time fairness tracking for classroom management.
  */
@@ -19,7 +19,7 @@ import {
   Modal,
   Table,
   Progress,
-  Statistic
+  Statistic,
 } from 'semantic-ui-react';
 import './RandomStudentPicker.css';
 
@@ -56,7 +56,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <Container fluid style={{textAlign: 'center', padding: '40px'}}>
+        <Container fluid style={{ textAlign: 'center', padding: '40px' }}>
           <Header as="h3" color="red">
             <Icon name="exclamation triangle" />
             Something went wrong with the Random Student Picker
@@ -72,10 +72,10 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const RandomStudentPickerComponent = ({ 
-  students = [], 
-  contentUrl, 
-  title = "Random Student Picker" 
+const RandomStudentPickerComponent = ({
+  students = [],
+  contentUrl,
+  title = 'Random Student Picker',
 }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -87,10 +87,22 @@ const RandomStudentPickerComponent = ({
 
   // Default students for demo/testing
   const defaultStudents = [
-    "Alice Johnson", "Bob Smith", "Carol Williams", "David Brown",
-    "Emma Davis", "Frank Miller", "Grace Wilson", "Henry Moore",
-    "Ivy Taylor", "Jack Anderson", "Kate Thomas", "Liam Jackson",
-    "Maya White", "Noah Harris", "Olivia Martin", "Paul Thompson"
+    'Alice Johnson',
+    'Bob Smith',
+    'Carol Williams',
+    'David Brown',
+    'Emma Davis',
+    'Frank Miller',
+    'Grace Wilson',
+    'Henry Moore',
+    'Ivy Taylor',
+    'Jack Anderson',
+    'Kate Thomas',
+    'Liam Jackson',
+    'Maya White',
+    'Noah Harris',
+    'Olivia Martin',
+    'Paul Thompson',
   ];
 
   const studentList = students.length > 0 ? students : defaultStudents;
@@ -102,11 +114,14 @@ const RandomStudentPickerComponent = ({
     if (!contentUrl) return;
 
     try {
-      const response = await fetch(`${contentUrl}/@@random-picker?ajax_data=1`, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' },
-        credentials: 'include'
-      });
+      const response = await fetch(
+        `${contentUrl}/@@random-picker?ajax_data=1`,
+        {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          credentials: 'include',
+        },
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -129,15 +144,19 @@ const RandomStudentPickerComponent = ({
   const calculateFairnessScore = useCallback(() => {
     if (!Object.keys(pickerHistory).length) return 100;
 
-    const picks = Object.values(pickerHistory).map(student => student.count || 0);
-    if (picks.every(p => p === 0)) return 100;
+    const picks = Object.values(pickerHistory).map(
+      (student) => student.count || 0,
+    );
+    if (picks.every((p) => p === 0)) return 100;
 
     const avg = picks.reduce((sum, p) => sum + p, 0) / picks.length;
-    const variance = picks.reduce((sum, p) => sum + Math.pow(p - avg, 2), 0) / picks.length;
-    
+    const variance =
+      picks.reduce((sum, p) => sum + Math.pow(p - avg, 2), 0) / picks.length;
+
     const maxVariance = Math.pow(avg, 2);
-    const fairness = maxVariance > 0 ? 100 * (1 - Math.min(variance / maxVariance, 1)) : 100;
-    
+    const fairness =
+      maxVariance > 0 ? 100 * (1 - Math.min(variance / maxVariance, 1)) : 100;
+
     return Math.round(fairness);
   }, [pickerHistory]);
 
@@ -154,11 +173,11 @@ const RandomStudentPickerComponent = ({
       const spins = 3 + Math.random() * 2; // 3-5 full rotations
       const finalAngle = Math.random() * 360;
       const totalRotation = spins * 360 + finalAngle;
-      
+
       setWheelRotation(totalRotation);
 
       // Wait for animation to complete
-      await new Promise(resolve => setTimeout(resolve, 4000));
+      await new Promise((resolve) => setTimeout(resolve, 4000));
 
       // Make API call to backend for fair selection
       let result;
@@ -167,9 +186,9 @@ const RandomStudentPickerComponent = ({
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
           },
-          credentials: 'include'
+          credentials: 'include',
         });
 
         if (response.ok) {
@@ -179,34 +198,35 @@ const RandomStudentPickerComponent = ({
         }
       } else {
         // Fallback local selection for demo
-        const selected = studentList[Math.floor(Math.random() * studentList.length)];
+        const selected =
+          studentList[Math.floor(Math.random() * studentList.length)];
         result = {
           success: true,
           selected: selected,
           timestamp: new Date().toISOString(),
-          fairness_score: calculateFairnessScore()
+          fairness_score: calculateFairnessScore(),
         };
       }
 
       if (result.success) {
         setSelectedStudent(result.selected);
         setFairnessScore(result.fairness_score);
-        
+
         // Add to session picks
         const newPick = {
           student: result.selected,
-          timestamp: result.timestamp
+          timestamp: result.timestamp,
         };
-        setSessionPicks(prev => [...prev, newPick]);
+        setSessionPicks((prev) => [...prev, newPick]);
 
         // Update history
-        setPickerHistory(prev => ({
+        setPickerHistory((prev) => ({
           ...prev,
           [result.selected]: {
             count: (prev[result.selected]?.count || 0) + 1,
             last_picked: Date.now() / 1000,
-            picks: [...(prev[result.selected]?.picks || []), result.timestamp]
-          }
+            picks: [...(prev[result.selected]?.picks || []), result.timestamp],
+          },
         }));
 
         // Show result modal
@@ -215,11 +235,11 @@ const RandomStudentPickerComponent = ({
         // Play success sound (optional)
         playSuccessSound();
       }
-
     } catch (error) {
       console.error('Selection failed:', error);
       // Still select locally as fallback
-      const fallbackStudent = studentList[Math.floor(Math.random() * studentList.length)];
+      const fallbackStudent =
+        studentList[Math.floor(Math.random() * studentList.length)];
       setSelectedStudent(fallbackStudent);
       setShowModal(true);
     } finally {
@@ -237,9 +257,11 @@ const RandomStudentPickerComponent = ({
       console.log('🔇 Sound disabled: standalone mode (no backend connection)');
       return;
     }
-    
+
     try {
-      const audio = new Audio(`${contentUrl}/++resource++project.title/sounds/success.mp3`);
+      const audio = new Audio(
+        `${contentUrl}/++resource++project.title/sounds/success.mp3`,
+      );
       audio.volume = 0.3;
       audio.play().catch(() => {
         // Sound is optional, ignore errors
@@ -253,7 +275,11 @@ const RandomStudentPickerComponent = ({
    * Reset picking history
    */
   const resetHistory = async () => {
-    if (!window.confirm('Reset all picking history for today? This cannot be undone.')) {
+    if (
+      !window.confirm(
+        'Reset all picking history for today? This cannot be undone.',
+      )
+    ) {
       return;
     }
 
@@ -263,7 +289,7 @@ const RandomStudentPickerComponent = ({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'reset_history' }),
-          credentials: 'include'
+          credentials: 'include',
         });
 
         if (!response.ok) {
@@ -275,7 +301,6 @@ const RandomStudentPickerComponent = ({
       setPickerHistory({});
       setSessionPicks([]);
       setFairnessScore(100);
-      
     } catch (error) {
       console.error('Reset failed:', error);
       alert('Failed to reset history. Please try again.');
@@ -288,11 +313,11 @@ const RandomStudentPickerComponent = ({
   const formatStudentName = (fullName) => {
     const nameParts = fullName.trim().split(' ');
     if (nameParts.length === 1) return nameParts[0];
-    
+
     const firstName = nameParts[0];
     const lastName = nameParts[nameParts.length - 1];
     const lastInitial = lastName.charAt(0).toUpperCase();
-    
+
     return `${firstName} ${lastInitial}.`;
   };
 
@@ -311,14 +336,16 @@ const RandomStudentPickerComponent = ({
    */
   const renderWheel = () => {
     const anglePerStudent = 360 / studentList.length;
-    
+
     return (
       <div className="picker-wheel-container">
-        <div 
+        <div
           className={`picker-wheel ${isSpinning ? 'spinning' : ''}`}
           style={{
             transform: `rotate(${wheelRotation}deg)`,
-            transition: isSpinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67)' : 'none'
+            transition: isSpinning
+              ? 'transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67)'
+              : 'none',
           }}
         >
           <div className="wheel-segments">
@@ -328,7 +355,7 @@ const RandomStudentPickerComponent = ({
                 className="wheel-segment"
                 style={{
                   transform: `rotate(${anglePerStudent * index}deg)`,
-                  background: `hsl(${(360 / studentList.length) * index}, 70%, 60%)`
+                  background: `hsl(${(360 / studentList.length) * index}, 70%, 60%)`,
                 }}
               >
                 <span className="segment-text">
@@ -350,7 +377,10 @@ const RandomStudentPickerComponent = ({
    * Render statistics panel
    */
   const renderStatistics = () => {
-    const totalPicks = Object.values(pickerHistory).reduce((sum, student) => sum + (student.count || 0), 0);
+    const totalPicks = Object.values(pickerHistory).reduce(
+      (sum, student) => sum + (student.count || 0),
+      0,
+    );
     const recentPicks = sessionPicks.slice(-5).reverse();
 
     return (
@@ -365,12 +395,12 @@ const RandomStudentPickerComponent = ({
             <Statistic.Value>{studentList.length}</Statistic.Value>
             <Statistic.Label>Students</Statistic.Label>
           </Statistic>
-          
+
           <Statistic color={getFairnessColor(fairnessScore)}>
             <Statistic.Value>{fairnessScore}%</Statistic.Value>
             <Statistic.Label>Fairness</Statistic.Label>
           </Statistic>
-          
+
           <Statistic>
             <Statistic.Value>{totalPicks}</Statistic.Value>
             <Statistic.Label>Total Picks</Statistic.Label>
@@ -387,7 +417,7 @@ const RandomStudentPickerComponent = ({
                 <Label.Detail>
                   {new Date(pick.timestamp).toLocaleTimeString([], {
                     hour: '2-digit',
-                    minute: '2-digit'
+                    minute: '2-digit',
                   })}
                 </Label.Detail>
               </Label>
@@ -411,22 +441,23 @@ const RandomStudentPickerComponent = ({
               </Table.Header>
               <Table.Body>
                 {Object.entries(pickerHistory)
-                  .sort(([,a], [,b]) => (a.count || 0) - (b.count || 0))
+                  .sort(([, a], [, b]) => (a.count || 0) - (b.count || 0))
                   .map(([student, data]) => (
-                    <Table.Row 
+                    <Table.Row
                       key={student}
                       warning={!data.count || data.count === 0}
                     >
                       <Table.Cell>{student}</Table.Cell>
                       <Table.Cell>{data.count || 0}</Table.Cell>
                       <Table.Cell>
-                        {data.last_picked ? 
-                          new Date(data.last_picked * 1000).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          }) : 
-                          'Never'
-                        }
+                        {data.last_picked
+                          ? new Date(
+                              data.last_picked * 1000,
+                            ).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })
+                          : 'Never'}
                       </Table.Cell>
                     </Table.Row>
                   ))}
@@ -436,11 +467,16 @@ const RandomStudentPickerComponent = ({
         )}
       </Segment>
     );
-      };
+  };
 
   return (
     <Container fluid className="random-student-picker">
-      <Header as="h1" dividing textAlign="center" className="picker-main-header">
+      <Header
+        as="h1"
+        dividing
+        textAlign="center"
+        className="picker-main-header"
+      >
         <Icon name="random" />
         <Header.Content>
           {title}
@@ -451,10 +487,10 @@ const RandomStudentPickerComponent = ({
       </Header>
 
       <Grid columns={2} stackable centered>
-        <Grid.Column width={10} style={{textAlign: 'center'}}>
-          <Segment style={{textAlign: 'center'}} className="wheel-section">
+        <Grid.Column width={10} style={{ textAlign: 'center' }}>
+          <Segment style={{ textAlign: 'center' }} className="wheel-section">
             {renderWheel()}
-            
+
             <div className="picker-controls">
               <Button
                 primary
@@ -466,12 +502,8 @@ const RandomStudentPickerComponent = ({
                 <Icon name="play" />
                 {isSpinning ? 'Spinning...' : 'Pick a Student'}
               </Button>
-              
-              <Button
-                secondary
-                onClick={resetHistory}
-                disabled={isSpinning}
-              >
+
+              <Button secondary onClick={resetHistory} disabled={isSpinning}>
                 <Icon name="redo" />
                 Reset History
               </Button>
@@ -486,7 +518,7 @@ const RandomStudentPickerComponent = ({
           </Segment>
         </Grid.Column>
 
-        <Grid.Column width={6} style={{textAlign: 'center'}}>
+        <Grid.Column width={6} style={{ textAlign: 'center' }}>
           {renderStatistics()}
         </Grid.Column>
       </Grid>
@@ -502,12 +534,12 @@ const RandomStudentPickerComponent = ({
           <Icon name="trophy" color="yellow" />
           Selected Student
         </Modal.Header>
-                    <Modal.Content style={{textAlign: 'center'}}>
+        <Modal.Content style={{ textAlign: 'center' }}>
           <div className="selected-student-display">
             <div className="student-avatar">
               <Icon name="user" size="huge" />
             </div>
-            <div 
+            <div
               className="student-name-container"
               style={{
                 background: 'white',
@@ -518,10 +550,10 @@ const RandomStudentPickerComponent = ({
                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                 margin: '20px auto',
                 padding: '15px 20px',
-                maxWidth: '80%'
+                maxWidth: '80%',
               }}
             >
-              <Header 
+              <Header
                 as="h2"
                 style={{
                   color: '#2c3e50',
@@ -533,18 +565,14 @@ const RandomStudentPickerComponent = ({
                   margin: '0',
                   padding: '0',
                   border: 'none',
-                  boxShadow: 'none'
+                  boxShadow: 'none',
                 }}
               >
                 {selectedStudent}
               </Header>
             </div>
-            <p>
-              Selected at: {new Date().toLocaleTimeString()}
-            </p>
-            <Label size="large">
-              Fairness Score: {fairnessScore}%
-            </Label>
+            <p>Selected at: {new Date().toLocaleTimeString()}</p>
+            <Label size="large">Fairness Score: {fairnessScore}%</Label>
           </div>
         </Modal.Content>
         <Modal.Actions>
@@ -552,8 +580,8 @@ const RandomStudentPickerComponent = ({
             <Icon name="check" />
             Done
           </Button>
-          <Button 
-            primary 
+          <Button
+            primary
             onClick={() => {
               setShowModal(false);
               setTimeout(spinWheel, 500);
@@ -577,22 +605,22 @@ RandomStudentPickerComponent.propTypes = {
 // Wrapper with client-only rendering and error boundary
 const RandomStudentPicker = (props) => (
   <ErrorBoundary>
-    <ClientOnly fallback={
-      <Container fluid style={{textAlign: 'center', padding: '40px'}}>
-        <Header as="h1" dividing textAlign="center">
-          <Icon name="random" />
-          <Header.Content>
-            Random Student Picker
-            <Header.Subheader>
-              Loading...
-            </Header.Subheader>
-          </Header.Content>
-        </Header>
-      </Container>
-    }>
+    <ClientOnly
+      fallback={
+        <Container fluid style={{ textAlign: 'center', padding: '40px' }}>
+          <Header as="h1" dividing textAlign="center">
+            <Icon name="random" />
+            <Header.Content>
+              Random Student Picker
+              <Header.Subheader>Loading...</Header.Subheader>
+            </Header.Content>
+          </Header>
+        </Container>
+      }
+    >
       <RandomStudentPickerComponent {...props} />
     </ClientOnly>
   </ErrorBoundary>
 );
 
-export default RandomStudentPicker; 
+export default RandomStudentPicker;

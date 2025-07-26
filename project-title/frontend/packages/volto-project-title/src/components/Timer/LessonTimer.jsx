@@ -1,6 +1,6 @@
 /**
  * Lesson Timer Widget for Classroom Management
- * 
+ *
  * Provides visual and audio alerts for classroom activities with
  * localStorage persistence and fullscreen mode for easy visibility.
  */
@@ -18,7 +18,7 @@ import {
   Dropdown,
   Segment,
   Header,
-  Message
+  Message,
 } from 'semantic-ui-react';
 import './LessonTimer.css';
 
@@ -37,10 +37,10 @@ const ClientOnly = ({ children, fallback = null }) => {
   return children;
 };
 
-const LessonTimerComponent = ({ 
+const LessonTimerComponent = ({
   presets = [],
   contentUrl,
-  compact = false
+  compact = false,
 }) => {
   const [duration, setDuration] = useState(300); // 5 min default
   const [remaining, setRemaining] = useState(0);
@@ -49,7 +49,7 @@ const LessonTimerComponent = ({
   const [customMinutes, setCustomMinutes] = useState(5);
   const [timerPresets, setTimerPresets] = useState([]);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  
+
   const intervalRef = useRef(null);
   const lastUpdateRef = useRef(Date.now());
 
@@ -73,7 +73,7 @@ const LessonTimerComponent = ({
     try {
       const response = await fetch(`${contentUrl}/@@timer-presets`, {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -97,22 +97,22 @@ const LessonTimerComponent = ({
     const saved = localStorage.getItem('lessonTimer');
     if (saved) {
       try {
-        const { 
-          remaining: savedRemaining, 
-          isRunning: wasRunning, 
+        const {
+          remaining: savedRemaining,
+          isRunning: wasRunning,
           duration: savedDuration,
-          lastUpdate 
+          lastUpdate,
         } = JSON.parse(saved);
-        
+
         if (savedRemaining > 0) {
           // Calculate time elapsed since last update
           const now = Date.now();
           const elapsed = Math.floor((now - lastUpdate) / 1000);
           const adjustedRemaining = Math.max(0, savedRemaining - elapsed);
-          
+
           setDuration(savedDuration || 300);
           setRemaining(adjustedRemaining);
-          
+
           if (wasRunning && adjustedRemaining > 0) {
             startTimer();
           }
@@ -121,7 +121,7 @@ const LessonTimerComponent = ({
         console.warn('Failed to restore timer state:', e);
       }
     }
-    
+
     loadPresets();
   }, [loadPresets]);
 
@@ -133,7 +133,7 @@ const LessonTimerComponent = ({
       remaining,
       isRunning,
       duration,
-      lastUpdate: Date.now()
+      lastUpdate: Date.now(),
     };
     localStorage.setItem('lessonTimer', JSON.stringify(timerState));
   }, [remaining, isRunning, duration]);
@@ -145,22 +145,22 @@ const LessonTimerComponent = ({
     if (remaining === 0) {
       setRemaining(duration);
     }
-    
+
     setIsRunning(true);
     lastUpdateRef.current = Date.now();
-    
+
     intervalRef.current = setInterval(() => {
-      setRemaining(prev => {
+      setRemaining((prev) => {
         if (prev <= 1) {
           setIsRunning(false);
           endTimer();
           return 0;
         }
-        
+
         // Warning alerts
         if (prev === 120 && soundEnabled) playSound('warning'); // 2 min
-        if (prev === 60 && soundEnabled) playSound('warning');  // 1 min
-        
+        if (prev === 60 && soundEnabled) playSound('warning'); // 1 min
+
         return prev - 1;
       });
     }, 1000);
@@ -182,22 +182,22 @@ const LessonTimerComponent = ({
    */
   const endTimer = useCallback(() => {
     pauseTimer();
-    
+
     if (soundEnabled) {
       playSound('complete');
     }
-    
+
     // Visual alert - flash the page
     document.body.classList.add('timer-complete');
     setTimeout(() => {
       document.body.classList.remove('timer-complete');
     }, 3000);
-    
+
     // Browser notification if supported
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Timer Complete!', {
         body: 'The lesson timer has finished.',
-        icon: '/++resource++project.title/timer-icon.png'
+        icon: '/++resource++project.title/timer-icon.png',
       });
     }
   }, [pauseTimer, soundEnabled]);
@@ -215,11 +215,11 @@ const LessonTimerComponent = ({
    */
   const playSound = (type) => {
     if (!soundEnabled) return;
-    
+
     try {
       const audio = new Audio(`/++resource++project.title/sounds/${type}.mp3`);
       audio.volume = 0.3;
-      audio.play().catch(e => {
+      audio.play().catch((e) => {
         console.log('Audio play failed (this is normal in some browsers):', e);
       });
     } catch (error) {
@@ -284,11 +284,11 @@ const LessonTimerComponent = ({
   };
 
   // Preset options for dropdown
-  const presetOptions = timerPresets.map(preset => ({
+  const presetOptions = timerPresets.map((preset) => ({
     key: preset.name,
     text: `${preset.name} (${Math.floor(preset.duration / 60)}m)`,
     value: preset,
-    description: preset.description
+    description: preset.description,
   }));
 
   if (compact) {
@@ -332,28 +332,33 @@ const LessonTimerComponent = ({
         </div>
 
         <div className="timer-display">
-          <h1 className={`time ${remaining < 60 ? 'urgent' : ''} ${isRunning ? 'running' : ''}`}>
+          <h1
+            className={`time ${remaining < 60 ? 'urgent' : ''} ${isRunning ? 'running' : ''}`}
+          >
             {formatTime(remaining || duration)}
           </h1>
           <Progress
-            percent={duration > 0 ? ((duration - remaining) / duration) * 100 : 0}
+            percent={
+              duration > 0 ? ((duration - remaining) / duration) * 100 : 0
+            }
             color={getProgressColor()}
             size="small"
           />
-          
+
           {remaining > 0 && (
             <div className="timer-info">
               <Label size="small">
-                {isRunning ? 'Running' : 'Paused'} • {Math.floor(remaining / 60)}m {remaining % 60}s remaining
+                {isRunning ? 'Running' : 'Paused'} •{' '}
+                {Math.floor(remaining / 60)}m {remaining % 60}s remaining
               </Label>
             </div>
           )}
         </div>
-        
+
         {!isRunning && remaining === 0 && (
           <div className="duration-setup">
             <Header as="h4">Set Timer Duration</Header>
-            
+
             <Grid columns={2} stackable>
               <Grid.Column>
                 <div className="custom-duration">
@@ -363,16 +368,18 @@ const LessonTimerComponent = ({
                     min="1"
                     max="120"
                     value={customMinutes}
-                    onChange={(e, { value }) => setCustomMinutes(parseInt(value) || 1)}
+                    onChange={(e, { value }) =>
+                      setCustomMinutes(parseInt(value) || 1)
+                    }
                     action={{
                       content: 'Set',
-                      onClick: setCustomDuration
+                      onClick: setCustomDuration,
                     }}
                     size="small"
                   />
                 </div>
               </Grid.Column>
-              
+
               <Grid.Column>
                 <div className="preset-selector">
                   <label>Or choose preset:</label>
@@ -388,14 +395,14 @@ const LessonTimerComponent = ({
             </Grid>
           </div>
         )}
-        
+
         <div className="timer-controls">
           <Grid columns={3} stackable textAlign="center">
             <Grid.Column>
               {!isRunning ? (
-                <Button 
-                  primary 
-                  size="large" 
+                <Button
+                  primary
+                  size="large"
                   onClick={startTimer}
                   disabled={duration === 0}
                 >
@@ -409,20 +416,16 @@ const LessonTimerComponent = ({
                 </Button>
               )}
             </Grid.Column>
-            
+
             <Grid.Column>
-              <Button 
-                basic 
-                size="large"
-                onClick={resetTimer}
-              >
+              <Button basic size="large" onClick={resetTimer}>
                 <Icon name="stop" />
                 Reset
               </Button>
             </Grid.Column>
-            
+
             <Grid.Column>
-              <Button 
+              <Button
                 basic
                 size="large"
                 onClick={toggleFullscreen}
@@ -438,16 +441,17 @@ const LessonTimerComponent = ({
         <div className="timer-options">
           <Grid columns={1}>
             <Grid.Column textAlign="center">
-              {'Notification' in window && Notification.permission === 'default' && (
-                <Button
-                  basic
-                  size="small"
-                  onClick={requestNotificationPermission}
-                >
-                  <Icon name="bell" />
-                  Enable Notifications
-                </Button>
-              )}
+              {'Notification' in window &&
+                Notification.permission === 'default' && (
+                  <Button
+                    basic
+                    size="small"
+                    onClick={requestNotificationPermission}
+                  >
+                    <Icon name="bell" />
+                    Enable Notifications
+                  </Button>
+                )}
             </Grid.Column>
           </Grid>
         </div>
@@ -466,22 +470,24 @@ const LessonTimerComponent = ({
               <h1 className={`huge-time ${remaining < 60 ? 'urgent' : ''}`}>
                 {formatTime(remaining || duration)}
               </h1>
-              
+
               <div className="fullscreen-progress">
                 <Progress
-                  percent={duration > 0 ? ((duration - remaining) / duration) * 100 : 0}
+                  percent={
+                    duration > 0 ? ((duration - remaining) / duration) * 100 : 0
+                  }
                   color={getProgressColor()}
                   size="medium"
                 />
               </div>
-              
+
               <div className="fullscreen-status">
                 <Label size="big" basic>
                   {isRunning ? 'RUNNING' : 'PAUSED'}
                 </Label>
               </div>
             </div>
-            
+
             <div className="fullscreen-controls">
               {!isRunning ? (
                 <Button huge primary onClick={startTimer}>
@@ -492,11 +498,11 @@ const LessonTimerComponent = ({
                   Pause
                 </Button>
               )}
-              
+
               <Button huge onClick={resetTimer}>
                 Reset
               </Button>
-              
+
               <Button huge onClick={() => setShowFullscreen(false)}>
                 Exit
               </Button>
@@ -509,27 +515,31 @@ const LessonTimerComponent = ({
 };
 
 LessonTimerComponent.propTypes = {
-  presets: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    duration: PropTypes.number.isRequired,
-    description: PropTypes.string
-  })),
+  presets: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      duration: PropTypes.number.isRequired,
+      description: PropTypes.string,
+    }),
+  ),
   contentUrl: PropTypes.string,
-  compact: PropTypes.bool
+  compact: PropTypes.bool,
 };
 
 // Wrapper with client-only rendering
 const LessonTimer = (props) => (
-  <ClientOnly fallback={
-    <Segment>
-      <Header as="h3" textAlign="center">
-        <Icon name="clock" />
-        Lesson Timer Loading...
-      </Header>
-    </Segment>
-  }>
+  <ClientOnly
+    fallback={
+      <Segment>
+        <Header as="h3" textAlign="center">
+          <Icon name="clock" />
+          Lesson Timer Loading...
+        </Header>
+      </Segment>
+    }
+  >
     <LessonTimerComponent {...props} />
   </ClientOnly>
 );
 
-export default LessonTimer; 
+export default LessonTimer;

@@ -1,6 +1,6 @@
 /**
  * Hall Pass Manager Route Component
- * 
+ *
  * Client-only route that prevents hydration mismatches
  */
 
@@ -30,11 +30,11 @@ const HallPassManagerRoute = () => {
   }
 
   return (
-    <Component 
+    <Component
       contentUrl="http://localhost:8080"
       title="Digital Hall Pass Manager"
     />
   );
 };
 
-export default HallPassManagerRoute; 
+export default HallPassManagerRoute;

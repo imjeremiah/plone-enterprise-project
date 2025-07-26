@@ -1,6 +1,6 @@
 /**
  * Alerts Widget for Teacher Dashboard
- * 
+ *
  * Displays real-time classroom alerts including:
  * - Hall pass duration warnings
  * - Participation fairness notifications
@@ -46,28 +46,29 @@ const AlertsWidget = ({ alerts = [] }) => {
   return (
     <div className="alerts-widget" style={{ marginBottom: '15px' }}>
       {/* High Priority Alerts */}
-      {groupedAlerts.high && groupedAlerts.high.map((alert, index) => (
-        <Message
-          key={`high-${index}`}
-          {...getMessageProps(alert)}
-          style={{ marginBottom: '10px' }}
-        >
-          <Message.Header>
-            <Icon name={alert.icon || 'exclamation triangle'} />
-            {alert.title}
-          </Message.Header>
-          <p>{alert.message}</p>
-          {alert.action && (
-            <Button 
-              size="small" 
-              color={alert.type === 'warning' ? 'orange' : 'blue'}
-              style={{ marginTop: '5px' }}
-            >
-              {alert.action}
-            </Button>
-          )}
-        </Message>
-      ))}
+      {groupedAlerts.high &&
+        groupedAlerts.high.map((alert, index) => (
+          <Message
+            key={`high-${index}`}
+            {...getMessageProps(alert)}
+            style={{ marginBottom: '10px' }}
+          >
+            <Message.Header>
+              <Icon name={alert.icon || 'exclamation triangle'} />
+              {alert.title}
+            </Message.Header>
+            <p>{alert.message}</p>
+            {alert.action && (
+              <Button
+                size="small"
+                color={alert.type === 'warning' ? 'orange' : 'blue'}
+                style={{ marginTop: '5px' }}
+              >
+                {alert.action}
+              </Button>
+            )}
+          </Message>
+        ))}
 
       {/* Medium and Low Priority Alerts in Compact Format */}
       {(groupedAlerts.medium || groupedAlerts.low) && (
@@ -77,7 +78,10 @@ const AlertsWidget = ({ alerts = [] }) => {
             Classroom Notifications
           </Message.Header>
           <List>
-            {[...(groupedAlerts.medium || []), ...(groupedAlerts.low || [])].map((alert, index) => (
+            {[
+              ...(groupedAlerts.medium || []),
+              ...(groupedAlerts.low || []),
+            ].map((alert, index) => (
               <List.Item key={`other-${index}`}>
                 <List.Icon name={alert.icon || 'circle'} />
                 <List.Content>
@@ -85,7 +89,13 @@ const AlertsWidget = ({ alerts = [] }) => {
                   <List.Description>
                     {alert.message}
                     {alert.action && (
-                      <span style={{ marginLeft: '10px', color: '#2185d0', cursor: 'pointer' }}>
+                      <span
+                        style={{
+                          marginLeft: '10px',
+                          color: '#2185d0',
+                          cursor: 'pointer',
+                        }}
+                      >
                         → {alert.action}
                       </span>
                     )}
@@ -101,16 +111,18 @@ const AlertsWidget = ({ alerts = [] }) => {
 };
 
 AlertsWidget.propTypes = {
-  alerts: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.oneOf(['warning', 'error', 'info']),
-    priority: PropTypes.oneOf(['high', 'medium', 'low']),
-    icon: PropTypes.string,
-    title: PropTypes.string.isRequired,
-    message: PropTypes.string.isRequired,
-    action: PropTypes.string,
-    timestamp: PropTypes.string,
-    category: PropTypes.string
-  }))
+  alerts: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.oneOf(['warning', 'error', 'info']),
+      priority: PropTypes.oneOf(['high', 'medium', 'low']),
+      icon: PropTypes.string,
+      title: PropTypes.string.isRequired,
+      message: PropTypes.string.isRequired,
+      action: PropTypes.string,
+      timestamp: PropTypes.string,
+      category: PropTypes.string,
+    }),
+  ),
 };
 
-export default AlertsWidget; 
+export default AlertsWidget;

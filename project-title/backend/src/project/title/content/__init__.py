@@ -7,9 +7,8 @@ from .seating_chart import ISeatingChart, SeatingChart
 from .hall_pass import IHallPass, HallPass
 
 __all__ = [
-    'ISeatingChart',
-    'SeatingChart',
-    'IHallPass',
-    'HallPass',
+    "ISeatingChart",
+    "SeatingChart",
+    "IHallPass",
+    "HallPass",
 ]
-

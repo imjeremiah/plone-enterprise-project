@@ -278,53 +278,53 @@ with spinning wheel animation and classroom-appropriate styling.
     padding: 15px;
     text-align: center !important;
   }
-  
+
   .random-student-picker .ui.grid {
     text-align: center !important;
     margin: 0 auto !important;
   }
-  
+
   .random-student-picker .ui.grid > .column {
     text-align: center !important;
     width: 100% !important;
     margin: 0 auto !important;
   }
-  
+
   .picker-wheel {
     width: 250px;
     height: 250px;
     margin: 0 auto !important;
   }
-  
+
   .wheel-section {
     padding: 30px 15px;
     text-align: center !important;
   }
-  
+
   .picker-controls {
     flex-direction: column;
     width: 100%;
     text-align: center !important;
     margin: 0 auto !important;
   }
-  
+
   .picker-controls .ui.button {
     width: 100%;
     max-width: 300px;
     margin: 0 auto !important;
   }
-  
+
   .segment-text {
     font-size: 10px;
     max-width: 50px;
   }
-  
+
   .wheel-center {
     width: 50px;
     height: 50px;
     font-size: 20px;
   }
-  
+
   .wheel-pointer {
     font-size: 28px;
   }
@@ -336,18 +336,18 @@ with spinning wheel animation and classroom-appropriate styling.
     width: 200px;
     height: 200px;
   }
-  
+
   .segment-text {
     font-size: 9px;
     max-width: 40px;
   }
-  
+
   .wheel-center {
     width: 40px;
     height: 40px;
     font-size: 16px;
   }
-  
+
   .wheel-pointer {
     font-size: 24px;
     top: -12px;
@@ -361,7 +361,7 @@ with spinning wheel animation and classroom-appropriate styling.
     padding: 16px 24px;
     font-size: 16px;
   }
-  
+
   .ui.table td {
     padding: 12px;
   }
@@ -373,11 +373,11 @@ with spinning wheel animation and classroom-appropriate styling.
     border-width: 4px;
     border-color: #000;
   }
-  
+
   .wheel-segment {
     border-color: #000;
   }
-  
+
   .segment-text {
     color: #000;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 1);
@@ -390,7 +390,7 @@ with spinning wheel animation and classroom-appropriate styling.
   .picker-wheel {
     transition: none !important;
   }
-  
+
   .picker-wheel.spinning {
     animation: none !important;
   }
@@ -402,7 +402,7 @@ with spinning wheel animation and classroom-appropriate styling.
   .picker-controls {
     display: none;
   }
-  
+
   .wheel-section {
     box-shadow: none;
     border: 1px solid #ddd;
@@ -421,7 +421,8 @@ with spinning wheel animation and classroom-appropriate styling.
 }
 
 @keyframes blur-text {
-  0%, 100% {
+  0%,
+  100% {
     filter: blur(0px);
   }
   50% {
@@ -486,4 +487,4 @@ with spinning wheel animation and classroom-appropriate styling.
 
 .ui.table tr.warning:hover {
   background-color: rgba(255, 193, 7, 0.2) !important;
-} 
+}

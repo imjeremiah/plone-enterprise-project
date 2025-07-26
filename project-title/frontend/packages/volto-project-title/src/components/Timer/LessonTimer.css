@@ -57,12 +57,13 @@
 }
 
 @keyframes pulse-urgent {
-  0%, 100% { 
-    opacity: 1; 
+  0%,
+  100% {
+    opacity: 1;
     transform: scale(1);
   }
-  50% { 
-    opacity: 0.7; 
+  50% {
+    opacity: 0.7;
     transform: scale(1.05);
   }
 }
@@ -202,7 +203,9 @@
   font-variant-numeric: tabular-nums;
   margin: 0 !important;
   color: #ffffff !important;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 255, 255, 0.1);
+  text-shadow:
+    2px 2px 8px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(255, 255, 255, 0.1);
   line-height: 0.85;
   letter-spacing: -0.02em;
   /* Prevent layout shift */
@@ -219,19 +222,26 @@
 
 .fullscreen-timer .huge-time.urgent {
   color: #ff4444 !important;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 50px rgba(255, 68, 68, 0.6);
+  text-shadow:
+    2px 2px 8px rgba(0, 0, 0, 0.8),
+    0 0 50px rgba(255, 68, 68, 0.6);
   animation: pulse-fullscreen-smooth 2s ease-in-out infinite;
   filter: drop-shadow(0 0 15px rgba(255, 68, 68, 0.5));
 }
 
 @keyframes pulse-fullscreen-smooth {
-  0%, 100% { 
-    opacity: 1; 
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 50px rgba(255, 68, 68, 0.6);
+  0%,
+  100% {
+    opacity: 1;
+    text-shadow:
+      2px 2px 8px rgba(0, 0, 0, 0.8),
+      0 0 50px rgba(255, 68, 68, 0.6);
   }
-  50% { 
-    opacity: 0.9; 
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8), 0 0 80px rgba(255, 68, 68, 0.9);
+  50% {
+    opacity: 0.9;
+    text-shadow:
+      2px 2px 8px rgba(0, 0, 0, 0.8),
+      0 0 80px rgba(255, 68, 68, 0.9);
   }
 }
 
@@ -343,11 +353,12 @@ body.timer-complete {
 }
 
 @keyframes flash-complete {
-  0%, 100% { 
-    background-color: inherit; 
+  0%,
+  100% {
+    background-color: inherit;
   }
-  50% { 
-    background-color: #fff3cd !important; 
+  50% {
+    background-color: #fff3cd !important;
   }
 }
 
@@ -379,36 +390,36 @@ body.timer-complete {
     padding: 16px !important;
     margin: 10px !important;
   }
-  
+
   .timer-display .time {
     font-size: 3.5rem !important;
   }
-  
+
   .timer-controls .ui.button.large {
     font-size: 1rem !important;
     padding: 10px 20px !important;
   }
-  
+
   .duration-setup {
     margin: 15px 0;
     padding: 15px;
   }
-  
+
   /* Mobile fullscreen adjustments */
   .fullscreen-timer {
     padding: 40px 20px 20px 20px;
     grid-gap: 20px;
   }
-  
+
   .fullscreen-timer .huge-time {
     font-size: 22vw !important;
   }
-  
+
   .fullscreen-controls {
     gap: 12px;
     min-height: 70px;
   }
-  
+
   .fullscreen-controls .ui.button.huge {
     font-size: 1.1rem !important;
     padding: 12px 20px !important;
@@ -420,7 +431,7 @@ body.timer-complete {
     justify-content: center !important;
     text-align: center !important;
   }
-  
+
   .fullscreen-progress {
     max-width: 80%;
   }
@@ -430,15 +441,15 @@ body.timer-complete {
   .timer-display .time {
     font-size: 2.8rem !important;
   }
-  
+
   .duration-setup .ui.grid.columns {
     flex-direction: column;
   }
-  
+
   .timer-controls .ui.grid.columns {
     flex-direction: column;
   }
-  
+
   .timer-controls .ui.button.large {
     width: 100%;
     margin: 8px 0 !important;
@@ -458,16 +469,16 @@ body.timer-complete {
   .lesson-timer .timer-main {
     border: 2px solid #000 !important;
   }
-  
+
   .timer-display .time {
     text-shadow: none !important;
     color: #000 !important;
   }
-  
+
   .timer-display .time.urgent {
     color: #d00 !important;
   }
-  
+
   .timer-display .time.running {
     color: #080 !important;
   }
@@ -482,19 +493,19 @@ body.timer-complete {
     transition: none !important;
     animation: none !important;
   }
-  
+
   .timer-display .time.urgent,
   .fullscreen-timer .huge-time.urgent {
     animation: none !important;
     color: #db2828 !important;
     text-shadow: none !important;
   }
-  
+
   body.timer-complete {
     animation: none !important;
     background-color: #fff3cd !important;
   }
-  
+
   .fullscreen-controls .ui.button.huge:hover {
     transform: none !important;
   }
@@ -506,15 +517,15 @@ body.timer-complete {
     background: white !important;
     color: black !important;
   }
-  
+
   .timer-controls,
   .timer-options,
   .fullscreen-controls {
     display: none !important;
   }
-  
+
   .timer-display .time {
     color: black !important;
     text-shadow: none !important;
   }
-} 
+}

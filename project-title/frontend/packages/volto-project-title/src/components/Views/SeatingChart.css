@@ -206,21 +206,21 @@
   .seating-chart-view {
     padding: 10px;
   }
-  
+
   .seating-grid {
     padding: 15px;
     gap: 8px !important;
   }
-  
+
   .desk-slot {
     min-height: 60px;
     padding: 4px;
   }
-  
+
   .student-label {
     font-size: 0.75rem;
   }
-  
+
   .classroom-header h1 {
     font-size: 1.5rem !important;
   }
@@ -232,11 +232,11 @@
     min-height: 90px;
     padding: 10px;
   }
-  
+
   .student-label {
     font-size: 0.9rem;
   }
-  
+
   /* Larger touch targets for tablets */
   .desk-slot.editable {
     min-height: 100px;
@@ -248,12 +248,12 @@
   .seating-grid {
     max-width: 1000px;
   }
-  
+
   .desk-slot {
     min-height: 100px;
     padding: 12px;
   }
-  
+
   .student-label {
     font-size: 1rem;
   }
@@ -264,27 +264,27 @@
   .seating-chart-view {
     padding: 0;
   }
-  
+
   .ui.button,
   .ui.message {
     display: none !important;
   }
-  
+
   .seating-container {
     box-shadow: none;
     border: 1px solid #000;
   }
-  
+
   .desk-slot {
     border: 1px solid #000 !important;
     background: white !important;
     box-shadow: none !important;
   }
-  
+
   .desk-slot.occupied {
     background: #f0f0f0 !important;
   }
-  
+
   .student-label {
     color: #000 !important;
   }
@@ -303,7 +303,8 @@
 }
 
 @keyframes subtle-pulse {
-  0%, 100% {
+  0%,
+  100% {
     border-color: #e5e7eb;
   }
   50% {
@@ -322,12 +323,12 @@
   .desk-slot {
     border-width: 3px;
   }
-  
+
   .desk-slot.occupied {
     background: #000 !important;
     color: #fff !important;
   }
-  
+
   .desk-slot.empty-desk {
     background: #ccc !important;
     color: #000 !important;
@@ -339,11 +340,11 @@
   .desk-slot {
     transition: none;
   }
-  
+
   .desk-slot:hover {
     transform: none;
   }
-  
+
   .desk-slot.editable {
     animation: none;
   }
@@ -586,21 +587,21 @@
     font-size: 0.9em;
     gap: 8px;
   }
-  
+
   .student-pool {
     gap: 10px;
     padding: 12px;
   }
-  
+
   .unassigned-students {
     padding: 20px;
   }
-  
+
   .grid-instructions {
     padding: 15px;
     font-size: 0.9em;
   }
-  
+
   .teacher-area {
     padding: 15px;
     font-size: 1em;
@@ -613,17 +614,17 @@
     background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
     transform: scale(1.1);
   }
-  
+
   .desk-slot.editable:active {
     transform: scale(0.95);
   }
-  
+
   /* Larger touch targets for mobile */
   .student-token {
     min-height: 44px;
     min-width: 60px;
   }
-  
+
   .desk-slot {
     min-height: 70px;
   }
@@ -659,7 +660,7 @@
 
 /* Visual feedback for empty pool */
 .student-pool:empty::after {
-  content: "All students are assigned! 🎉";
+  content: 'All students are assigned! 🎉';
   display: block;
   text-align: center;
   color: #4caf50;
@@ -686,18 +687,18 @@
     border-color: #718096;
     color: #e2e8f0;
   }
-  
+
   .unassigned-students {
     background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
     border-color: #718096;
   }
-  
+
   .teacher-area {
     background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
     border-color: #68d391;
     color: #c6f6d5;
   }
-} 
+}
 
 /* AGGRESSIVE BUTTON TEXT CENTERING - OVERRIDE EVERYTHING */
 .ui.button,
@@ -923,4 +924,4 @@ body .student-pool .student-token .student-name {
   display: inline-block !important;
   margin-left: 4px !important;
   flex: 1 !important;
-} 
+}

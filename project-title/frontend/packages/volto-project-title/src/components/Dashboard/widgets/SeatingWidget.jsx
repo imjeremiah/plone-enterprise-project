@@ -1,6 +1,6 @@
 /**
  * Seating Widget for Teacher Dashboard
- * 
+ *
  * Displays current seating chart information including:
  * - Active seating chart details
  * - Student count and arrangement status
@@ -9,7 +9,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Segment, Header, Icon, Statistic, Button, List, Message } from 'semantic-ui-react';
+import {
+  Segment,
+  Header,
+  Icon,
+  Statistic,
+  Button,
+  List,
+  Message,
+} from 'semantic-ui-react';
 
 const SeatingWidget = ({ data }) => {
   if (!data) {
@@ -64,7 +72,8 @@ const SeatingWidget = ({ data }) => {
               <strong>Active Chart:</strong> {chart.title}
               <br />
               <small style={{ color: '#666' }}>
-                Last updated: {new Date(chart.last_modified).toLocaleDateString()}
+                Last updated:{' '}
+                {new Date(chart.last_modified).toLocaleDateString()}
               </small>
             </div>
 
@@ -101,7 +110,9 @@ const SeatingWidget = ({ data }) => {
             </div>
 
             {data.total_charts > 1 && (
-              <div style={{ marginTop: '10px', fontSize: '0.9em', color: '#666' }}>
+              <div
+                style={{ marginTop: '10px', fontSize: '0.9em', color: '#666' }}
+              >
                 {data.total_charts} total seating charts available
               </div>
             )}
@@ -118,7 +129,10 @@ const SeatingWidget = ({ data }) => {
   };
 
   return (
-    <Segment className="dashboard-widget seating-widget" style={{ marginBottom: '20px' }}>
+    <Segment
+      className="dashboard-widget seating-widget"
+      style={{ marginBottom: '20px' }}
+    >
       <Header as="h3">
         <Icon name="users" color="blue" />
         <Header.Content>
@@ -140,11 +154,11 @@ SeatingWidget.propTypes = {
       student_count: PropTypes.number,
       last_modified: PropTypes.string,
       url: PropTypes.string,
-      id: PropTypes.string
+      id: PropTypes.string,
     }),
     total_charts: PropTypes.number,
-    students: PropTypes.arrayOf(PropTypes.string)
-  })
+    students: PropTypes.arrayOf(PropTypes.string),
+  }),
 };
 
-export default SeatingWidget; 
+export default SeatingWidget;

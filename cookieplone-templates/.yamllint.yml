@@ -1,0 +1,42 @@
+extends: default
+
+# COMPLETELY EXCLUDE all template directories from linting
+# Template files contain Jinja2/cookiecutter syntax that's invalid YAML until rendered
+ignore: |
+  templates/
+  templates/projects/
+  templates/projects/classic/
+  templates/projects/monorepo/
+  templates/add-ons/
+  templates/docs/
+  templates/sub/
+  templates/projects/classic/{{ cookiecutter.__folder_name }}/
+  templates/projects/monorepo/{{ cookiecutter.__folder_name }}/
+
+rules:
+  # More lenient rules for non-template files
+  line-length:
+    max: 150
+    level: warning
+  
+  document-start:
+    present: false
+  
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off']
+    check-keys: false
+  
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+  
+  comments-indentation: disable
+  new-line-at-end-of-file: disable
+
+# Only lint specific non-template directories
+files: 
+  - hooks/
+  - tests/
+  - '*.yml'
+  - '*.yaml' 

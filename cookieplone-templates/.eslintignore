@@ -1,0 +1,27 @@
+# Exclude template files with cookiecutter variables from ESLint/JS linting
+# These files contain {{ cookiecutter.* }} and Jinja2 syntax that's invalid until rendered
+
+# All template directories with cookiecutter variables
+templates/**/{{ cookiecutter.* }}/**
+templates/**/*{{ cookiecutter.* }}*
+
+# Template JavaScript/JSON files
+templates/**/*.js
+templates/**/*.jsx
+templates/**/*.ts
+templates/**/*.tsx
+templates/**/*.json
+templates/**/*.js.j2
+templates/**/*.json.j2
+
+# Template configuration files
+templates/**/package.json
+templates/**/tsconfig.json
+templates/**/babel.config.js
+templates/**/cypress.config.js
+templates/**/jest*.config.js
+
+# Build and dist directories in templates
+templates/**/build/**
+templates/**/dist/**
+templates/**/node_modules/** 

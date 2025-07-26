@@ -1,6 +1,6 @@
 /**
  * Substitute Folder Generator Component for Classroom Management
- * 
+ *
  * Provides interface for teachers to generate organized folders containing
  * all necessary materials for substitute teachers including schedules,
  * seating charts, lesson plans, and emergency information.
@@ -19,13 +19,11 @@ import {
   List,
   Loader,
   Label,
-  Divider
+  Divider,
 } from 'semantic-ui-react';
 import './SubstituteGenerator.css';
 
-const SubstituteGenerator = ({ 
-  contentUrl 
-}) => {
+const SubstituteGenerator = ({ contentUrl }) => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [generationResult, setGenerationResult] = useState(null);
@@ -52,7 +50,7 @@ const SubstituteGenerator = ({
     try {
       const response = await fetch(`${contentUrl}/@@substitute-folder-info`, {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -78,15 +76,15 @@ const SubstituteGenerator = ({
     try {
       const response = await fetch(`${contentUrl}/@@substitute-folder-info`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify({
           generate: true,
-          notes: customNotes.trim()
-        })
+          notes: customNotes.trim(),
+        }),
       });
 
       const data = await response.json();
@@ -148,7 +146,8 @@ const SubstituteGenerator = ({
               <Grid.Column>
                 <Label color="blue">
                   <Icon name="users" />
-                  {availableMaterials.available_materials.seating_charts} Seating Charts
+                  {availableMaterials.available_materials.seating_charts}{' '}
+                  Seating Charts
                 </Label>
               </Grid.Column>
               <Grid.Column>
@@ -160,7 +159,8 @@ const SubstituteGenerator = ({
               <Grid.Column>
                 <Label color="orange">
                   <Icon name="id card" />
-                  {availableMaterials.available_materials.hall_passes} Hall Passes
+                  {availableMaterials.available_materials.hall_passes} Hall
+                  Passes
                 </Label>
               </Grid.Column>
             </Grid>
@@ -216,7 +216,7 @@ const SubstituteGenerator = ({
                 <Icon name="check circle" />
                 Substitute Materials Generated Successfully!
               </Message.Header>
-              
+
               <Grid columns={2} divided>
                 <Grid.Column>
                   <Header as="h4">Access Information</Header>
@@ -225,10 +225,12 @@ const SubstituteGenerator = ({
                       <List.Icon name="key" />
                       <List.Content>
                         <strong>Access Code:</strong>
-                        <Label 
-                          color="green" 
+                        <Label
+                          color="green"
                           style={{ marginLeft: '10px', cursor: 'pointer' }}
-                          onClick={() => copyAccessCode(generationResult.access_code)}
+                          onClick={() =>
+                            copyAccessCode(generationResult.access_code)
+                          }
                           title="Click to copy"
                         >
                           {generationResult.access_code}
@@ -239,18 +241,22 @@ const SubstituteGenerator = ({
                     <List.Item>
                       <List.Icon name="clock" />
                       <List.Content>
-                        <strong>Generated:</strong> {generationResult.generated_date}
+                        <strong>Generated:</strong>{' '}
+                        {generationResult.generated_date}
                       </List.Content>
                     </List.Item>
                     <List.Item>
                       <List.Icon name="clock" />
                       <List.Content>
-                        <strong>Expires:</strong> {new Date(generationResult.expiry_time).toLocaleString()}
+                        <strong>Expires:</strong>{' '}
+                        {new Date(
+                          generationResult.expiry_time,
+                        ).toLocaleString()}
                       </List.Content>
                     </List.Item>
                   </List>
                 </Grid.Column>
-                
+
                 <Grid.Column>
                   <Header as="h4">Materials Included</Header>
                   <List>
@@ -268,7 +274,7 @@ const SubstituteGenerator = ({
 
               <Grid columns={2}>
                 <Grid.Column>
-                  <Button 
+                  <Button
                     color="blue"
                     icon
                     labelPosition="left"
@@ -293,45 +299,50 @@ const SubstituteGenerator = ({
                 <Icon name="folder open" />
                 {generationResult.document_title}
               </Header>
-              
-              <div style={{ 
-                background: '#f8f9fa',
-                padding: '15px',
-                borderRadius: '5px',
-                marginBottom: '20px',
-                textAlign: 'center'
-              }}>
+
+              <div
+                style={{
+                  background: '#f8f9fa',
+                  padding: '15px',
+                  borderRadius: '5px',
+                  marginBottom: '20px',
+                  textAlign: 'center',
+                }}
+              >
                 <strong>Access Code for Substitute Teacher: </strong>
-                <span style={{ 
-                  background: '#007bff',
-                  color: 'white',
-                  padding: '8px 15px',
-                  borderRadius: '20px',
-                  fontSize: '1.2em',
-                  fontWeight: 'bold'
-                }}>
+                <span
+                  style={{
+                    background: '#007bff',
+                    color: 'white',
+                    padding: '8px 15px',
+                    borderRadius: '20px',
+                    fontSize: '1.2em',
+                    fontWeight: 'bold',
+                  }}
+                >
                   {generationResult.access_code}
                 </span>
               </div>
 
-              {generationResult.sections_data && Object.entries(generationResult.sections_data).map(([sectionTitle, sectionContent], index) => (
-                <div key={index} style={{ marginBottom: '30px' }}>
-                  <Divider horizontal>
-                    <Header as="h4">
-                      {sectionTitle}
-                    </Header>
-                  </Divider>
-                  <div 
-                    style={{ 
-                      padding: '15px',
-                      background: 'white',
-                      border: '1px solid #ddd',
-                      borderRadius: '5px'
-                    }}
-                    dangerouslySetInnerHTML={{ __html: sectionContent }}
-                  />
-                </div>
-              ))}
+              {generationResult.sections_data &&
+                Object.entries(generationResult.sections_data).map(
+                  ([sectionTitle, sectionContent], index) => (
+                    <div key={index} style={{ marginBottom: '30px' }}>
+                      <Divider horizontal>
+                        <Header as="h4">{sectionTitle}</Header>
+                      </Divider>
+                      <div
+                        style={{
+                          padding: '15px',
+                          background: 'white',
+                          border: '1px solid #ddd',
+                          borderRadius: '5px',
+                        }}
+                        dangerouslySetInnerHTML={{ __html: sectionContent }}
+                      />
+                    </div>
+                  ),
+                )}
             </Segment>
           </>
         )}
@@ -342,7 +353,7 @@ const SubstituteGenerator = ({
             <Icon name="list" />
             What's Included in the Substitute Folder
           </Header>
-          
+
           <Grid columns={2} divided>
             <Grid.Column>
               <List bulleted>
@@ -350,47 +361,59 @@ const SubstituteGenerator = ({
                   <Icon name="calendar" color="blue" />
                   <List.Content>
                     <strong>Daily Schedule</strong>
-                    <List.Description>Complete class periods with times and locations</List.Description>
+                    <List.Description>
+                      Complete class periods with times and locations
+                    </List.Description>
                   </List.Content>
                 </List.Item>
                 <List.Item>
                   <Icon name="users" color="green" />
                   <List.Content>
                     <strong>Current Seating Charts</strong>
-                    <List.Description>Up-to-date seating arrangements for all classes</List.Description>
+                    <List.Description>
+                      Up-to-date seating arrangements for all classes
+                    </List.Description>
                   </List.Content>
                 </List.Item>
                 <List.Item>
                   <Icon name="book" color="orange" />
                   <List.Content>
                     <strong>Today's Lesson Plans</strong>
-                    <List.Description>Available materials and backup activities</List.Description>
+                    <List.Description>
+                      Available materials and backup activities
+                    </List.Description>
                   </List.Content>
                 </List.Item>
               </List>
             </Grid.Column>
-            
+
             <Grid.Column>
               <List bulleted>
                 <List.Item>
                   <Icon name="warning sign" color="red" />
                   <List.Content>
                     <strong>Emergency Procedures</strong>
-                    <List.Description>Fire drill, lockdown, and medical emergency protocols</List.Description>
+                    <List.Description>
+                      Fire drill, lockdown, and medical emergency protocols
+                    </List.Description>
                   </List.Content>
                 </List.Item>
                 <List.Item>
                   <Icon name="phone" color="purple" />
                   <List.Content>
                     <strong>Important Contacts</strong>
-                    <List.Description>Administration, support staff, and key personnel</List.Description>
+                    <List.Description>
+                      Administration, support staff, and key personnel
+                    </List.Description>
                   </List.Content>
                 </List.Item>
                 <List.Item>
                   <Icon name="student" color="teal" />
                   <List.Content>
                     <strong>Student Information</strong>
-                    <List.Description>Special accommodations and classroom management notes</List.Description>
+                    <List.Description>
+                      Special accommodations and classroom management notes
+                    </List.Description>
                   </List.Content>
                 </List.Item>
               </List>
@@ -403,8 +426,9 @@ const SubstituteGenerator = ({
               Pro Tip
             </Message.Header>
             <p>
-              Generate the substitute folder the night before or early in the morning when you're feeling unwell. 
-              The access code is valid for 24 hours and includes all current classroom materials.
+              Generate the substitute folder the night before or early in the
+              morning when you're feeling unwell. The access code is valid for
+              24 hours and includes all current classroom materials.
             </p>
           </Message>
         </Segment>
@@ -414,11 +438,11 @@ const SubstituteGenerator = ({
 };
 
 SubstituteGenerator.propTypes = {
-  contentUrl: PropTypes.string
+  contentUrl: PropTypes.string,
 };
 
 SubstituteGenerator.defaultProps = {
-  contentUrl: ''
+  contentUrl: '',
 };
 
-export default SubstituteGenerator; 
+export default SubstituteGenerator;

@@ -1,15 +1,15 @@
 """
 Browser views for project.title
 """
+
 from Products.Five import BrowserView
-from zope.interface import Interface
 
 
 class OAuthRedirectView(BrowserView):
     """
     View that provides OAuth redirect functionality for Volto integration.
     """
-    
+
     def __call__(self):
         """
         Returns JavaScript that redirects users from Classic UI to Volto
@@ -55,6 +55,6 @@ class OAuthRedirectView(BrowserView):
         })();
         </script>
         """
-        
-        self.request.response.setHeader('Content-Type', 'text/html')
-        return js_content 
+
+        self.request.response.setHeader("Content-Type", "text/html")
+        return js_content

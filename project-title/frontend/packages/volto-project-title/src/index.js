@@ -11,7 +11,7 @@ import ClassroomToolsWidget from './components/Dashboard/widgets/ClassroomToolsW
 
 const applyConfig = (config) => {
   console.log('🚀 Edu Plone addon loading...');
-  
+
   config.settings.isMultilingual = false;
   config.settings.supportedLanguages = ['en'];
   config.settings.defaultLanguage = 'en';
@@ -23,16 +23,16 @@ const applyConfig = (config) => {
   if (!config.views.contentTypesViews) {
     config.views.contentTypesViews = {};
   }
-  
+
   // Register SeatingChart view for classroom management
   config.views.contentTypesViews.SeatingChart = SeatingChartView;
-  
+
   // Register HallPass view for digital hall pass management
   config.views.contentTypesViews.HallPass = HallPassManager;
-  
+
   // Register custom homepage with classroom tools
   config.views.contentTypesViews['Plone Site'] = CustomHomepage;
-  
+
   // Add standalone routes for classroom management tools
   config.addonRoutes = [
     {
@@ -67,7 +67,7 @@ const applyConfig = (config) => {
     },
     ...(config.addonRoutes || []),
   ];
-  
+
   // Register classroom management components as reusable
   if (!config.components) {
     config.components = {};
@@ -75,7 +75,7 @@ const applyConfig = (config) => {
   config.components.RandomStudentPicker = RandomStudentPicker;
   config.components.HallPassManager = HallPassManager;
   config.components.ClassroomToolsWidget = ClassroomToolsWidget;
-  
+
   // Simplified logging - only show completion
   console.log('✅ Edu Plone classroom management tools initialized');
   console.log('🎛️ Dashboard available at /dashboard');

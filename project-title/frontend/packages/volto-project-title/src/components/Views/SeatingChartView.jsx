@@ -1,6 +1,6 @@
 /**
  * Seating Chart View for Classroom Management
- * 
+ *
  * Interactive classroom seating arrangements with drag-drop student positioning.
  * Phase 2C: Full drag-drop functionality for classroom management.
  */
@@ -51,54 +51,60 @@ const SeatingChartView = ({ content, location }) => {
     }
   }, [content]);
 
-  const unassignStudent = useCallback((studentName) => {
-    if (!editMode || !gridData) return;
+  const unassignStudent = useCallback(
+    (studentName) => {
+      if (!editMode || !gridData) return;
 
-    const newGridData = { ...gridData };
-    
-    // Remove student from current position
-    Object.keys(newGridData.students).forEach(key => {
-      if (newGridData.students[key] === studentName) {
-        delete newGridData.students[key];
-      }
-    });
+      const newGridData = { ...gridData };
 
-    setGridData(newGridData);
-    updateBackendGrid(newGridData);
-  }, [gridData, editMode, content]);
+      // Remove student from current position
+      Object.keys(newGridData.students).forEach((key) => {
+        if (newGridData.students[key] === studentName) {
+          delete newGridData.students[key];
+        }
+      });
+
+      setGridData(newGridData);
+      updateBackendGrid(newGridData);
+    },
+    [gridData, editMode, content],
+  );
 
   const unassignAllStudents = useCallback(() => {
     if (!editMode || !gridData) return;
 
-    const newGridData = { 
-      ...gridData, 
-      students: {} // Clear all student positions
+    const newGridData = {
+      ...gridData,
+      students: {}, // Clear all student positions
     };
 
     setGridData(newGridData);
     updateBackendGrid(newGridData);
   }, [gridData, editMode, content]);
 
-  const moveStudent = useCallback((studentName, targetRow, targetCol) => {
-    if (!editMode || !gridData) return;
+  const moveStudent = useCallback(
+    (studentName, targetRow, targetCol) => {
+      if (!editMode || !gridData) return;
 
-    const positionKey = `${targetRow},${targetCol}`;
-    const newGridData = { ...gridData };
-    
-    // Remove student from current position
-    Object.keys(newGridData.students).forEach(key => {
-      if (newGridData.students[key] === studentName) {
-        delete newGridData.students[key];
-      }
-    });
+      const positionKey = `${targetRow},${targetCol}`;
+      const newGridData = { ...gridData };
 
-    // Add student to new position
-    newGridData.students[positionKey] = studentName;
-    setGridData(newGridData);
+      // Remove student from current position
+      Object.keys(newGridData.students).forEach((key) => {
+        if (newGridData.students[key] === studentName) {
+          delete newGridData.students[key];
+        }
+      });
 
-    // Update backend
-    updateBackendPosition(studentName, targetRow, targetCol, newGridData);
-  }, [gridData, editMode, content]);
+      // Add student to new position
+      newGridData.students[positionKey] = studentName;
+      setGridData(newGridData);
+
+      // Update backend
+      updateBackendPosition(studentName, targetRow, targetCol, newGridData);
+    },
+    [gridData, editMode, content],
+  );
 
   const autoArrangeStudents = useCallback(() => {
     if (!editMode || !content || !gridData) return;
@@ -129,13 +135,13 @@ const SeatingChartView = ({ content, location }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
         body: JSON.stringify({
           student: student,
           row: row,
           col: col,
-          grid_data: updatedGrid
+          grid_data: updatedGrid,
         }),
       });
 
@@ -153,10 +159,10 @@ const SeatingChartView = ({ content, location }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
         body: JSON.stringify({
-          grid_data: updatedGrid
+          grid_data: updatedGrid,
         }),
       });
 
@@ -175,10 +181,22 @@ const SeatingChartView = ({ content, location }) => {
     }
     // Fallback test data when no students are provided
     return [
-      "Alice Johnson", "Bob Smith", "Carol Williams", "David Brown",
-      "Emma Davis", "Frank Miller", "Grace Wilson", "Henry Moore",
-      "Ivy Taylor", "Jack Anderson", "Kate Thomas", "Liam Jackson",
-      "Maya White", "Noah Harris", "Olivia Martin", "Paul Thompson"
+      'Alice Johnson',
+      'Bob Smith',
+      'Carol Williams',
+      'David Brown',
+      'Emma Davis',
+      'Frank Miller',
+      'Grace Wilson',
+      'Henry Moore',
+      'Ivy Taylor',
+      'Jack Anderson',
+      'Kate Thomas',
+      'Liam Jackson',
+      'Maya White',
+      'Noah Harris',
+      'Olivia Martin',
+      'Paul Thompson',
     ];
   };
 
@@ -208,19 +226,19 @@ const SeatingChartView = ({ content, location }) => {
       <Segment clearing className="seating-chart-toolbar">
         <Button.Group floated="right" className="seating-chart-buttons">
           <Button
-            content={editMode ? "View Mode" : "Edit Mode"}
+            content={editMode ? 'View Mode' : 'Edit Mode'}
             onClick={() => setEditMode(!editMode)}
-            color={editMode ? "red" : "blue"}
+            color={editMode ? 'red' : 'blue'}
             className="seating-chart-button mode-toggle-button"
           />
-          <Button 
+          <Button
             content="Auto-Arrange Students"
             disabled={!editMode}
             onClick={autoArrangeStudents}
             color="blue"
             className="seating-chart-button auto-arrange-button"
           />
-          <Button 
+          <Button
             content="Unassign All"
             disabled={!editMode || assignedCount === 0}
             onClick={unassignAllStudents}
@@ -229,11 +247,14 @@ const SeatingChartView = ({ content, location }) => {
           />
           <Button
             content="Settings"
-            onClick={() => { setModalType('settings'); setShowModal(true); }}
+            onClick={() => {
+              setModalType('settings');
+              setShowModal(true);
+            }}
             className="seating-chart-button settings-button"
           />
         </Button.Group>
-        
+
         <Label.Group>
           <Label color="blue">
             <Icon name="users" />
@@ -263,7 +284,9 @@ const SeatingChartView = ({ content, location }) => {
   const renderModal = () => (
     <Modal open={showModal} onClose={() => setShowModal(false)} size="small">
       <Modal.Header>
-        {modalType === 'settings' ? 'Seating Chart Settings' : 'Student Details'}
+        {modalType === 'settings'
+          ? 'Seating Chart Settings'
+          : 'Student Details'}
       </Modal.Header>
       <Modal.Content>
         {modalType === 'settings' ? (
@@ -272,18 +295,18 @@ const SeatingChartView = ({ content, location }) => {
               <label>Grid Size</label>
               <Grid columns={2}>
                 <Grid.Column>
-                  <Input 
-                    label="Rows" 
-                    type="number" 
+                  <Input
+                    label="Rows"
+                    type="number"
                     defaultValue={content.grid_rows || 5}
                     min="1"
                     max="10"
                   />
                 </Grid.Column>
                 <Grid.Column>
-                  <Input 
-                    label="Columns" 
-                    type="number" 
+                  <Input
+                    label="Columns"
+                    type="number"
                     defaultValue={content.grid_cols || 6}
                     min="1"
                     max="10"
@@ -322,10 +345,8 @@ const SeatingChartView = ({ content, location }) => {
       </Header>
 
       {renderToolbar()}
-      
-      <Segment>
-        {renderSeatingGrid()}
-      </Segment>
+
+      <Segment>{renderSeatingGrid()}</Segment>
 
       {renderModal()}
     </Container>
@@ -351,15 +372,16 @@ const getBackend = () => {
   if (typeof window === 'undefined') {
     return HTML5Backend; // Default for SSR
   }
-  
+
   // Touch device detection for mobile/tablet support
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  
+  const isTouchDevice =
+    'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
   if (isTouchDevice) {
     return TouchBackend({ enableMouseEvents: true });
   }
-  
+
   return HTML5Backend;
 };
 
-export default DragDropContext(getBackend())(SeatingChartView); 
+export default DragDropContext(getBackend())(SeatingChartView);

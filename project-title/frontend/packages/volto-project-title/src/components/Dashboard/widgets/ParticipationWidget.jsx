@@ -1,6 +1,6 @@
 /**
  * Participation Widget for Teacher Dashboard
- * 
+ *
  * Displays participation statistics from the random student picker:
  * - Fairness score showing distribution balance
  * - Total picks and unique students called
@@ -10,7 +10,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Segment, Header, Icon, Progress, Statistic, List, Message, Button } from 'semantic-ui-react';
+import {
+  Segment,
+  Header,
+  Icon,
+  Progress,
+  Statistic,
+  List,
+  Message,
+  Button,
+} from 'semantic-ui-react';
 
 const ParticipationWidget = ({ data }) => {
   if (!data) {
@@ -51,7 +60,10 @@ const ParticipationWidget = ({ data }) => {
         return (
           <Message info>
             <Message.Header>No Data Yet</Message.Header>
-            <p>No students have been picked today. Use the random picker to start tracking participation.</p>
+            <p>
+              No students have been picked today. Use the random picker to start
+              tracking participation.
+            </p>
             <Button size="small" primary>
               <Icon name="random" />
               Open Random Picker
@@ -72,15 +84,15 @@ const ParticipationWidget = ({ data }) => {
           <div>
             {/* Fairness Score */}
             <div style={{ marginBottom: '15px', textAlign: 'center' }}>
-              <Statistic 
-                size="small" 
+              <Statistic
+                size="small"
                 color={getFairnessColor(data.fairness_score)}
               >
                 <Statistic.Value>{data.fairness_score}%</Statistic.Value>
                 <Statistic.Label>Fairness Score</Statistic.Label>
               </Statistic>
-              <Progress 
-                percent={data.fairness_score} 
+              <Progress
+                percent={data.fairness_score}
                 color={getProgressColor(data.fairness_score)}
                 size="small"
                 style={{ marginTop: '10px' }}
@@ -88,7 +100,14 @@ const ParticipationWidget = ({ data }) => {
             </div>
 
             {/* Quick Stats */}
-            <div style={{ marginBottom: '10px', display: 'flex', gap: '15px', justifyContent: 'center' }}>
+            <div
+              style={{
+                marginBottom: '10px',
+                display: 'flex',
+                gap: '15px',
+                justifyContent: 'center',
+              }}
+            >
               <Statistic size="mini">
                 <Statistic.Value>{data.total_picks}</Statistic.Value>
                 <Statistic.Label>Total Picks</Statistic.Label>
@@ -109,7 +128,8 @@ const ParticipationWidget = ({ data }) => {
                       <List.Content>
                         <List.Header>Most Called</List.Header>
                         <List.Description>
-                          {data.most_picked.name} ({data.most_picked.count} times)
+                          {data.most_picked.name} ({data.most_picked.count}{' '}
+                          times)
                         </List.Description>
                       </List.Content>
                     </List.Item>
@@ -120,7 +140,8 @@ const ParticipationWidget = ({ data }) => {
                       <List.Content>
                         <List.Header>Least Called</List.Header>
                         <List.Description>
-                          {data.least_picked.name} ({data.least_picked.count} times)
+                          {data.least_picked.name} ({data.least_picked.count}{' '}
+                          times)
                         </List.Description>
                       </List.Content>
                     </List.Item>
@@ -133,7 +154,8 @@ const ParticipationWidget = ({ data }) => {
             {data.fairness_score < 70 && (
               <Message warning size="small">
                 <Icon name="balance scale" />
-                Consider using the random picker more to improve participation balance.
+                Consider using the random picker more to improve participation
+                balance.
               </Message>
             )}
 
@@ -151,11 +173,16 @@ const ParticipationWidget = ({ data }) => {
                   <strong>Today's Distribution:</strong>
                 </small>
                 <div style={{ marginTop: '5px', fontSize: '0.8em' }}>
-                  {Object.entries(data.distribution).slice(0, 3).map(([name, count]) => (
-                    <span key={name} style={{ marginRight: '10px', color: '#666' }}>
-                      {name}: {count}
-                    </span>
-                  ))}
+                  {Object.entries(data.distribution)
+                    .slice(0, 3)
+                    .map(([name, count]) => (
+                      <span
+                        key={name}
+                        style={{ marginRight: '10px', color: '#666' }}
+                      >
+                        {name}: {count}
+                      </span>
+                    ))}
                   {Object.keys(data.distribution).length > 3 && '...'}
                 </div>
               </div>
@@ -173,12 +200,17 @@ const ParticipationWidget = ({ data }) => {
   };
 
   return (
-    <Segment className="dashboard-widget participation-widget" style={{ marginBottom: '20px' }}>
+    <Segment
+      className="dashboard-widget participation-widget"
+      style={{ marginBottom: '20px' }}
+    >
       <Header as="h3">
         <Icon name="balance scale" color="purple" />
         <Header.Content>
           Participation Tracking
-          <Header.Subheader>Random picker fairness & engagement</Header.Subheader>
+          <Header.Subheader>
+            Random picker fairness & engagement
+          </Header.Subheader>
         </Header.Content>
       </Header>
       {renderContent()}
@@ -194,14 +226,14 @@ ParticipationWidget.propTypes = {
     fairness_score: PropTypes.number,
     most_picked: PropTypes.shape({
       name: PropTypes.string,
-      count: PropTypes.number
+      count: PropTypes.number,
     }),
     least_picked: PropTypes.shape({
       name: PropTypes.string,
-      count: PropTypes.number
+      count: PropTypes.number,
     }),
-    distribution: PropTypes.object
-  })
+    distribution: PropTypes.object,
+  }),
 };
 
-export default ParticipationWidget; 
+export default ParticipationWidget;

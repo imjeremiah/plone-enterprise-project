@@ -1,6 +1,6 @@
 /**
  * Workflow Status Component - ADDITIVE ENHANCEMENT
- * 
+ *
  * Shows workflow state without breaking existing functionality
  */
 
@@ -13,8 +13,10 @@ const WorkflowStatus = ({ workflowState, duration }) => {
       case 'draft':
         return { color: 'grey', icon: 'edit', text: 'Draft' };
       case 'issued':
-        if (duration > 15) return { color: 'red', icon: 'warning', text: 'Critical' };
-        if (duration > 10) return { color: 'yellow', icon: 'clock', text: 'Warning' };
+        if (duration > 15)
+          return { color: 'red', icon: 'warning', text: 'Critical' };
+        if (duration > 10)
+          return { color: 'yellow', icon: 'clock', text: 'Warning' };
         return { color: 'green', icon: 'checkmark', text: 'Active' };
       case 'returned':
         return { color: 'blue', icon: 'home', text: 'Returned' };
@@ -35,4 +37,4 @@ const WorkflowStatus = ({ workflowState, duration }) => {
   );
 };
 
-export default WorkflowStatus; 
+export default WorkflowStatus;

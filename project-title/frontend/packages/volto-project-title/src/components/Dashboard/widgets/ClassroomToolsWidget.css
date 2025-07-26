@@ -121,20 +121,20 @@
   .tools-grid {
     margin: 1rem 0 !important;
   }
-  
+
   .tool-card {
     margin-bottom: 1rem !important;
   }
-  
+
   .tool-icon {
     font-size: 3rem !important;
   }
-  
+
   .quick-access .ui.buttons {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .quick-access .ui.button {
     margin: 0.25rem 0 !important;
     width: 100%;
@@ -146,11 +146,11 @@
   .tools-grid {
     margin: 1.5rem 0 !important;
   }
-  
+
   .tool-card {
     min-height: 280px;
   }
-  
+
   .tool-icon {
     font-size: 4rem !important;
   }
@@ -171,4 +171,4 @@
   .classroom-tools-widget {
     display: none;
   }
-} 
+}

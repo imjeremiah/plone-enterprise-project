@@ -1,6 +1,6 @@
 /**
  * Substitute Widget for Teacher Dashboard
- * 
+ *
  * Emergency preparation and substitute folder management:
  * - Quick access to substitute folder generator
  * - Reminders about preparation
@@ -10,7 +10,14 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Segment, Header, Icon, Button, Message, List } from 'semantic-ui-react';
+import {
+  Segment,
+  Header,
+  Icon,
+  Button,
+  Message,
+  List,
+} from 'semantic-ui-react';
 
 const SubstituteWidget = ({ contentUrl }) => {
   const [generating, setGenerating] = useState(false);
@@ -35,22 +42,24 @@ const SubstituteWidget = ({ contentUrl }) => {
    */
   const getTimeBasedMessage = () => {
     const hour = new Date().getHours();
-    
-    if (hour >= 15) { // After 3 PM
+
+    if (hour >= 15) {
+      // After 3 PM
       return {
         type: 'info',
         icon: 'clock',
         title: 'End of Day Reminder',
         message: 'Consider preparing substitute materials for tomorrow.',
-        urgent: false
+        urgent: false,
       };
-    } else if (hour >= 12) { // Afternoon
+    } else if (hour >= 12) {
+      // Afternoon
       return {
         type: 'info',
         icon: 'folder',
         title: 'Preparation Tip',
         message: 'Having substitute materials ready reduces stress.',
-        urgent: false
+        urgent: false,
       };
     } else {
       return {
@@ -58,7 +67,7 @@ const SubstituteWidget = ({ contentUrl }) => {
         icon: 'checkmark',
         title: 'Ready to Go',
         message: 'Classroom management tools are available when needed.',
-        urgent: false
+        urgent: false,
       };
     }
   };
@@ -76,8 +85,8 @@ const SubstituteWidget = ({ contentUrl }) => {
       </Header>
 
       {/* Time-based Message */}
-      <Message 
-        size="small" 
+      <Message
+        size="small"
         info={timeMessage.type === 'info'}
         positive={timeMessage.type === 'positive'}
         style={{ marginBottom: '10px' }}
@@ -91,7 +100,7 @@ const SubstituteWidget = ({ contentUrl }) => {
 
       {/* Quick Actions */}
       <div style={{ marginBottom: '10px' }}>
-        <Button 
+        <Button
           primary
           fluid
           size="small"
@@ -102,8 +111,8 @@ const SubstituteWidget = ({ contentUrl }) => {
           <Icon name="magic" />
           Generate Substitute Folder
         </Button>
-        
-        <Button 
+
+        <Button
           basic
           fluid
           size="small"
@@ -138,15 +147,17 @@ const SubstituteWidget = ({ contentUrl }) => {
       </div>
 
       {/* Emergency Note */}
-      <div style={{ 
-        marginTop: '10px', 
-        padding: '6px', 
-        backgroundColor: '#fff3cd', 
-        borderRadius: '4px',
-        fontSize: '0.7em',
-        textAlign: 'center',
-        color: '#856404'
-      }}>
+      <div
+        style={{
+          marginTop: '10px',
+          padding: '6px',
+          backgroundColor: '#fff3cd',
+          borderRadius: '4px',
+          fontSize: '0.7em',
+          textAlign: 'center',
+          color: '#856404',
+        }}
+      >
         <Icon name="heart" />
         Preparation reduces stress
       </div>
@@ -155,7 +166,7 @@ const SubstituteWidget = ({ contentUrl }) => {
 };
 
 SubstituteWidget.propTypes = {
-  contentUrl: PropTypes.string
+  contentUrl: PropTypes.string,
 };
 
-export default SubstituteWidget; 
+export default SubstituteWidget;

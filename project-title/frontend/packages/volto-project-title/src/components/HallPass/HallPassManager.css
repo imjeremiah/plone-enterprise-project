@@ -77,7 +77,7 @@
 
 .hall-pass-manager .main-title .icon {
   margin-right: 0.5em !important;
-  color: #4A90E2 !important;
+  color: #4a90e2 !important;
   display: inline-block !important;
 }
 
@@ -236,8 +236,8 @@
   display: block;
 }
 
-.hall-pass-manager .ui.form .field input[type="text"],
-.hall-pass-manager .ui.form .field input[type="number"],
+.hall-pass-manager .ui.form .field input[type='text'],
+.hall-pass-manager .ui.form .field input[type='number'],
 .hall-pass-manager .ui.form .field textarea {
   border-radius: 6px;
   border: 2px solid #e1e8ed;
@@ -288,15 +288,15 @@
   .hall-pass-manager {
     padding: 10px;
   }
-  
+
   .hall-pass-manager .ui.grid .column {
     margin-bottom: 20px;
   }
-  
+
   .hall-pass-manager .ui.statistic.group .statistic {
     margin-bottom: 15px !important;
   }
-  
+
   .hall-pass-manager .ui.button.large {
     width: 100%;
     margin-bottom: 10px;
@@ -307,15 +307,15 @@
   .hall-pass-manager .ui.header.dividing h1 {
     font-size: 1.5em !important;
   }
-  
+
   .hall-pass-manager .ui.header .sub.header {
     font-size: 0.9em;
   }
-  
+
   .hall-pass-manager .ui.statistic .value {
     font-size: 1.5em !important;
   }
-  
+
   .hall-pass-manager .ui.statistic .label {
     font-size: 0.8em !important;
   }
@@ -393,11 +393,11 @@
     color: #fff !important;
     border: 2px solid #fff !important;
   }
-  
+
   .hall-pass-manager .ui.segment {
     border: 2px solid #000 !important;
   }
-  
+
   .hall-pass-manager .ui.statistic .value {
     color: #000 !important;
   }
@@ -413,8 +413,8 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .hall-pass-manager .ui.button:hover {
     transform: none;
   }
-} 
+}

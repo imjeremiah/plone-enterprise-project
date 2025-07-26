@@ -40,9 +40,15 @@
 }
 
 @keyframes pulseRed {
-  0% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-  50% { box-shadow: 0 4px 12px rgba(219, 40, 40, 0.3); }
-  100% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+  0% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(219, 40, 40, 0.3);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* ========================================
@@ -219,9 +225,15 @@
 }
 
 @keyframes pulseButton {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* ========================================
@@ -304,9 +316,15 @@
 }
 
 @keyframes timeAlert {
-  0% { opacity: 0.3; }
-  50% { opacity: 1; }
-  100% { opacity: 0.3; }
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
 }
 
 /* ========================================
@@ -317,22 +335,22 @@
   .pass-card .content {
     padding: 15px !important;
   }
-  
+
   .pass-actions {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .pass-actions .ui.button {
     width: 100%;
     text-align: center;
   }
-  
+
   .pass-details > div {
     flex-wrap: wrap;
     font-size: 0.85em;
   }
-  
+
   .ui.modal .content .ui.grid .column {
     margin-bottom: 15px;
   }
@@ -345,11 +363,11 @@
     align-items: flex-start;
     gap: 8px;
   }
-  
+
   .pass-card .content .header .ui.label {
     align-self: flex-end;
   }
-  
+
   .pass-details .pass-code {
     font-size: 0.8em;
     padding: 4px 8px;
@@ -379,16 +397,16 @@
     border: 2px solid #000 !important;
     background: #fff !important;
   }
-  
+
   .pass-card.red {
     border-color: #db2828 !important;
     background: #fff !important;
   }
-  
+
   .pass-card .content .header {
     color: #000 !important;
   }
-  
+
   .pass-details strong {
     color: #000 !important;
   }
@@ -405,9 +423,9 @@
     animation: none !important;
     transition: none !important;
   }
-  
+
   .pass-card:hover,
   .pass-actions .ui.button:hover {
     transform: none !important;
   }
-} 
+}

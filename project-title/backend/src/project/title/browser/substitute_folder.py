@@ -22,83 +22,89 @@ logger = logging.getLogger(__name__)
 
 class SubstituteFolderGenerator(BrowserView):
     """Generate comprehensive document with materials for substitute teachers"""
-    
+
     def __call__(self):
         """Handle GET (show form) and POST (generate folder) requests"""
-        logger.info(f"🎯 SUBSTITUTE FOLDER __CALL__ METHOD - Request method: {self.request.method}")
-        
+        logger.info(
+            f"🎯 SUBSTITUTE FOLDER __CALL__ METHOD - Request method: {self.request.method}"
+        )
+
         # Handle CORS headers for frontend integration
         set_cors_headers(self.request, self.request.response)
-        
-        if self.request.method == 'OPTIONS':
+
+        if self.request.method == "OPTIONS":
             logger.info("📧 Handling OPTIONS request")
-            return ''
-        elif self.request.method == 'POST':
+            return ""
+        elif self.request.method == "POST":
             logger.info("📝 Handling POST request - calling generate_folder()")
             return self.generate_materials_json()
         else:
             logger.info("📄 Handling GET request - calling get_generation_info()")
             return self.get_generation_info()
-    
+
     def get_generation_info(self):
         """Return information about folder generation capabilities or generate materials for POST"""
-        
+
         # If this is a POST request, generate the materials instead
-        if self.request.method == 'POST':
-            logger.info("🎯 POST request to substitute-folder-info - generating materials via working endpoint!")
+        if self.request.method == "POST":
+            logger.info(
+                "🎯 POST request to substitute-folder-info - generating materials via working endpoint!"
+            )
             return self.generate_simple_materials()
-        
+
         # Otherwise return info for GET requests
-        catalog = api.portal.get_tool('portal_catalog')
-        
+        catalog = api.portal.get_tool("portal_catalog")
+
         # Count available materials
-        seating_charts = len(catalog(portal_type='SeatingChart'))
-        hall_passes = len(catalog(portal_type='HallPass'))
-        documents = len(catalog(portal_type='Document'))
-        
+        seating_charts = len(catalog(portal_type="SeatingChart"))
+        hall_passes = len(catalog(portal_type="HallPass"))
+        documents = len(catalog(portal_type="Document"))
+
         info = {
-            'success': True,
-            'available_materials': {
-                'seating_charts': seating_charts,
-                'hall_passes': hall_passes,
-                'documents': documents
+            "success": True,
+            "available_materials": {
+                "seating_charts": seating_charts,
+                "hall_passes": hall_passes,
+                "documents": documents,
             },
-            'sections_included': [
-                'Daily Schedule',
-                'Seating Charts',
-                'Lesson Plans',
-                'Emergency Procedures',
-                'Important Contacts',
-                'Student Information'
-            ]
+            "sections_included": [
+                "Daily Schedule",
+                "Seating Charts",
+                "Lesson Plans",
+                "Emergency Procedures",
+                "Important Contacts",
+                "Student Information",
+            ],
         }
-        
-        self.request.response.setHeader('Content-Type', 'application/json')
+
+        self.request.response.setHeader("Content-Type", "application/json")
         return json.dumps(info)
-    
+
     def generate_simple_materials(self):
         """Generate substitute materials without creating any content objects"""
         logger.info("🚀 GENERATING SIMPLE MATERIALS - WORKING METHOD!")
-        
+
         try:
             # Parse request data
-            body = self.request.get('BODY', '{}')
+            body = self.request.get("BODY", "{}")
             if isinstance(body, bytes):
-                body = body.decode('utf-8')
-            data = json.loads(body) if body != '{}' else {}
-            
-            custom_notes = data.get('notes', '').strip()
-            
+                body = body.decode("utf-8")
+            data = json.loads(body) if body != "{}" else {}
+
+            custom_notes = data.get("notes", "").strip()
+
             # Generate access code
-            access_code = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
-            
+            access_code = "".join(
+                secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)
+            )
+
             # Get current date
-            date_str = datetime.now().strftime('%Y-%m-%d')
-            day_name = datetime.now().strftime('%A')
-            
+            date_str = datetime.now().strftime("%Y-%m-%d")
+            day_name = datetime.now().strftime("%A")
+
             # Create simple sections without any complex logic
             sections_data = {
-                'Daily Schedule': f"""
+                "Daily Schedule": f"""
                 <div class="schedule">
                     <h2>Daily Schedule - {day_name}</h2>
                     <p><strong>Date:</strong> {datetime.now().strftime('%B %d, %Y')}</p>
@@ -113,7 +119,7 @@ class SubstituteFolderGenerator(BrowserView):
                     </div>
                 </div>
                 """,
-                'Seating Charts': """
+                "Seating Charts": """
                 <div class="seating">
                     <h2>Seating Charts</h2>
                     <p>Check for posted seating charts in the classroom or on the teacher's desk.</p>
@@ -134,7 +140,7 @@ class SubstituteFolderGenerator(BrowserView):
                     </div>
                 </div>
                 """,
-                'Emergency Procedures': """
+                "Emergency Procedures": """
                 <div class="emergency">
                     <h2>🚨 Emergency Procedures</h2>
                     <div style="background: #f8d7da; padding: 15px; border-radius: 5px; margin: 10px 0;">
@@ -157,7 +163,7 @@ class SubstituteFolderGenerator(BrowserView):
                     </div>
                 </div>
                 """,
-                'Important Contacts': """
+                "Important Contacts": """
                 <div class="contacts">
                     <h2>📞 Important Contacts</h2>
                     <ul>
@@ -168,7 +174,7 @@ class SubstituteFolderGenerator(BrowserView):
                     </ul>
                 </div>
                 """,
-                'Student Information': f"""
+                "Student Information": f"""
                 <div class="student-info">
                     <h2>👥 Student Information</h2>
                     {f'''
@@ -187,81 +193,87 @@ class SubstituteFolderGenerator(BrowserView):
                         </ul>
                     </div>
                 </div>
-                """
+                """,
             }
-            
+
             # Prepare response
             response_data = {
-                'success': True,
-                'access_code': access_code,
-                'document_title': f'Substitute Materials - {date_str}',
-                'sections_data': sections_data,
-                'custom_notes': custom_notes,
-                'generated_date': datetime.now().strftime('%B %d, %Y at %I:%M %p'),
-                'expiry_time': (datetime.now() + timedelta(hours=24)).isoformat(),
-                'message': f'Substitute materials generated successfully for {date_str}',
-                'sections_created': list(sections_data.keys())
+                "success": True,
+                "access_code": access_code,
+                "document_title": f"Substitute Materials - {date_str}",
+                "sections_data": sections_data,
+                "custom_notes": custom_notes,
+                "generated_date": datetime.now().strftime("%B %d, %Y at %I:%M %p"),
+                "expiry_time": (datetime.now() + timedelta(hours=24)).isoformat(),
+                "message": f"Substitute materials generated successfully for {date_str}",
+                "sections_created": list(sections_data.keys()),
             }
-            
-            self.request.response.setHeader('Content-Type', 'application/json')
+
+            self.request.response.setHeader("Content-Type", "application/json")
             return json.dumps(response_data)
-            
+
         except Exception as e:
             logger.error(f"Error generating simple materials: {e}")
             self.request.response.setStatus(500)
-            return json.dumps({
-                'success': False,
-                'error': 'Failed to generate substitute materials',
-                'details': str(e)
-            })
-    
+            return json.dumps(
+                {
+                    "success": False,
+                    "error": "Failed to generate substitute materials",
+                    "details": str(e),
+                }
+            )
+
     def generate_folder(self):
         """Create comprehensive substitute document with today's materials"""
         logger.info("🚀 GENERATE_FOLDER METHOD CALLED - NEW CODE IS RUNNING!")
         try:
             # Parse request data for custom notes
-            body = self.request.get('BODY', '{}')
+            body = self.request.get("BODY", "{}")
             if isinstance(body, bytes):
-                body = body.decode('utf-8')
-            data = json.loads(body) if body != '{}' else {}
-            
-            custom_notes = data.get('notes', '').strip()
-            
+                body = body.decode("utf-8")
+            data = json.loads(body) if body != "{}" else {}
+
+            custom_notes = data.get("notes", "").strip()
+
             # Create folder with today's date
-            date_str = datetime.now().strftime('%Y-%m-%d')
-            folder_id = f'substitute-{date_str}'
-            folder_title = f'Substitute Materials - {date_str}'
-            
+            date_str = datetime.now().strftime("%Y-%m-%d")
+            folder_id = f"substitute-{date_str}"
+            folder_title = f"Substitute Materials - {date_str}"
+
             portal = api.portal.get()
-            
+
             # Check if document already exists
             logger.info(f"DEBUG: Checking if {folder_id} exists in portal")
             if folder_id in portal:
                 folder = portal[folder_id]
                 logger.info(f"Using existing substitute document: {folder_id}")
             else:
-                logger.info(f"DEBUG: Document {folder_id} does not exist, creating new one")
-                with api.env.adopt_roles(['Manager']):
-                    logger.info(f"DEBUG: About to create Document with id={folder_id}, type=Document")
+                logger.info(
+                    f"DEBUG: Document {folder_id} does not exist, creating new one"
+                )
+                with api.env.adopt_roles(["Manager"]):
+                    logger.info(
+                        f"DEBUG: About to create Document with id={folder_id}, type=Document"
+                    )
                     folder = api.content.create(
                         container=portal,
-                        type='Document',
+                        type="Document",
                         id=folder_id,
                         title=folder_title,
-                        description=f'Emergency substitute materials for {datetime.now().strftime("%B %d, %Y")}'
+                        description=f'Emergency substitute materials for {datetime.now().strftime("%B %d, %Y")}',
                     )
                     logger.info(f"Created new substitute document: {folder_id}")
-            
+
             # Create comprehensive substitute document content
             sections = [
-                ('Daily Schedule', self.get_schedule_content()),
-                ('Seating Charts', self.get_seating_charts_content()),
+                ("Daily Schedule", self.get_schedule_content()),
+                ("Seating Charts", self.get_seating_charts_content()),
                 ("Today's Lessons", self.get_todays_lessons()),
-                ('Emergency Procedures', self.get_emergency_info()),
-                ('Important Contacts', self.get_contacts()),
-                ('Special Student Information', self.get_student_info(custom_notes)),
+                ("Emergency Procedures", self.get_emergency_info()),
+                ("Important Contacts", self.get_contacts()),
+                ("Special Student Information", self.get_student_info(custom_notes)),
             ]
-            
+
             # Combine all sections into one comprehensive document
             combined_content = f"""
             <div class="substitute-materials">
@@ -270,10 +282,10 @@ class SubstituteFolderGenerator(BrowserView):
                 <p><em>This document contains all materials needed for successful classroom management.</em></p>
                 <hr style="margin: 30px 0;">
             """
-            
+
             created_sections = []
-            
-            with api.env.adopt_roles(['Manager']):
+
+            with api.env.adopt_roles(["Manager"]):
                 for section_title, content_html in sections:
                     combined_content += f"""
                     <div class="section" style="margin-bottom: 40px;">
@@ -283,110 +295,118 @@ class SubstituteFolderGenerator(BrowserView):
                     """
                     created_sections.append(section_title)
                     logger.info(f"Added section: {section_title}")
-                
+
                 # Set permissions and generate access code
                 access_code = self.set_substitute_permissions(folder)
-                
+
                 # Replace access code placeholder in content
-                combined_content = combined_content.replace('{ACCESS_CODE}', access_code)
+                combined_content = combined_content.replace(
+                    "{ACCESS_CODE}", access_code
+                )
                 combined_content += "</div>"
-                
+
                 # Set the document text content
                 folder.text = api.content.RichTextValue(
-                    combined_content,
-                    'text/html',
-                    'text/x-html-safe'
+                    combined_content, "text/html", "text/x-html-safe"
                 )
-            
+
             transaction.commit()
-            
+
             response_data = {
-                'success': True,
-                'folder_url': folder.absolute_url(),
-                'access_code': access_code,
-                'folder_title': folder_title,
-                'sections_created': created_sections,
-                'expiry_time': (datetime.now() + timedelta(hours=24)).isoformat(),
-                'message': f'Substitute materials document created successfully for {date_str}'
+                "success": True,
+                "folder_url": folder.absolute_url(),
+                "access_code": access_code,
+                "folder_title": folder_title,
+                "sections_created": created_sections,
+                "expiry_time": (datetime.now() + timedelta(hours=24)).isoformat(),
+                "message": f"Substitute materials document created successfully for {date_str}",
             }
-            
-            self.request.response.setHeader('Content-Type', 'application/json')
+
+            self.request.response.setHeader("Content-Type", "application/json")
             return json.dumps(response_data)
-            
+
         except Exception as e:
             import traceback
+
             logger.error(f"Error generating substitute folder: {e}")
             logger.error(f"Full traceback: {traceback.format_exc()}")
             self.request.response.setStatus(500)
-            return json.dumps({
-                'success': False,
-                'error': 'Failed to generate substitute folder',
-                'details': str(e)
-            })
-    
+            return json.dumps(
+                {
+                    "success": False,
+                    "error": "Failed to generate substitute folder",
+                    "details": str(e),
+                }
+            )
+
     def generate_materials_json(self):
         """Generate substitute materials as JSON response instead of creating content objects"""
         logger.info("🚀 GENERATE_MATERIALS_JSON METHOD CALLED - NEW APPROACH!")
-        
+
         try:
             # Parse request data for custom notes
-            body = self.request.get('BODY', '{}')
+            body = self.request.get("BODY", "{}")
             if isinstance(body, bytes):
-                body = body.decode('utf-8')
-            data = json.loads(body) if body != '{}' else {}
-            
-            custom_notes = data.get('notes', '').strip()
-            
+                body = body.decode("utf-8")
+            data = json.loads(body) if body != "{}" else {}
+
+            custom_notes = data.get("notes", "").strip()
+
             # Generate access code
-            access_code = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
-            
+            access_code = "".join(
+                secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)
+            )
+
             # Get current date
-            date_str = datetime.now().strftime('%Y-%m-%d')
-            
+            date_str = datetime.now().strftime("%Y-%m-%d")
+
             # Create sections data
             sections_data = {
-                'Daily Schedule': self.get_schedule_content(),
-                'Seating Charts': self.get_seating_charts_content(),
+                "Daily Schedule": self.get_schedule_content(),
+                "Seating Charts": self.get_seating_charts_content(),
                 "Today's Lessons": self.get_todays_lessons(),
-                'Emergency Procedures': self.get_emergency_info(),
-                'Important Contacts': self.get_contacts(),
-                'Special Student Information': self.get_student_info(custom_notes),
+                "Emergency Procedures": self.get_emergency_info(),
+                "Important Contacts": self.get_contacts(),
+                "Special Student Information": self.get_student_info(custom_notes),
             }
-            
+
             # Prepare response
             response_data = {
-                'success': True,
-                'access_code': access_code,
-                'document_title': f'Substitute Materials - {date_str}',
-                'document_url': f'{api.portal.get().absolute_url()}/substitute-materials-{date_str}',
-                'sections_data': sections_data,
-                'custom_notes': custom_notes,
-                'generated_date': datetime.now().strftime('%B %d, %Y at %I:%M %p'),
-                'expiry_time': (datetime.now() + timedelta(hours=24)).isoformat(),
-                'message': f'Substitute materials generated successfully for {date_str}',
-                'sections_created': list(sections_data.keys())
+                "success": True,
+                "access_code": access_code,
+                "document_title": f"Substitute Materials - {date_str}",
+                "document_url": f"{api.portal.get().absolute_url()}/substitute-materials-{date_str}",
+                "sections_data": sections_data,
+                "custom_notes": custom_notes,
+                "generated_date": datetime.now().strftime("%B %d, %Y at %I:%M %p"),
+                "expiry_time": (datetime.now() + timedelta(hours=24)).isoformat(),
+                "message": f"Substitute materials generated successfully for {date_str}",
+                "sections_created": list(sections_data.keys()),
             }
-            
-            self.request.response.setHeader('Content-Type', 'application/json')
+
+            self.request.response.setHeader("Content-Type", "application/json")
             return json.dumps(response_data)
-            
+
         except Exception as e:
             import traceback
+
             logger.error(f"Error generating substitute materials JSON: {e}")
             logger.error(f"Full traceback: {traceback.format_exc()}")
             self.request.response.setStatus(500)
-            return json.dumps({
-                'success': False,
-                'error': 'Failed to generate substitute materials',
-                'details': str(e)
-            })
-    
+            return json.dumps(
+                {
+                    "success": False,
+                    "error": "Failed to generate substitute materials",
+                    "details": str(e),
+                }
+            )
+
     def get_schedule_content(self):
         """Generate daily schedule HTML"""
         # Get current time for context
         current_time = datetime.now()
-        day_name = current_time.strftime('%A')
-        
+        day_name = current_time.strftime("%A")
+
         return f"""
         <div class="substitute-schedule">
             <h2>Daily Schedule - {day_name}</h2>
@@ -458,12 +478,12 @@ class SubstituteFolderGenerator(BrowserView):
             </div>
         </div>
         """
-    
+
     def get_seating_charts_content(self):
         """Include current seating charts information"""
-        catalog = api.portal.get_tool('portal_catalog')
-        charts = catalog(portal_type='SeatingChart')
-        
+        catalog = api.portal.get_tool("portal_catalog")
+        charts = catalog(portal_type="SeatingChart")
+
         if not charts:
             return """
             <div class="seating-charts-section">
@@ -472,17 +492,17 @@ class SubstituteFolderGenerator(BrowserView):
                 <p>Students may sit in any available seat or refer to any printed seating charts posted in the classroom.</p>
             </div>
             """
-        
+
         charts_html = """
         <div class="seating-charts-section">
             <h2>Current Seating Charts</h2>
             <p>The following seating arrangements are active for today:</p>
             <ul style="list-style-type: none; padding-left: 0;">
         """
-        
+
         for brain in charts:
             chart = brain.getObject()
-            student_count = len(getattr(chart, 'students', []))
+            student_count = len(getattr(chart, "students", []))
             charts_html += f"""
                 <li style="margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                     <strong>{chart.title}</strong><br>
@@ -490,7 +510,7 @@ class SubstituteFolderGenerator(BrowserView):
                     <a href="{chart.absolute_url()}" target="_blank">View Seating Chart →</a>
                 </li>
             """
-        
+
         charts_html += """
             </ul>
             <div class="seating-notes" style="background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0;">
@@ -504,31 +524,30 @@ class SubstituteFolderGenerator(BrowserView):
             </div>
         </div>
         """
-        
+
         return charts_html
-    
+
     def get_todays_lessons(self):
         """Get today's lesson plans and materials"""
         today = datetime.now().date()
-        catalog = api.portal.get_tool('portal_catalog')
-        
+        catalog = api.portal.get_tool("portal_catalog")
+
         # Look for documents created or modified today
         today_docs = catalog(
-            portal_type='Document',
-            modified={'query': today, 'range': 'min'}
+            portal_type="Document", modified={"query": today, "range": "min"}
         )
-        
+
         lessons_html = """
         <div class="todays-lessons">
             <h2>Today's Lesson Plans</h2>
         """
-        
+
         if today_docs:
             lessons_html += f"""
             <p>The following lesson materials have been prepared for today ({today.strftime('%B %d, %Y')}):</p>
             <ul style="list-style-type: none; padding-left: 0;">
             """
-            
+
             for brain in today_docs[:5]:  # Limit to 5 most recent
                 doc = brain.getObject()
                 lessons_html += f"""
@@ -538,7 +557,7 @@ class SubstituteFolderGenerator(BrowserView):
                         {doc.description or 'No description available'}
                     </li>
                 """
-            
+
             lessons_html += "</ul>"
         else:
             lessons_html += """
@@ -573,7 +592,7 @@ class SubstituteFolderGenerator(BrowserView):
                 </ol>
             </div>
             """
-        
+
         lessons_html += """
             <div class="lesson-reminders" style="background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; padding: 15px; margin: 20px 0;">
                 <h4>Teaching Reminders:</h4>
@@ -587,9 +606,9 @@ class SubstituteFolderGenerator(BrowserView):
             </div>
         </div>
         """
-        
+
         return lessons_html
-    
+
     def get_emergency_info(self):
         """Generate emergency procedures content"""
         return """
@@ -670,7 +689,7 @@ class SubstituteFolderGenerator(BrowserView):
             </div>
         </div>
         """
-    
+
     def get_contacts(self):
         """Generate important contacts list"""
         return """
@@ -769,8 +788,8 @@ class SubstituteFolderGenerator(BrowserView):
             </div>
         </div>
         """
-    
-    def get_student_info(self, custom_notes=''):
+
+    def get_student_info(self, custom_notes=""):
         """Generate special student information with custom notes"""
         content = """
         <div class="student-information">
@@ -781,7 +800,7 @@ class SubstituteFolderGenerator(BrowserView):
                 <p>This information is confidential and for classroom management purposes only. Do not share with unauthorized personnel.</p>
             </div>
         """
-        
+
         if custom_notes:
             content += f"""
             <div class="teacher-notes" style="background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; padding: 15px; margin: 20px 0;">
@@ -791,7 +810,7 @@ class SubstituteFolderGenerator(BrowserView):
                 </div>
             </div>
             """
-        
+
         content += """
             <div class="general-guidelines" style="margin: 20px 0;">
                 <h3>General Student Guidelines</h3>
@@ -854,37 +873,38 @@ class SubstituteFolderGenerator(BrowserView):
             </div>
         </div>
         """
-        
+
         return content
-    
 
     def set_substitute_permissions(self, folder):
         """Set appropriate permissions and generate access code"""
         try:
             # Generate secure access code
-            access_code = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
-            
+            access_code = "".join(
+                secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)
+            )
+
             # Store access code in annotations with expiry
             annotations = IAnnotations(folder)
-            annotations['substitute_access'] = {
-                'code': access_code,
-                'created': datetime.now().isoformat(),
-                'expires': (datetime.now() + timedelta(hours=24)).isoformat()
+            annotations["substitute_access"] = {
+                "code": access_code,
+                "created": datetime.now().isoformat(),
+                "expires": (datetime.now() + timedelta(hours=24)).isoformat(),
             }
-            
+
             # Set folder to be visible to Authenticated users (substitute teachers)
             # In a real implementation, you might create a specific substitute role
-            api.content.transition(obj=folder, transition='publish')
-            
+            api.content.transition(obj=folder, transition="publish")
+
             logger.info(f"Generated access code {access_code} for substitute folder")
-            
+
             return access_code
-            
+
         except Exception as e:
             logger.error(f"Error setting substitute permissions: {e}")
             return "TEMP-CODE"
-    
+
     def generate_access_code(self, folder):
         """Generate a temporary access code for the substitute folder"""
         # This method is kept for backward compatibility with the spec
-        return self.set_substitute_permissions(folder) 
+        return self.set_substitute_permissions(folder)

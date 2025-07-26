@@ -18,75 +18,85 @@ logger = logging.getLogger(__name__)
 
 class SubstituteMaterialsView(BrowserView):
     """Generate substitute materials as JSON response"""
-    
+
     def __call__(self):
         """Handle requests"""
         logger.info("🚀 NEW SUBSTITUTE MATERIALS VIEW CALLED!")
-        
+
         # Handle CORS headers
-        self.request.response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-        self.request.response.setHeader('Access-Control-Allow-Credentials', 'true')
-        self.request.response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.request.response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept')
-        
-        if self.request.method == 'OPTIONS':
-            return ''
-        
+        self.request.response.setHeader(
+            "Access-Control-Allow-Origin", "http://localhost:3000"
+        )
+        self.request.response.setHeader("Access-Control-Allow-Credentials", "true")
+        self.request.response.setHeader(
+            "Access-Control-Allow-Methods", "GET, POST, OPTIONS"
+        )
+        self.request.response.setHeader(
+            "Access-Control-Allow-Headers", "Content-Type, Accept"
+        )
+
+        if self.request.method == "OPTIONS":
+            return ""
+
         try:
             # Parse request data
-            body = self.request.get('BODY', '{}')
+            body = self.request.get("BODY", "{}")
             if isinstance(body, bytes):
-                body = body.decode('utf-8')
-            data = json.loads(body) if body != '{}' else {}
-            
-            custom_notes = data.get('notes', '').strip()
-            
+                body = body.decode("utf-8")
+            data = json.loads(body) if body != "{}" else {}
+
+            custom_notes = data.get("notes", "").strip()
+
             # Generate access code
-            access_code = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
-            
+            access_code = "".join(
+                secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)
+            )
+
             # Get current date
-            date_str = datetime.now().strftime('%Y-%m-%d')
-            
+            date_str = datetime.now().strftime("%Y-%m-%d")
+
             # Create sections data
             sections_data = {
-                'Daily Schedule': self.get_schedule_content(),
-                'Seating Charts': self.get_seating_charts_content(),
+                "Daily Schedule": self.get_schedule_content(),
+                "Seating Charts": self.get_seating_charts_content(),
                 "Today's Lessons": self.get_lessons_content(),
-                'Emergency Procedures': self.get_emergency_content(),
-                'Important Contacts': self.get_contacts_content(),
-                'Student Information': self.get_student_info_content(custom_notes),
+                "Emergency Procedures": self.get_emergency_content(),
+                "Important Contacts": self.get_contacts_content(),
+                "Student Information": self.get_student_info_content(custom_notes),
             }
-            
+
             # Prepare response
             response_data = {
-                'success': True,
-                'access_code': access_code,
-                'document_title': f'Substitute Materials - {date_str}',
-                'sections_data': sections_data,
-                'custom_notes': custom_notes,
-                'generated_date': datetime.now().strftime('%B %d, %Y at %I:%M %p'),
-                'expiry_time': (datetime.now() + timedelta(hours=24)).isoformat(),
-                'message': f'Substitute materials generated successfully for {date_str}',
-                'sections_created': list(sections_data.keys())
+                "success": True,
+                "access_code": access_code,
+                "document_title": f"Substitute Materials - {date_str}",
+                "sections_data": sections_data,
+                "custom_notes": custom_notes,
+                "generated_date": datetime.now().strftime("%B %d, %Y at %I:%M %p"),
+                "expiry_time": (datetime.now() + timedelta(hours=24)).isoformat(),
+                "message": f"Substitute materials generated successfully for {date_str}",
+                "sections_created": list(sections_data.keys()),
             }
-            
-            self.request.response.setHeader('Content-Type', 'application/json')
+
+            self.request.response.setHeader("Content-Type", "application/json")
             return json.dumps(response_data)
-            
+
         except Exception as e:
             logger.error(f"Error in new substitute materials view: {e}")
             self.request.response.setStatus(500)
-            return json.dumps({
-                'success': False,
-                'error': 'Failed to generate substitute materials',
-                'details': str(e)
-            })
-    
+            return json.dumps(
+                {
+                    "success": False,
+                    "error": "Failed to generate substitute materials",
+                    "details": str(e),
+                }
+            )
+
     def get_schedule_content(self):
         """Generate daily schedule HTML"""
         current_time = datetime.now()
-        day_name = current_time.strftime('%A')
-        
+        day_name = current_time.strftime("%A")
+
         return f"""
         <div class="substitute-schedule">
             <h2>Daily Schedule - {day_name}</h2>
@@ -148,12 +158,12 @@ class SubstituteMaterialsView(BrowserView):
             </table>
         </div>
         """
-    
+
     def get_seating_charts_content(self):
         """Get seating charts information"""
-        catalog = api.portal.get_tool('portal_catalog')
-        charts = catalog(portal_type='SeatingChart')
-        
+        catalog = api.portal.get_tool("portal_catalog")
+        charts = catalog(portal_type="SeatingChart")
+
         if not charts:
             return """
             <div class="seating-charts">
@@ -161,14 +171,14 @@ class SubstituteMaterialsView(BrowserView):
                 <p><em>No digital seating charts available. Check for printed charts posted in the classroom.</em></p>
             </div>
             """
-        
+
         html = "<div class='seating-charts'><h2>Current Seating Charts</h2><ul>"
         for brain in charts:
             chart = brain.getObject()
             html += f"<li><strong>{chart.title}</strong> - {len(getattr(chart, 'students', []))} students</li>"
         html += "</ul></div>"
         return html
-    
+
     def get_lessons_content(self):
         """Get lesson plans and backup activities"""
         return """
@@ -196,7 +206,7 @@ class SubstituteMaterialsView(BrowserView):
             </div>
         </div>
         """
-    
+
     def get_emergency_content(self):
         """Get emergency procedures"""
         return """
@@ -229,7 +239,7 @@ class SubstituteMaterialsView(BrowserView):
             <p><strong>Emergency Contacts:</strong> Main Office (Ext. 100), Nurse (Ext. 120), Security (Ext. 150)</p>
         </div>
         """
-    
+
     def get_contacts_content(self):
         """Get important contacts"""
         return """
@@ -260,14 +270,14 @@ class SubstituteMaterialsView(BrowserView):
             </table>
         </div>
         """
-    
-    def get_student_info_content(self, custom_notes=''):
+
+    def get_student_info_content(self, custom_notes=""):
         """Get student information with custom notes"""
         content = """
         <div class="student-info">
             <h2>👥 Student Information</h2>
         """
-        
+
         if custom_notes:
             content += f"""
             <div style="background-color: #d4edda; padding: 15px; border-radius: 5px; margin: 15px 0;">
@@ -275,7 +285,7 @@ class SubstituteMaterialsView(BrowserView):
                 <p style="white-space: pre-wrap;">{custom_notes}</p>
             </div>
             """
-        
+
         content += """
             <div style="background-color: #e2e3e5; padding: 15px; border-radius: 5px;">
                 <h4>General Guidelines</h4>
@@ -289,5 +299,5 @@ class SubstituteMaterialsView(BrowserView):
             </div>
         </div>
         """
-        
-        return content 
+
+        return content

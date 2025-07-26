@@ -1,18 +1,27 @@
 /**
  * Teacher's Daily Command Center Dashboard
- * 
+ *
  * Real-time classroom management dashboard that aggregates data from all features:
  * - Current seating arrangements and student counts
  * - Active hall passes with duration tracking and alerts
  * - Participation statistics and fairness scores
  * - Classroom alerts and notifications
  * - Quick action widgets for common tasks
- * 
+ *
  * Updates every 30 seconds for real-time monitoring.
  */
 
 import React, { useState, useEffect } from 'react';
-import { Grid, Segment, Statistic, Message, Loader, Container, Header, Icon } from 'semantic-ui-react';
+import {
+  Grid,
+  Segment,
+  Statistic,
+  Message,
+  Loader,
+  Container,
+  Header,
+  Icon,
+} from 'semantic-ui-react';
 
 // Import dashboard widgets
 import SeatingWidget from './widgets/SeatingWidget';
@@ -31,26 +40,29 @@ const TeacherDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
-  
+
   // Get backend URL from environment - support both dev and Docker modes
   const getApiUrl = () => {
     // If we're on project-title.localhost (Docker), use relative path via Traefik
-    if (typeof window !== 'undefined' && window.location.hostname === 'project-title.localhost') {
+    if (
+      typeof window !== 'undefined' &&
+      window.location.hostname === 'project-title.localhost'
+    ) {
       return '/Plone'; // Relative path - Traefik will route to backend
     }
     // Otherwise use localhost fallback for development
     return 'http://localhost:8080/Plone';
   };
-  
+
   const contentUrl = getApiUrl();
 
   useEffect(() => {
     // Initial load
     fetchDashboardData();
-    
+
     // Set up polling for real-time updates every 30 seconds
     const interval = setInterval(fetchDashboardData, 30000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -59,14 +71,17 @@ const TeacherDashboard = () => {
    */
   const fetchDashboardData = async () => {
     try {
-      const response = await fetch(`${contentUrl}/@@teacher-dashboard?ajax_update=1`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await fetch(
+        `${contentUrl}/@@teacher-dashboard?ajax_update=1`,
+        {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -125,31 +140,41 @@ const TeacherDashboard = () => {
     );
   }
 
-  const { quick_stats, alerts, seating, hall_passes, participation } = dashboardData || {};
+  const { quick_stats, alerts, seating, hall_passes, participation } =
+    dashboardData || {};
 
   return (
     <div className="teacher-dashboard">
       <Container fluid style={{ padding: '15px' }}>
         {/* Dashboard Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <div style={{ flex: 1 }}>
-          </div>
-          
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
+          <div style={{ flex: 1 }}></div>
+
           <div style={{ textAlign: 'center', flex: 2 }}>
             <Header as="h1" style={{ margin: '0 0 5px 0' }}>
               <Icon name="dashboard" color="blue" />
               Classroom Command Center
             </Header>
-            <div style={{ 
-              color: '#666', 
-              fontSize: '0.9em', 
-              fontWeight: 'normal',
-              marginBottom: '0'
-            }}>
-              Real-time classroom management dashboard • Last updated: {lastUpdate?.toLocaleTimeString()}
+            <div
+              style={{
+                color: '#666',
+                fontSize: '0.9em',
+                fontWeight: 'normal',
+                marginBottom: '0',
+              }}
+            >
+              Real-time classroom management dashboard • Last updated:{' '}
+              {lastUpdate?.toLocaleTimeString()}
             </div>
           </div>
-          
+
           <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
             <PerformanceMonitor />
           </div>
@@ -165,22 +190,26 @@ const TeacherDashboard = () => {
               </Statistic.Value>
               <Statistic.Label>Students Present</Statistic.Label>
             </Statistic>
-            
-            <Statistic color={getHallPassColor(quick_stats?.active_passes || 0)}>
+
+            <Statistic
+              color={getHallPassColor(quick_stats?.active_passes || 0)}
+            >
               <Statistic.Value>
                 <Icon name="id card" />
                 {quick_stats?.active_passes || 0}
               </Statistic.Value>
               <Statistic.Label>Active Passes</Statistic.Label>
             </Statistic>
-            
-            <Statistic color={getFairnessColor(quick_stats?.fairness_score || 100)}>
+
+            <Statistic
+              color={getFairnessColor(quick_stats?.fairness_score || 100)}
+            >
               <Statistic.Value>
                 {quick_stats?.fairness_score || 100}%
               </Statistic.Value>
               <Statistic.Label>Participation Fairness</Statistic.Label>
             </Statistic>
-            
+
             <Statistic>
               <Statistic.Value>
                 <Icon name="clock" />
@@ -194,15 +223,15 @@ const TeacherDashboard = () => {
                 <Icon name="calendar" />
                 {quick_stats?.day_of_week || 'Today'}
               </Statistic.Value>
-              <Statistic.Label>{quick_stats?.current_date || 'Date'}</Statistic.Label>
+              <Statistic.Label>
+                {quick_stats?.current_date || 'Date'}
+              </Statistic.Label>
             </Statistic>
           </Statistic.Group>
         </Segment>
 
         {/* Alerts Section */}
-        {alerts && alerts.length > 0 && (
-          <AlertsWidget alerts={alerts} />
-        )}
+        {alerts && alerts.length > 0 && <AlertsWidget alerts={alerts} />}
 
         {/* Main Dashboard Grid - Compact 2 Column Layout */}
         <Grid columns={2} stackable style={{ margin: '0' }}>
@@ -224,11 +253,9 @@ const TeacherDashboard = () => {
         {/* Footer with last update info */}
         <div style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
           <small>
-            Dashboard auto-refreshes every 30 seconds • 
-            Last update: {lastUpdate ? lastUpdate.toLocaleString() : 'Never'}
-            {error && (
-              <span style={{ color: 'red' }}> • Warning: {error}</span>
-            )}
+            Dashboard auto-refreshes every 30 seconds • Last update:{' '}
+            {lastUpdate ? lastUpdate.toLocaleString() : 'Never'}
+            {error && <span style={{ color: 'red' }}> • Warning: {error}</span>}
           </small>
         </div>
       </Container>
@@ -236,4 +263,4 @@ const TeacherDashboard = () => {
   );
 };
 
-export default TeacherDashboard; 
+export default TeacherDashboard;

@@ -24,7 +24,9 @@
 
 /* Efficient transitions using transform and opacity only */
 .optimized-transition {
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  transition:
+    transform 0.3s ease-out,
+    opacity 0.3s ease-out;
 }
 
 .fade-in-optimized {
@@ -47,7 +49,7 @@
 .timer-display-optimized {
   contain: layout style paint; /* CSS containment for better performance */
   font-variant-numeric: tabular-nums; /* Better number rendering */
-  font-feature-settings: "tnum"; /* Consistent digit spacing */
+  font-feature-settings: 'tnum'; /* Consistent digit spacing */
 }
 
 .timer-progress-optimized {
@@ -61,8 +63,15 @@
 }
 
 @keyframes flashAlert {
-  0%, 100% { background-color: transparent; }
-  10%, 30%, 50% { background-color: rgba(255, 0, 0, 0.1); }
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  10%,
+  30%,
+  50% {
+    background-color: rgba(255, 0, 0, 0.1);
+  }
 }
 
 /* ========================================
@@ -93,17 +102,17 @@
 }
 
 @keyframes pulse {
-  0% { 
-    opacity: 0; 
-    transform: scale(1); 
+  0% {
+    opacity: 0;
+    transform: scale(1);
   }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.2); 
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
   }
-  100% { 
-    opacity: 0; 
-    transform: scale(1); 
+  100% {
+    opacity: 0;
+    transform: scale(1);
   }
 }
 
@@ -119,13 +128,15 @@
 
 .student-seat {
   cursor: move;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   will-change: transform;
 }
 
 .student-seat:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .student-seat.dragging {
@@ -146,7 +157,9 @@
    ======================================== */
 
 .hall-pass-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   contain: layout style;
 }
 
@@ -155,11 +168,12 @@
 }
 
 @keyframes urgentPulse {
-  0%, 100% { 
-    border-color: #db2828; 
+  0%,
+  100% {
+    border-color: #db2828;
     box-shadow: 0 0 0 0 rgba(219, 40, 40, 0.7);
   }
-  50% { 
+  50% {
     box-shadow: 0 0 0 10px rgba(219, 40, 40, 0);
   }
 }
@@ -178,8 +192,12 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(1800deg); } /* 5 full rotations */
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(1800deg);
+  } /* 5 full rotations */
 }
 
 .picked-student-highlight {
@@ -187,15 +205,15 @@
 }
 
 @keyframes celebration {
-  0% { 
+  0% {
     transform: scale(1);
     background: inherit;
   }
-  50% { 
+  50% {
     transform: scale(1.1);
     background: linear-gradient(45deg, #f39c12, #e67e22);
   }
-  100% { 
+  100% {
     transform: scale(1);
     background: inherit;
   }
@@ -212,17 +230,17 @@
   .chart-dragging {
     will-change: auto; /* Reduce memory usage on mobile */
   }
-  
+
   /* Disable expensive animations on mobile */
   .hall-pass-overdue {
     animation: none;
     border-color: #db2828;
   }
-  
+
   /* Simpler hover effects on touch devices */
   .student-seat:hover {
     transform: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -239,7 +257,7 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .timer-running,
   .dashboard-updating,
   .chart-dragging {
@@ -286,7 +304,7 @@
   button {
     display: none !important;
   }
-  
+
   .hall-pass-card,
   .seating-chart {
     break-inside: avoid;
@@ -305,8 +323,12 @@
 }
 
 @keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ========================================
@@ -346,4 +368,4 @@
   right: 10px;
   z-index: 9999;
   pointer-events: none;
-} 
+}

@@ -1,6 +1,6 @@
 /**
  * Standards Widget for Educational Content
- * 
+ *
  * A teacher-friendly widget for selecting educational standards.
  * Features search, filtering by subject/grade, and intuitive selection.
  * Designed specifically for K-12 educators' workflow.
@@ -8,17 +8,17 @@
 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { 
-  FormField, 
-  Grid, 
-  Dropdown, 
-  Input, 
-  Label, 
-  Button, 
+import {
+  FormField,
+  Grid,
+  Dropdown,
+  Input,
+  Label,
+  Button,
   Segment,
   Header,
   Icon,
-  Message
+  Message,
 } from 'semantic-ui-react';
 import { defineMessages, useIntl } from 'react-intl';
 import { SelectWidget } from '@plone/volto/components';
@@ -30,7 +30,8 @@ const messages = defineMessages({
   },
   searchStandards: {
     id: 'Search standards...',
-    defaultMessage: 'Search standards (e.g., "3rd grade math" or "CCSS.MATH.3.OA")',
+    defaultMessage:
+      'Search standards (e.g., "3rd grade math" or "CCSS.MATH.3.OA")',
   },
   filterBySubject: {
     id: 'Filter by Subject',
@@ -46,7 +47,8 @@ const messages = defineMessages({
   },
   noStandardsSelected: {
     id: 'No standards selected',
-    defaultMessage: 'No standards selected yet. Search and select standards that align with your content.',
+    defaultMessage:
+      'No standards selected yet. Search and select standards that align with your content.',
   },
   clearAll: {
     id: 'Clear All',
@@ -54,7 +56,8 @@ const messages = defineMessages({
   },
   helpText: {
     id: 'Standards help text',
-    defaultMessage: 'Select educational standards that your content addresses. This helps with lesson planning, reporting, and finding related materials.',
+    defaultMessage:
+      'Select educational standards that your content addresses. This helps with lesson planning, reporting, and finding related materials.',
   },
 });
 
@@ -82,17 +85,17 @@ const GRADE_FILTERS = [
   { key: '8', value: '8', text: '8th Grade' },
 ];
 
-const StandardsWidget = ({ 
-  id, 
-  title, 
-  description, 
-  required, 
-  error, 
-  value = [], 
+const StandardsWidget = ({
+  id,
+  title,
+  description,
+  required,
+  error,
+  value = [],
   onChange,
   vocabulary = {},
   placeholder,
-  ...props 
+  ...props
 }) => {
   const intl = useIntl();
   const [searchTerm, setSearchTerm] = useState('');
@@ -103,8 +106,8 @@ const StandardsWidget = ({
   // Convert vocabulary to options format
   const vocabularyOptions = React.useMemo(() => {
     if (!vocabulary?.terms) return [];
-    
-    return vocabulary.terms.map(term => ({
+
+    return vocabulary.terms.map((term) => ({
       key: term.token,
       value: term.token,
       text: term.title,
@@ -118,20 +121,23 @@ const StandardsWidget = ({
 
     // Filter by subject
     if (subjectFilter !== 'all') {
-      filtered = filtered.filter(option => 
-        option.value.toLowerCase().includes(subjectFilter.toLowerCase())
+      filtered = filtered.filter((option) =>
+        option.value.toLowerCase().includes(subjectFilter.toLowerCase()),
       );
     }
 
     // Filter by grade (for math and ELA standards)
     if (gradeFilter !== 'all') {
       const grades = gradeFilter.split(',');
-      filtered = filtered.filter(option => {
-        return grades.some(grade => {
+      filtered = filtered.filter((option) => {
+        return grades.some((grade) => {
           if (grade === 'K') {
             return option.value.includes('.K.') || option.value.includes('K-');
           }
-          return option.value.includes(`.${grade}.`) || option.value.includes(`${grade}-`);
+          return (
+            option.value.includes(`.${grade}.`) ||
+            option.value.includes(`${grade}-`)
+          );
         });
       });
     }
@@ -139,10 +145,11 @@ const StandardsWidget = ({
     // Filter by search term
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
-      filtered = filtered.filter(option => 
-        option.text.toLowerCase().includes(searchLower) ||
-        option.value.toLowerCase().includes(searchLower) ||
-        option.description.toLowerCase().includes(searchLower)
+      filtered = filtered.filter(
+        (option) =>
+          option.text.toLowerCase().includes(searchLower) ||
+          option.value.toLowerCase().includes(searchLower) ||
+          option.description.toLowerCase().includes(searchLower),
       );
     }
 
@@ -159,7 +166,7 @@ const StandardsWidget = ({
 
   // Handle removing a standard
   const handleRemoveStandard = (standardValue) => {
-    const newValue = value.filter(v => v !== standardValue);
+    const newValue = value.filter((v) => v !== standardValue);
     onChange(id, newValue);
   };
 
@@ -170,7 +177,7 @@ const StandardsWidget = ({
 
   // Get selected standard details
   const getStandardDetails = (standardValue) => {
-    const option = vocabularyOptions.find(opt => opt.value === standardValue);
+    const option = vocabularyOptions.find((opt) => opt.value === standardValue);
     return option || { text: standardValue, description: '' };
   };
 
@@ -183,9 +190,7 @@ const StandardsWidget = ({
               {title}
               {required && <span className="required">&nbsp;*</span>}
             </label>
-            {description && (
-              <div className="help text">{description}</div>
-            )}
+            {description && <div className="help text">{description}</div>}
           </Grid.Column>
         </Grid.Row>
 
@@ -232,17 +237,22 @@ const StandardsWidget = ({
                   <Icon name="search" />
                   Available Standards ({filteredOptions.length})
                 </Header>
-                <div className="standards-list" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                  {filteredOptions.slice(0, 20).map(option => (
-                    <div 
-                      key={option.value} 
+                <div
+                  className="standards-list"
+                  style={{ maxHeight: '300px', overflowY: 'auto' }}
+                >
+                  {filteredOptions.slice(0, 20).map((option) => (
+                    <div
+                      key={option.value}
                       className="standard-option"
-                      style={{ 
-                        padding: '8px 12px', 
+                      style={{
+                        padding: '8px 12px',
                         border: '1px solid #ddd',
                         marginBottom: '4px',
                         cursor: 'pointer',
-                        backgroundColor: value.includes(option.value) ? '#e8f5e8' : '#fff'
+                        backgroundColor: value.includes(option.value)
+                          ? '#e8f5e8'
+                          : '#fff',
                       }}
                       onClick={() => handleAddStandard(option.value)}
                     >
@@ -250,18 +260,24 @@ const StandardsWidget = ({
                       <br />
                       <small>{option.description || option.text}</small>
                       {value.includes(option.value) && (
-                        <Icon name="checkmark" color="green" style={{ float: 'right' }} />
+                        <Icon
+                          name="checkmark"
+                          color="green"
+                          style={{ float: 'right' }}
+                        />
                       )}
                     </div>
                   ))}
                   {filteredOptions.length > 20 && (
                     <Message info>
-                      Showing first 20 results. Refine your search to see more specific standards.
+                      Showing first 20 results. Refine your search to see more
+                      specific standards.
                     </Message>
                   )}
                   {filteredOptions.length === 0 && (
                     <Message>
-                      No standards found matching your criteria. Try different search terms or filters.
+                      No standards found matching your criteria. Try different
+                      search terms or filters.
                     </Message>
                   )}
                 </div>
@@ -276,11 +292,12 @@ const StandardsWidget = ({
             <Segment>
               <Header as="h4">
                 <Icon name="tag" />
-                {intl.formatMessage(messages.selectedStandards)} ({value.length})
+                {intl.formatMessage(messages.selectedStandards)} ({value.length}
+                )
                 {value.length > 0 && (
-                  <Button 
-                    size="mini" 
-                    basic 
+                  <Button
+                    size="mini"
+                    basic
                     onClick={handleClearAll}
                     style={{ marginLeft: '10px' }}
                   >
@@ -294,10 +311,10 @@ const StandardsWidget = ({
                 </Message>
               ) : (
                 <div className="selected-standards">
-                  {value.map(standardValue => {
+                  {value.map((standardValue) => {
                     const details = getStandardDetails(standardValue);
                     return (
-                      <Label 
+                      <Label
                         key={standardValue}
                         size="medium"
                         style={{ margin: '2px' }}
@@ -305,8 +322,8 @@ const StandardsWidget = ({
                         <strong>{standardValue}</strong>
                         <br />
                         <small>{details.description || details.text}</small>
-                        <Icon 
-                          name="delete" 
+                        <Icon
+                          name="delete"
                           onClick={() => handleRemoveStandard(standardValue)}
                           style={{ cursor: 'pointer', marginLeft: '8px' }}
                         />
@@ -361,4 +378,4 @@ StandardsWidget.defaultProps = {
   placeholder: 'Search for standards...',
 };
 
-export default StandardsWidget; 
+export default StandardsWidget;

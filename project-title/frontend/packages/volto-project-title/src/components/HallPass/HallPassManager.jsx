@@ -1,6 +1,6 @@
 /**
  * Hall Pass Manager Component for Classroom Management
- * 
+ *
  * Provides interface for issuing, tracking, and managing digital hall passes
  * with QR codes and real-time time tracking.
  */
@@ -21,7 +21,7 @@ import {
   Card,
   Statistic,
   List,
-  Alert
+  Alert,
 } from 'semantic-ui-react';
 import PassCard from './PassCard';
 import './HallPassManager.css';
@@ -41,14 +41,14 @@ const ClientOnly = ({ children, fallback = null }) => {
   return children;
 };
 
-const HallPassManagerComponent = ({ 
+const HallPassManagerComponent = ({
   contentUrl,
-  title = "Digital Hall Pass Manager"
+  title = 'Digital Hall Pass Manager',
 }) => {
   const [activePasses, setActivePasses] = useState([]);
   const [recentPasses, setRecentPasses] = useState([]);
   const [alerts, setAlerts] = useState([]);
-  
+
   // Provide fallback URL for standalone usage
   const baseUrl = contentUrl || 'http://localhost:8080';
   const [showIssueModal, setShowIssueModal] = useState(false);
@@ -56,7 +56,7 @@ const HallPassManagerComponent = ({
     student_name: '',
     destination: 'Restroom',
     expected_duration: 5,
-    notes: ''
+    notes: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(null);
@@ -72,7 +72,7 @@ const HallPassManagerComponent = ({
     { key: 'locker', value: 'Locker', text: 'Locker' },
     { key: 'water', value: 'Water', text: 'Water Fountain' },
     { key: 'technology', value: 'Technology', text: 'Technology Support' },
-    { key: 'other', value: 'Other', text: 'Other (see notes)' }
+    { key: 'other', value: 'Other', text: 'Other (see notes)' },
   ];
 
   /**
@@ -80,12 +80,12 @@ const HallPassManagerComponent = ({
    */
   const loadPassData = useCallback(async () => {
     if (!baseUrl) return;
-    
+
     try {
       const response = await fetch(`${baseUrl}/@@hall-pass-data?ajax_data=1`, {
         method: 'GET',
-        headers: { 'Accept': 'application/json' },
-        credentials: 'include'
+        headers: { Accept: 'application/json' },
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -107,10 +107,10 @@ const HallPassManagerComponent = ({
   // Initial load and periodic refresh
   useEffect(() => {
     loadPassData();
-    
+
     // Refresh every 30 seconds
     const interval = setInterval(loadPassData, 30000);
-    
+
     return () => clearInterval(interval);
   }, [loadPassData]);
 
@@ -130,29 +130,29 @@ const HallPassManagerComponent = ({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          Accept: 'application/json',
         },
         body: JSON.stringify(newPass),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       if (response.ok) {
         const result = await response.json();
-        
+
         if (result.success) {
           // Add new pass to active passes
-          setActivePasses(prev => [result.pass, ...prev]);
-          
+          setActivePasses((prev) => [result.pass, ...prev]);
+
           // Reset form
           setNewPass({
             student_name: '',
             destination: 'Restroom',
             expected_duration: 5,
-            notes: ''
+            notes: '',
           });
-          
+
           setShowIssueModal(false);
-          
+
           // Play success sound
           playNotificationSound('pass-issued');
         } else {
@@ -178,28 +178,28 @@ const HallPassManagerComponent = ({
       alert('Invalid pass data. Please refresh and try again.');
       return;
     }
-    
+
     try {
       const response = await fetch(`${baseUrl}/@@return-pass`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json' 
+          Accept: 'application/json',
         },
         body: JSON.stringify({ pass_id: passData.id }),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       if (response.ok) {
         const result = await response.json();
-        
+
         if (result.success) {
           // Remove from active passes
-          setActivePasses(prev => prev.filter(p => p.id !== passData.id));
-          
+          setActivePasses((prev) => prev.filter((p) => p.id !== passData.id));
+
           // Add to recent passes
-          setRecentPasses(prev => [result.pass, ...prev.slice(0, 9)]);
-          
+          setRecentPasses((prev) => [result.pass, ...prev.slice(0, 9)]);
+
           // Play return sound
           playNotificationSound('pass-returned');
         } else {
@@ -220,8 +220,11 @@ const HallPassManagerComponent = ({
    */
   const playNotificationSound = (type) => {
     try {
-      const soundFile = type === 'pass-issued' ? 'pass-issued.mp3' : 'pass-returned.mp3';
-      const audio = new Audio(`${baseUrl}/++resource++project.title/sounds/${soundFile}`);
+      const soundFile =
+        type === 'pass-issued' ? 'pass-issued.mp3' : 'pass-returned.mp3';
+      const audio = new Audio(
+        `${baseUrl}/++resource++project.title/sounds/${soundFile}`,
+      );
       audio.volume = 0.3;
       audio.play().catch(() => {
         // Sound is optional, ignore errors
@@ -236,10 +239,14 @@ const HallPassManagerComponent = ({
    */
   const getAlertColor = (type) => {
     switch (type) {
-      case 'danger': return 'red';
-      case 'warning': return 'yellow';
-      case 'info': return 'blue';
-      default: return 'grey';
+      case 'danger':
+        return 'red';
+      case 'warning':
+        return 'yellow';
+      case 'info':
+        return 'blue';
+      default:
+        return 'grey';
     }
   };
 
@@ -247,16 +254,22 @@ const HallPassManagerComponent = ({
    * Render statistics
    */
   const renderStatistics = () => {
-    const overdueCount = activePasses.filter(p => p.alert_level === 'red').length;
-    
+    const overdueCount = activePasses.filter(
+      (p) => p.alert_level === 'red',
+    ).length;
+
     // Calculate average duration safely
     const validDurations = activePasses
-      .map(p => p.duration_minutes)
-      .filter(d => d !== undefined && d !== null && !isNaN(d));
-    
-    const averageDuration = validDurations.length > 0 
-      ? Math.round(validDurations.reduce((sum, d) => sum + d, 0) / validDurations.length)
-      : 0;
+      .map((p) => p.duration_minutes)
+      .filter((d) => d !== undefined && d !== null && !isNaN(d));
+
+    const averageDuration =
+      validDurations.length > 0
+        ? Math.round(
+            validDurations.reduce((sum, d) => sum + d, 0) /
+              validDurations.length,
+          )
+        : 0;
 
     return (
       <Segment>
@@ -270,12 +283,12 @@ const HallPassManagerComponent = ({
             <Statistic.Value>{activePasses.length}</Statistic.Value>
             <Statistic.Label>Active</Statistic.Label>
           </Statistic>
-          
+
           <Statistic color={overdueCount > 0 ? 'red' : 'green'}>
             <Statistic.Value>{overdueCount}</Statistic.Value>
             <Statistic.Label>Overdue</Statistic.Label>
           </Statistic>
-          
+
           <Statistic>
             <Statistic.Value>{averageDuration || 0}</Statistic.Value>
             <Statistic.Label>Avg. Minutes</Statistic.Label>
@@ -304,7 +317,7 @@ const HallPassManagerComponent = ({
           <Icon name="warning" />
           Alerts
         </Header>
-        
+
         <List>
           {alerts.map((alert, index) => (
             <List.Item key={index}>
@@ -328,43 +341,46 @@ const HallPassManagerComponent = ({
         <Icon name="plus" />
         Issue Hall Pass
       </Modal.Header>
-      
+
       <Modal.Content>
         <Form>
           <Form.Input
             label="Student Name"
             value={newPass.student_name}
-            onChange={(e, { value }) => 
+            onChange={(e, { value }) =>
               setNewPass({ ...newPass, student_name: value })
             }
             placeholder="Enter student name"
             required
           />
-          
+
           <Form.Select
             label="Destination"
             value={newPass.destination}
             options={destinationOptions}
-            onChange={(e, { value }) => 
+            onChange={(e, { value }) =>
               setNewPass({ ...newPass, destination: value })
             }
           />
-          
+
           <Form.Input
             label="Expected Duration (minutes)"
             type="number"
             value={newPass.expected_duration}
-            onChange={(e, { value }) => 
-              setNewPass({ ...newPass, expected_duration: parseInt(value) || 5 })
+            onChange={(e, { value }) =>
+              setNewPass({
+                ...newPass,
+                expected_duration: parseInt(value) || 5,
+              })
             }
             min={1}
             max={60}
           />
-          
+
           <Form.TextArea
             label="Notes (optional)"
             value={newPass.notes}
-            onChange={(e, { value }) => 
+            onChange={(e, { value }) =>
               setNewPass({ ...newPass, notes: value })
             }
             placeholder="Any additional notes..."
@@ -372,16 +388,10 @@ const HallPassManagerComponent = ({
           />
         </Form>
       </Modal.Content>
-      
+
       <Modal.Actions>
-        <Button onClick={() => setShowIssueModal(false)}>
-          Cancel
-        </Button>
-        <Button 
-          primary 
-          loading={isLoading}
-          onClick={issuePass}
-        >
+        <Button onClick={() => setShowIssueModal(false)}>Cancel</Button>
+        <Button primary loading={isLoading} onClick={issuePass}>
           <Icon name="plus" />
           Issue Pass
         </Button>
@@ -406,10 +416,18 @@ const HallPassManagerComponent = ({
         <Grid.Column width={10}>
           {/* Issue Pass Button */}
           <Segment clearing>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Header as="h3" style={{ margin: 0 }}>Active Hall Passes</Header>
-              <Button 
-                primary 
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Header as="h3" style={{ margin: 0 }}>
+                Active Hall Passes
+              </Header>
+              <Button
+                primary
                 size="large"
                 onClick={() => setShowIssueModal(true)}
               >
@@ -425,7 +443,7 @@ const HallPassManagerComponent = ({
           {/* Active Passes */}
           {activePasses.length > 0 ? (
             <div className="active-passes">
-              {activePasses.map(pass => (
+              {activePasses.map((pass) => (
                 <PassCard
                   key={pass.id}
                   pass={pass}
@@ -445,7 +463,7 @@ const HallPassManagerComponent = ({
             <Segment>
               <Header as="h3">Recently Returned</Header>
               <div className="recent-passes">
-                {recentPasses.slice(0, 5).map(pass => (
+                {recentPasses.slice(0, 5).map((pass) => (
                   <PassCard
                     key={pass.id}
                     pass={pass}
@@ -458,9 +476,7 @@ const HallPassManagerComponent = ({
           )}
         </Grid.Column>
 
-        <Grid.Column width={6}>
-          {renderStatistics()}
-        </Grid.Column>
+        <Grid.Column width={6}>{renderStatistics()}</Grid.Column>
       </Grid>
 
       {renderIssueModal()}
@@ -475,21 +491,21 @@ HallPassManagerComponent.propTypes = {
 
 // Wrapper with client-only rendering
 const HallPassManager = (props) => (
-  <ClientOnly fallback={
-    <Container fluid style={{textAlign: 'center', padding: '40px'}}>
-      <Header as="h1" dividing textAlign="center">
-        <Icon name="id card" />
-        <Header.Content>
-          Digital Hall Pass Manager
-          <Header.Subheader>
-            Loading...
-          </Header.Subheader>
-        </Header.Content>
-      </Header>
-    </Container>
-  }>
+  <ClientOnly
+    fallback={
+      <Container fluid style={{ textAlign: 'center', padding: '40px' }}>
+        <Header as="h1" dividing textAlign="center">
+          <Icon name="id card" />
+          <Header.Content>
+            Digital Hall Pass Manager
+            <Header.Subheader>Loading...</Header.Subheader>
+          </Header.Content>
+        </Header>
+      </Container>
+    }
+  >
     <HallPassManagerComponent {...props} />
   </ClientOnly>
 );
 
-export default HallPassManager; 
+export default HallPassManager;

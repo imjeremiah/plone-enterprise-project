@@ -1,6 +1,6 @@
 /**
  * Timer Widget for Teacher Dashboard
- * 
+ *
  * Compact timer display and controls:
  * - Shows current timer status if running
  * - Quick timer presets for common activities
@@ -9,7 +9,14 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Segment, Header, Icon, Button, Progress, Statistic } from 'semantic-ui-react';
+import {
+  Segment,
+  Header,
+  Icon,
+  Button,
+  Progress,
+  Statistic,
+} from 'semantic-ui-react';
 
 const TimerWidget = () => {
   const [timerState, setTimerState] = useState(null);
@@ -17,10 +24,10 @@ const TimerWidget = () => {
   useEffect(() => {
     // Load timer state from localStorage
     loadTimerState();
-    
+
     // Update timer every second if running
     const interval = setInterval(loadTimerState, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -34,13 +41,13 @@ const TimerWidget = () => {
         const state = JSON.parse(saved);
         const now = Date.now();
         const elapsed = Math.floor((now - (state.lastUpdate || now)) / 1000);
-        
+
         if (state.isRunning && state.remaining > 0) {
           const newRemaining = Math.max(0, state.remaining - elapsed);
           setTimerState({
             ...state,
             remaining: newRemaining,
-            isRunning: newRemaining > 0
+            isRunning: newRemaining > 0,
           });
         } else {
           setTimerState(state);
@@ -70,12 +77,12 @@ const TimerWidget = () => {
       duration,
       remaining: duration,
       isRunning: true,
-      lastUpdate: Date.now()
+      lastUpdate: Date.now(),
     };
-    
+
     localStorage.setItem('lessonTimer', JSON.stringify(newState));
     setTimerState(newState);
-    
+
     // Open timer page for full control
     window.open('/timer', '_blank');
   };
@@ -85,7 +92,9 @@ const TimerWidget = () => {
    */
   const getProgress = () => {
     if (!timerState || !timerState.duration) return 0;
-    return ((timerState.duration - timerState.remaining) / timerState.duration) * 100;
+    return (
+      ((timerState.duration - timerState.remaining) / timerState.duration) * 100
+    );
   };
 
   /**
@@ -112,7 +121,10 @@ const TimerWidget = () => {
       {/* Current Timer Status */}
       {timerState && timerState.remaining > 0 ? (
         <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-          <Statistic size="small" color={timerState.isRunning ? undefined : 'grey'}>
+          <Statistic
+            size="small"
+            color={timerState.isRunning ? undefined : 'grey'}
+          >
             <Statistic.Value>
               <Icon name={timerState.isRunning ? 'play' : 'pause'} />
               {formatTime(timerState.remaining)}
@@ -121,17 +133,17 @@ const TimerWidget = () => {
               {timerState.isRunning ? 'Running' : 'Paused'}
             </Statistic.Label>
           </Statistic>
-          
-          <Progress 
-            percent={getProgress()} 
+
+          <Progress
+            percent={getProgress()}
             color={getProgressColor()}
             size="small"
             style={{ marginTop: '10px' }}
           />
-          
-          <Button 
-            size="small" 
-            basic 
+
+          <Button
+            size="small"
+            basic
             onClick={() => window.open('/timer', '_blank')}
             style={{ marginTop: '10px' }}
           >
@@ -143,12 +155,20 @@ const TimerWidget = () => {
         <div>
           <div style={{ textAlign: 'center', marginBottom: '10px' }}>
             <Icon name="clock outline" size="large" style={{ color: '#ccc' }} />
-            <div style={{ color: '#666', fontSize: '0.9em' }}>No active timer</div>
+            <div style={{ color: '#666', fontSize: '0.9em' }}>
+              No active timer
+            </div>
           </div>
 
           {/* Quick Timer Presets */}
           <div>
-            <div style={{ marginBottom: '10px', fontSize: '0.9em', fontWeight: 'bold' }}>
+            <div
+              style={{
+                marginBottom: '10px',
+                fontSize: '0.9em',
+                fontWeight: 'bold',
+              }}
+            >
               Quick Timers:
             </div>
             <Button.Group size="small" fluid>
@@ -156,10 +176,10 @@ const TimerWidget = () => {
               <Button onClick={() => startQuickTimer(10)}>10 min</Button>
               <Button onClick={() => startQuickTimer(15)}>15 min</Button>
             </Button.Group>
-            
-            <Button 
-              size="small" 
-              basic 
+
+            <Button
+              size="small"
+              basic
               fluid
               onClick={() => window.open('/timer', '_blank')}
               style={{ marginTop: '10px' }}
@@ -174,4 +194,4 @@ const TimerWidget = () => {
   );
 };
 
-export default TimerWidget; 
+export default TimerWidget;

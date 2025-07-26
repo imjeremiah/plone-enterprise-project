@@ -8,7 +8,12 @@
 .teacher-dashboard {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Roboto',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
 }
 
 /* Dashboard Header */
@@ -53,7 +58,9 @@
 .dashboard-widget {
   border-radius: 12px !important;
   border: none !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.1) !important;
   transition: all 0.3s ease;
   background: white;
   padding: 15px !important;
@@ -70,7 +77,9 @@
 
 .dashboard-widget:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.1),
+    0 4px 10px rgba(0, 0, 0, 0.1) !important;
 }
 
 .dashboard-widget .ui.header {
@@ -179,28 +188,28 @@
   .teacher-dashboard .ui.container.fluid {
     padding: 8px !important;
   }
-  
+
   .teacher-dashboard .stats-bar {
     padding: 10px !important;
   }
-  
+
   .teacher-dashboard .stats-bar .ui.statistic.group {
     margin: 0;
   }
-  
+
   .teacher-dashboard .stats-bar .ui.statistic {
     margin: 0.3em 0;
   }
-  
+
   .dashboard-widget {
     margin-bottom: 10px !important;
     padding: 12px !important;
   }
-  
+
   .dashboard-widget .ui.header {
     font-size: 1.1rem;
   }
-  
+
   .quick-actions-widget .ui.grid .column {
     padding: 0.3rem !important;
   }
@@ -210,15 +219,15 @@
   .teacher-dashboard .ui.header.h1 {
     font-size: 1.3rem;
   }
-  
+
   .teacher-dashboard .stats-bar {
     padding: 8px !important;
   }
-  
+
   .teacher-dashboard .stats-bar .ui.statistic {
     font-size: 0.75rem;
   }
-  
+
   .dashboard-widget {
     padding: 10px !important;
     margin-bottom: 8px !important;
@@ -227,9 +236,15 @@
 
 /* Animation for real-time updates */
 @keyframes pulse-update {
-  0% { background-color: #e8f5e8; }
-  50% { background-color: #d4edda; }
-  100% { background-color: white; }
+  0% {
+    background-color: #e8f5e8;
+  }
+  50% {
+    background-color: #d4edda;
+  }
+  100% {
+    background-color: white;
+  }
 }
 
 .dashboard-widget.updating {
@@ -287,4 +302,4 @@
   border-top: 1px solid #e8e8e8;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 8px;
-} 
+}

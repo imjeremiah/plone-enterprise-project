@@ -1,6 +1,6 @@
 /**
  * Quick Actions Widget for Teacher Dashboard
- * 
+ *
  * Provides quick access to common classroom management tasks:
  * - Issue new hall pass
  * - Create/modify seating chart
@@ -56,9 +56,9 @@ const QuickActionsWidget = ({ contentUrl }) => {
 
       <Grid columns={2} stackable>
         <Grid.Column>
-          <Button 
-            fluid 
-            size="small" 
+          <Button
+            fluid
+            size="small"
             color="orange"
             onClick={() => handleAction('hall_pass')}
             style={{ marginBottom: '8px' }}
@@ -67,11 +67,11 @@ const QuickActionsWidget = ({ contentUrl }) => {
             Issue Hall Pass
           </Button>
         </Grid.Column>
-        
+
         <Grid.Column>
-          <Button 
-            fluid 
-            size="small" 
+          <Button
+            fluid
+            size="small"
             color="blue"
             onClick={() => handleAction('seating')}
             style={{ marginBottom: '8px' }}
@@ -82,9 +82,9 @@ const QuickActionsWidget = ({ contentUrl }) => {
         </Grid.Column>
 
         <Grid.Column>
-          <Button 
-            fluid 
-            size="small" 
+          <Button
+            fluid
+            size="small"
             color="purple"
             onClick={() => handleAction('picker')}
             style={{ marginBottom: '8px' }}
@@ -95,9 +95,9 @@ const QuickActionsWidget = ({ contentUrl }) => {
         </Grid.Column>
 
         <Grid.Column>
-          <Button 
-            fluid 
-            size="small" 
+          <Button
+            fluid
+            size="small"
             color="green"
             onClick={() => handleAction('timer')}
             style={{ marginBottom: '8px' }}
@@ -108,9 +108,9 @@ const QuickActionsWidget = ({ contentUrl }) => {
         </Grid.Column>
 
         <Grid.Column width={16}>
-          <Button 
-            fluid 
-            size="small" 
+          <Button
+            fluid
+            size="small"
             color="teal"
             onClick={() => handleAction('substitute')}
           >
@@ -121,7 +121,14 @@ const QuickActionsWidget = ({ contentUrl }) => {
       </Grid>
 
       {/* Usage Hints */}
-      <div style={{ marginTop: '10px', fontSize: '0.75em', color: '#666', textAlign: 'center' }}>
+      <div
+        style={{
+          marginTop: '10px',
+          fontSize: '0.75em',
+          color: '#666',
+          textAlign: 'center',
+        }}
+      >
         <Icon name="info circle" />
         Quick access to all tools
       </div>
@@ -130,7 +137,7 @@ const QuickActionsWidget = ({ contentUrl }) => {
 };
 
 QuickActionsWidget.propTypes = {
-  contentUrl: PropTypes.string
+  contentUrl: PropTypes.string,
 };
 
-export default QuickActionsWidget; 
+export default QuickActionsWidget;

@@ -1,6 +1,6 @@
 /**
  * Standalone Seating Charts Page
- * 
+ *
  * Interactive classroom seating chart manager that works without backend content.
  * Provides demo functionality for creating and managing seating arrangements.
  */
@@ -20,7 +20,7 @@ import {
   Modal,
   Statistic,
   Label,
-  Divider
+  Divider,
 } from 'semantic-ui-react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -39,7 +39,7 @@ const SeatingChartsPage = () => {
     title: '',
     description: '',
     rows: 6,
-    cols: 8
+    cols: 8,
   });
   const [charts, setCharts] = useState([]);
 
@@ -71,7 +71,13 @@ const SeatingChartsPage = () => {
       id: 'period-1-math',
       title: 'Period 1 - Mathematics',
       description: 'Advanced Algebra Class',
-      students: ['Alice Johnson', 'Bob Smith', 'Carol Davis', 'David Wilson', 'Eva Brown'],
+      students: [
+        'Alice Johnson',
+        'Bob Smith',
+        'Carol Davis',
+        'David Wilson',
+        'Eva Brown',
+      ],
       grid_rows: 6,
       grid_cols: 8,
       grid_data: JSON.stringify({
@@ -80,21 +86,27 @@ const SeatingChartsPage = () => {
           '1,4': 'Bob Smith',
           '2,1': 'Carol Davis',
           '2,3': 'David Wilson',
-          '3,5': 'Eva Brown'
+          '3,5': 'Eva Brown',
         },
         empty_desks: ['1,1', '1,3', '1,5'],
         notes: {
           '1,2': 'Needs extra help',
-          '3,5': 'Good at math'
-        }
+          '3,5': 'Good at math',
+        },
       }),
-      last_modified: new Date().toLocaleDateString()
+      last_modified: new Date().toLocaleDateString(),
     },
     {
       id: 'period-3-english',
       title: 'Period 3 - English Literature',
       description: 'Shakespeare Unit',
-      students: ['Frank Miller', 'Grace Lee', 'Henry Taylor', 'Iris Chen', 'Jack White'],
+      students: [
+        'Frank Miller',
+        'Grace Lee',
+        'Henry Taylor',
+        'Iris Chen',
+        'Jack White',
+      ],
       grid_rows: 5,
       grid_cols: 6,
       grid_data: JSON.stringify({
@@ -103,13 +115,13 @@ const SeatingChartsPage = () => {
           '1,3': 'Grace Lee',
           '2,2': 'Henry Taylor',
           '2,4': 'Iris Chen',
-          '3,1': 'Jack White'
+          '3,1': 'Jack White',
         },
         empty_desks: [],
-        notes: {}
+        notes: {},
       }),
-      last_modified: new Date().toLocaleDateString()
-    }
+      last_modified: new Date().toLocaleDateString(),
+    },
   ];
 
   const createNewChart = () => {
@@ -123,98 +135,107 @@ const SeatingChartsPage = () => {
       grid_data: JSON.stringify({
         students: {},
         empty_desks: [],
-        notes: {}
+        notes: {},
       }),
-      last_modified: new Date().toLocaleDateString()
+      last_modified: new Date().toLocaleDateString(),
     };
-    
+
     // Add to charts array
-    setCharts(prevCharts => [...prevCharts, newChart]);
+    setCharts((prevCharts) => [...prevCharts, newChart]);
     setCurrentChart(newChart);
     setEditMode(true);
     setShowModal(false);
     setNewChartData({ title: '', description: '', rows: 6, cols: 8 });
   };
 
-  const updateGridData = useCallback((newGridData) => {
-    if (currentChart) {
-      const updatedChart = {
-        ...currentChart,
-        grid_data: JSON.stringify(newGridData),
-        last_modified: new Date().toLocaleDateString()
-      };
-      
-      // Update current chart state
-      setCurrentChart(updatedChart);
-      
-      // Update charts array for persistence
-      setCharts(prevCharts => 
-        prevCharts.map(chart => 
-          chart.id === currentChart.id ? updatedChart : chart
-        )
-      );
-    }
-  }, [currentChart]);
+  const updateGridData = useCallback(
+    (newGridData) => {
+      if (currentChart) {
+        const updatedChart = {
+          ...currentChart,
+          grid_data: JSON.stringify(newGridData),
+          last_modified: new Date().toLocaleDateString(),
+        };
+
+        // Update current chart state
+        setCurrentChart(updatedChart);
+
+        // Update charts array for persistence
+        setCharts((prevCharts) =>
+          prevCharts.map((chart) =>
+            chart.id === currentChart.id ? updatedChart : chart,
+          ),
+        );
+      }
+    },
+    [currentChart],
+  );
 
   const updateCurrentChart = useCallback((updatedChart) => {
     // Update current chart state
     setCurrentChart(updatedChart);
-    
+
     // Update charts array for persistence
-    setCharts(prevCharts => 
-      prevCharts.map(chart => 
-        chart.id === updatedChart.id ? updatedChart : chart
-      )
+    setCharts((prevCharts) =>
+      prevCharts.map((chart) =>
+        chart.id === updatedChart.id ? updatedChart : chart,
+      ),
     );
   }, []);
 
-  const handleStudentMove = useCallback((student, row, col) => {
-    if (!currentChart || !editMode) return;
+  const handleStudentMove = useCallback(
+    (student, row, col) => {
+      if (!currentChart || !editMode) return;
 
-    let gridData;
-    try {
-      gridData = JSON.parse(currentChart.grid_data);
-    } catch (e) {
-      gridData = { students: {}, empty_desks: [], notes: {} };
-    }
-
-    const newGridData = { ...gridData };
-    
-    // Remove student from any existing position
-    Object.keys(newGridData.students).forEach(position => {
-      if (newGridData.students[position] === student) {
-        delete newGridData.students[position];
+      let gridData;
+      try {
+        gridData = JSON.parse(currentChart.grid_data);
+      } catch (e) {
+        gridData = { students: {}, empty_desks: [], notes: {} };
       }
-    });
-    
-    // Add student to new position in "row,col" format
-    const newPosition = `${row},${col}`;
-    newGridData.students[newPosition] = student;
 
-    updateGridData(newGridData);
-  }, [currentChart, editMode, updateGridData]);
+      const newGridData = { ...gridData };
 
-  const handleStudentUnassign = useCallback((student) => {
-    if (!currentChart || !editMode) return;
+      // Remove student from any existing position
+      Object.keys(newGridData.students).forEach((position) => {
+        if (newGridData.students[position] === student) {
+          delete newGridData.students[position];
+        }
+      });
 
-    let gridData;
-    try {
-      gridData = JSON.parse(currentChart.grid_data);
-    } catch (e) {
-      gridData = { students: {}, empty_desks: [], notes: {} };
-    }
+      // Add student to new position in "row,col" format
+      const newPosition = `${row},${col}`;
+      newGridData.students[newPosition] = student;
 
-    const newGridData = { ...gridData };
-    
-    // Remove student from all positions
-    Object.keys(newGridData.students).forEach(position => {
-      if (newGridData.students[position] === student) {
-        delete newGridData.students[position];
+      updateGridData(newGridData);
+    },
+    [currentChart, editMode, updateGridData],
+  );
+
+  const handleStudentUnassign = useCallback(
+    (student) => {
+      if (!currentChart || !editMode) return;
+
+      let gridData;
+      try {
+        gridData = JSON.parse(currentChart.grid_data);
+      } catch (e) {
+        gridData = { students: {}, empty_desks: [], notes: {} };
       }
-    });
 
-    updateGridData(newGridData);
-  }, [currentChart, editMode, updateGridData]);
+      const newGridData = { ...gridData };
+
+      // Remove student from all positions
+      Object.keys(newGridData.students).forEach((position) => {
+        if (newGridData.students[position] === student) {
+          delete newGridData.students[position];
+        }
+      });
+
+      updateGridData(newGridData);
+    },
+    [currentChart, editMode, updateGridData],
+  );
 
   const autoArrangeStudents = useCallback(() => {
     if (!currentChart || !editMode) return;
@@ -222,7 +243,7 @@ const SeatingChartsPage = () => {
     const students = currentChart.students || [];
     const rows = currentChart.grid_rows;
     const cols = currentChart.grid_cols;
-    
+
     let gridData;
     try {
       gridData = JSON.parse(currentChart.grid_data);
@@ -256,9 +277,9 @@ const SeatingChartsPage = () => {
       gridData = { students: {}, empty_desks: [], notes: {} };
     }
 
-    const newGridData = { 
-      ...gridData, 
-      students: {} // Clear all student positions
+    const newGridData = {
+      ...gridData,
+      students: {}, // Clear all student positions
     };
 
     updateGridData(newGridData);
@@ -266,7 +287,14 @@ const SeatingChartsPage = () => {
 
   const renderChartsList = () => (
     <Container>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '20px',
+        }}
+      >
         <div>
           <Header as="h2">
             <Icon name="sitemap" color="orange" />
@@ -276,8 +304,8 @@ const SeatingChartsPage = () => {
             Create and manage interactive classroom seating arrangements
           </p>
         </div>
-        <Button 
-          primary 
+        <Button
+          primary
           size="large"
           onClick={() => {
             setModalType('create');
@@ -288,17 +316,20 @@ const SeatingChartsPage = () => {
           <Icon name="plus" />
           Create New Chart
         </Button>
-        <Button 
+        <Button
           color="orange"
           size="large"
           onClick={() => {
             const confirmed = window.confirm(
-              'Are you sure you want to reset all charts to default demo data? This will remove all your changes.'
+              'Are you sure you want to reset all charts to default demo data? This will remove all your changes.',
             );
             if (confirmed) {
               const defaultCharts = getDefaultCharts();
               setCharts(defaultCharts);
-              localStorage.setItem('seatingCharts', JSON.stringify(defaultCharts));
+              localStorage.setItem(
+                'seatingCharts',
+                JSON.stringify(defaultCharts),
+              );
               setCurrentChart(null);
             }
           }}
@@ -309,7 +340,11 @@ const SeatingChartsPage = () => {
         </Button>
       </div>
 
-      <Statistic.Group size="small" widths="three" style={{ marginBottom: '30px' }}>
+      <Statistic.Group
+        size="small"
+        widths="three"
+        style={{ marginBottom: '30px' }}
+      >
         <Statistic>
           <Statistic.Value>{charts.length}</Statistic.Value>
           <Statistic.Label>Total Charts</Statistic.Label>
@@ -343,23 +378,25 @@ const SeatingChartsPage = () => {
                     {chart.grid_rows}×{chart.grid_cols} grid
                   </Label>
                 </div>
-                <div style={{ marginTop: '8px', fontSize: '0.9em', color: '#666' }}>
+                <div
+                  style={{ marginTop: '8px', fontSize: '0.9em', color: '#666' }}
+                >
                   Last modified: {chart.last_modified}
                 </div>
               </Card.Description>
             </Card.Content>
             <Card.Content extra>
               <div className="ui two buttons">
-                <Button 
-                  basic 
+                <Button
+                  basic
                   color="blue"
                   onClick={() => setCurrentChart(chart)}
                 >
                   <Icon name="eye" />
                   View
                 </Button>
-                <Button 
-                  basic 
+                <Button
+                  basic
                   color="green"
                   onClick={() => {
                     setCurrentChart(chart);
@@ -392,22 +429,26 @@ const SeatingChartsPage = () => {
       const assignedCount = Object.keys(gridData?.students || {}).length;
 
       return (
-        <Segment clearing className="seating-chart-toolbar" style={{ marginBottom: '20px' }}>
+        <Segment
+          clearing
+          className="seating-chart-toolbar"
+          style={{ marginBottom: '20px' }}
+        >
           <Button.Group floated="right" className="seating-chart-buttons">
             <Button
-              content={editMode ? "View Mode" : "Edit Mode"}
+              content={editMode ? 'View Mode' : 'Edit Mode'}
               onClick={() => setEditMode(!editMode)}
-              color={editMode ? "red" : "blue"}
+              color={editMode ? 'red' : 'blue'}
               className="seating-chart-button mode-toggle-button"
             />
-            <Button 
+            <Button
               content="Auto-Arrange Students"
               disabled={!editMode}
               onClick={autoArrangeStudents}
               color="blue"
               className="seating-chart-button auto-arrange-button"
             />
-            <Button 
+            <Button
               content="Unassign All"
               disabled={!editMode || assignedCount === 0}
               onClick={unassignAllStudents}
@@ -417,17 +458,17 @@ const SeatingChartsPage = () => {
             <Button
               content="Settings"
               onClick={() => {
-                setModalType('settings'); 
-                setModalData({ 
-                  rows: currentChart.grid_rows, 
-                  cols: currentChart.grid_cols 
+                setModalType('settings');
+                setModalData({
+                  rows: currentChart.grid_rows,
+                  cols: currentChart.grid_cols,
                 });
                 setShowModal(true);
               }}
               className="seating-chart-button settings-button"
             />
           </Button.Group>
-          
+
           <Label.Group>
             <Label color="blue">
               <Icon name="users" />
@@ -443,9 +484,9 @@ const SeatingChartsPage = () => {
                 {assignedCount} Assigned
               </Label>
             )}
-            <Label color={editMode ? "red" : "grey"}>
-              <Icon name={editMode ? "edit" : "eye"} />
-              {editMode ? "Edit Mode" : "View Mode"}
+            <Label color={editMode ? 'red' : 'grey'}>
+              <Icon name={editMode ? 'edit' : 'eye'} />
+              {editMode ? 'Edit Mode' : 'View Mode'}
             </Label>
           </Label.Group>
         </Segment>
@@ -454,7 +495,14 @@ const SeatingChartsPage = () => {
 
     return (
       <Container fluid>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
           <div>
             <Header as="h2">
               <Icon name="sitemap" color="orange" />
@@ -465,7 +513,7 @@ const SeatingChartsPage = () => {
             </p>
           </div>
           <div>
-            <Button 
+            <Button
               onClick={() => setCurrentChart(null)}
               style={{ marginRight: '10px' }}
             >
@@ -508,7 +556,7 @@ const SeatingChartsPage = () => {
     const newGridData = { ...gridData };
 
     // Remove students that are outside the new grid boundaries
-    Object.keys(newGridData.students).forEach(position => {
+    Object.keys(newGridData.students).forEach((position) => {
       const [currentRow, currentCol] = position.split(',').map(Number);
       if (currentRow >= newRows || currentCol >= newCols) {
         delete newGridData.students[position];
@@ -521,7 +569,7 @@ const SeatingChartsPage = () => {
       grid_rows: newRows,
       grid_cols: newCols,
       grid_data: JSON.stringify(newGridData),
-      last_modified: new Date().toLocaleDateString()
+      last_modified: new Date().toLocaleDateString(),
     };
 
     updateCurrentChart(updatedChart);
@@ -532,7 +580,9 @@ const SeatingChartsPage = () => {
     <Modal open={showModal} onClose={() => setShowModal(false)}>
       <Modal.Header>
         <Icon name={modalType === 'settings' ? 'settings' : 'plus'} />
-        {modalType === 'settings' ? 'Chart Settings' : 'Create New Seating Chart'}
+        {modalType === 'settings'
+          ? 'Chart Settings'
+          : 'Create New Seating Chart'}
       </Modal.Header>
       <Modal.Content>
         <Form>
@@ -542,13 +592,17 @@ const SeatingChartsPage = () => {
                 label="Chart Title"
                 placeholder="e.g., Period 2 - Science"
                 value={newChartData.title}
-                onChange={(e, { value }) => setNewChartData({ ...newChartData, title: value })}
+                onChange={(e, { value }) =>
+                  setNewChartData({ ...newChartData, title: value })
+                }
               />
               <Form.Input
                 label="Description"
                 placeholder="e.g., Biology Lab Class"
                 value={newChartData.description}
-                onChange={(e, { value }) => setNewChartData({ ...newChartData, description: value })}
+                onChange={(e, { value }) =>
+                  setNewChartData({ ...newChartData, description: value })
+                }
               />
             </>
           )}
@@ -558,7 +612,9 @@ const SeatingChartsPage = () => {
               type="number"
               min="3"
               max="10"
-              value={modalType === 'settings' ? modalData.rows : newChartData.rows}
+              value={
+                modalType === 'settings' ? modalData.rows : newChartData.rows
+              }
               onChange={(e, { value }) => {
                 const rows = parseInt(value) || 6;
                 if (modalType === 'settings') {
@@ -573,7 +629,9 @@ const SeatingChartsPage = () => {
               type="number"
               min="4"
               max="12"
-              value={modalType === 'settings' ? modalData.cols : newChartData.cols}
+              value={
+                modalType === 'settings' ? modalData.cols : newChartData.cols
+              }
               onChange={(e, { value }) => {
                 const cols = parseInt(value) || 8;
                 if (modalType === 'settings') {
@@ -587,15 +645,19 @@ const SeatingChartsPage = () => {
           {modalType === 'settings' && (
             <Message info>
               <Message.Header>Note</Message.Header>
-              <p>Changing grid size may affect existing student placements. Students outside the new grid will be moved to the unassigned pool.</p>
+              <p>
+                Changing grid size may affect existing student placements.
+                Students outside the new grid will be moved to the unassigned
+                pool.
+              </p>
             </Message>
           )}
         </Form>
       </Modal.Content>
       <Modal.Actions>
         <Button onClick={() => setShowModal(false)}>Cancel</Button>
-        <Button 
-          color={modalType === 'settings' ? 'blue' : 'green'} 
+        <Button
+          color={modalType === 'settings' ? 'blue' : 'green'}
           onClick={modalType === 'settings' ? applySettings : createNewChart}
         >
           <Icon name={modalType === 'settings' ? 'save' : 'checkmark'} />
@@ -606,7 +668,10 @@ const SeatingChartsPage = () => {
   );
 
   return (
-    <div className="seating-charts-page" style={{ padding: '20px 0', minHeight: '100vh', background: '#f8f9fa' }}>
+    <div
+      className="seating-charts-page"
+      style={{ padding: '20px 0', minHeight: '100vh', background: '#f8f9fa' }}
+    >
       {currentChart ? renderCurrentChart() : renderChartsList()}
       {renderCreateModal()}
     </div>
@@ -619,15 +684,16 @@ const getBackend = () => {
   if (typeof window === 'undefined') {
     return HTML5Backend; // Default for SSR
   }
-  
+
   // Touch device detection for mobile/tablet support
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  
+  const isTouchDevice =
+    'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
   if (isTouchDevice) {
     return TouchBackend({ enableMouseEvents: true });
   }
-  
+
   return HTML5Backend;
 };
 
-export default DragDropContext(getBackend())(SeatingChartsPage); 
+export default DragDropContext(getBackend())(SeatingChartsPage);
