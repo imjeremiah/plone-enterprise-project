@@ -20,13 +20,12 @@ from datetime import datetime, timedelta
 from plone.app.testing import PLONE_INTEGRATION_TESTING
 from plone import api
 from zope.annotation.interfaces import IAnnotations
-from project.title.testing import PROJECT_TITLE_INTEGRATION_TESTING
 
 
 class TestPhase3IntegrationPoints(unittest.TestCase):
     """Comprehensive testing of Phase 3 integration points"""
     
-    layer = PROJECT_TITLE_INTEGRATION_TESTING
+    layer = PLONE_INTEGRATION_TESTING
     
     def setUp(self):
         """Set up comprehensive test environment"""

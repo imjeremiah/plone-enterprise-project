@@ -18,13 +18,12 @@ from datetime import datetime, timedelta
 from plone.app.testing import PLONE_INTEGRATION_TESTING
 from plone import api
 from zope.annotation.interfaces import IAnnotations
-from project.title.testing import PROJECT_TITLE_INTEGRATION_TESTING
 
 
 class TestPerformanceBenchmarks(unittest.TestCase):
     """Performance benchmarks for Phase 3 real-time features"""
     
-    layer = PROJECT_TITLE_INTEGRATION_TESTING
+    layer = PLONE_INTEGRATION_TESTING
     
     def setUp(self):
         """Set up test environment with realistic data load"""

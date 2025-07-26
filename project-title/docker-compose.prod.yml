@@ -1,0 +1,391 @@
+# Production Docker Compose for Classroom Management Platform
+# Complete stack with PostgreSQL, Redis, reverse proxy, and monitoring
+
+version: '3.8'
+
+services:
+  # ==========================================
+  # Database Services
+  # ==========================================
+  
+  postgres:
+    image: postgres:16-alpine
+    container_name: classroom-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-classroom_db}
+      POSTGRES_USER: ${DB_USER:-classroom_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+      - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+    ports:
+      - "5432:5432"  # Remove in production, only for debugging
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-classroom_user} -d ${DB_NAME:-classroom_db}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - classroom-network
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+  # ==========================================
+  # Caching Service
+  # ==========================================
+  
+  redis:
+    image: redis:7-alpine
+    container_name: classroom-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"  # Remove in production
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - classroom-network
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # ==========================================
+  # Backend Service (Plone)
+  # ==========================================
+  
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+    image: classroom-backend:${VERSION:-latest}
+    container_name: classroom-backend
+    restart: unless-stopped
+    environment:
+      # Database configuration
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-classroom_db}
+      DB_USER: ${DB_USER:-classroom_user}
+      DB_PASSWORD: ${DB_PASSWORD}
+      RELSTORAGE_DSN: postgresql://${DB_USER:-classroom_user}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-classroom_db}
+      
+      # Cache configuration
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      CACHE_SERVERS: redis:6379
+      
+      # Application configuration
+      PLONE_SITE_ID: ${PLONE_SITE_ID:-Plone}
+      ENVIRONMENT: production
+      
+      # Security configuration
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://classroom.yourdomain.com}
+      SECURITY_HEADERS_ENABLED: true
+      
+      # Performance tuning
+      ZOPE_THREADS: ${ZOPE_THREADS:-4}
+      ZOPE_FAST_LISTEN: on
+      
+      # Monitoring
+      ENABLE_PERFORMANCE_MONITORING: true
+      SENTRY_DSN: ${BACKEND_SENTRY_DSN:-}
+      
+      # OAuth configuration
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      
+    volumes:
+      - backend_data:/app/var
+      - backend_logs:/var/log/classroom
+      - backend_blobs:/app/var/blobstorage
+    ports:
+      - "8080:8080"  # Remove in production, use reverse proxy
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/Plone/@@security-middleware"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    networks:
+      - classroom-network
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+  # ==========================================
+  # Frontend Service (Volto)
+  # ==========================================
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+    image: classroom-frontend:${VERSION:-latest}
+    container_name: classroom-frontend
+    restart: unless-stopped
+    environment:
+      # Backend connection
+      BACKEND_HOST: backend
+      BACKEND_PORT: 8080
+      API_PATH: /Plone
+      INTERNAL_API_PATH: http://backend:8080/Plone
+      
+      # Application configuration
+      NODE_ENV: production
+      PORT: 3000
+      PUBLIC_URL: ${PUBLIC_URL:-https://classroom.yourdomain.com}
+      
+      # Performance settings
+      RAZZLE_DISABLE_SSR_CACHE: true
+      NODE_OPTIONS: "--max-old-space-size=2048"
+      
+      # Security settings
+      RAZZLE_SECURITY_HEADERS: true
+      RAZZLE_CSP_ENABLED: true
+      RAZZLE_FORCE_HTTPS: ${FORCE_HTTPS:-true}
+      
+      # Monitoring
+      ENABLE_PERFORMANCE_MONITORING: ${ENABLE_FRONTEND_MONITORING:-false}
+      SENTRY_DSN: ${FRONTEND_SENTRY_DSN:-}
+      
+    volumes:
+      - frontend_logs:/var/log/volto
+    ports:
+      - "3000:3000"  # Remove in production, use reverse proxy
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - classroom-network
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+  # ==========================================
+  # Reverse Proxy & Load Balancer
+  # ==========================================
+  
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: classroom-nginx
+    restart: unless-stopped
+    environment:
+      FRONTEND_HOST: frontend
+      FRONTEND_PORT: 3000
+      BACKEND_HOST: backend
+      BACKEND_PORT: 8080
+      DOMAIN_NAME: ${DOMAIN_NAME:-classroom.yourdomain.com}
+    volumes:
+      - ./docker/nginx/nginx.prod.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+      - nginx_logs:/var/log/nginx
+      - nginx_cache:/var/cache/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - classroom-network
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # ==========================================
+  # Monitoring & Observability
+  # ==========================================
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: classroom-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"  # Remove in production
+    networks:
+      - classroom-network
+    security_opt:
+      - no-new-privileges:true
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: classroom-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: false
+      GF_SECURITY_DISABLE_GRAVATAR: true
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3001:3000"  # Remove in production
+    depends_on:
+      - prometheus
+    networks:
+      - classroom-network
+    security_opt:
+      - no-new-privileges:true
+    profiles:
+      - monitoring
+
+  # ==========================================
+  # Log Management
+  # ==========================================
+  
+  fluentd:
+    image: fluentd:v1.16-1
+    container_name: classroom-fluentd
+    restart: unless-stopped
+    volumes:
+      - ./docker/fluentd/fluent.conf:/fluentd/etc/fluent.conf
+      - backend_logs:/var/log/backend:ro
+      - frontend_logs:/var/log/frontend:ro
+      - nginx_logs:/var/log/nginx:ro
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    networks:
+      - classroom-network
+    profiles:
+      - logging
+
+  # ==========================================
+  # Backup Service
+  # ==========================================
+  
+  backup:
+    image: postgres:16-alpine
+    container_name: classroom-backup
+    restart: "no"
+    environment:
+      PGPASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./docker/backup/backup.sh:/backup.sh
+      - backup_data:/backups
+      - postgres_data:/source_data:ro
+    command: /backup.sh
+    depends_on:
+      - postgres
+    networks:
+      - classroom-network
+    profiles:
+      - backup
+
+# ==========================================
+# Named Volumes
+# ==========================================
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_data:
+    driver: local
+  backend_logs:
+    driver: local
+  backend_blobs:
+    driver: local
+  frontend_logs:
+    driver: local
+  nginx_logs:
+    driver: local
+  nginx_cache:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  backup_data:
+    driver: local
+
+# ==========================================
+# Networks
+# ==========================================
+
+networks:
+  classroom-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16 

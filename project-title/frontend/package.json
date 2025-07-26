@@ -30,7 +30,11 @@
     "release-major-alpha": "pnpm --filter volto-project-title release-major-alpha",
     "release-alpha": "pnpm --filter volto-project-title release-alpha",
     "storybook": "VOLTOCONFIG=$(pwd)/volto.config.js pnpm --filter @plone/volto storybook dev -p 6006 -c $(pwd)/.storybook",
-    "storybook-build": "VOLTOCONFIG=$(pwd)/volto.config.js pnpm --filter @plone/volto build-storybook -c $(pwd)/.storybook"
+    "storybook-build": "VOLTOCONFIG=$(pwd)/volto.config.js pnpm --filter @plone/volto build-storybook -c $(pwd)/.storybook",
+    "analyze": "VOLTOCONFIG=$(pwd)/volto.config.js BUNDLE_ANALYZE=true pnpm --filter @plone/volto build",
+    "analyze:server": "pnpm analyze && pnpm serve-analyze",
+    "serve-analyze": "npx serve build/public -p 3001",
+    "performance:audit": "lighthouse http://localhost:3000 --output html --output-path ./performance-audit.html --chrome-flags='--headless'"
   },
   "dependencies": {
     "@plone/volto": "workspace:*",
@@ -38,7 +42,10 @@
     "volto-project-title": "workspace:*"
   },
   "devDependencies": {
-    "mrs-developer": "^2.2.0"
+    "mrs-developer": "^2.2.0",
+    "webpack-bundle-analyzer": "^4.10.1",
+    "lighthouse": "^11.4.0",
+    "serve": "^14.2.1"
   },
   "pnpm": {
     "overrides": {

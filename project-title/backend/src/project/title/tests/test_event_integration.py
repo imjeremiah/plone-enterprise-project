@@ -12,7 +12,6 @@ from zope.component import getGlobalSiteManager
 from zope.event import notify
 import json
 
-from ..testing import PROJECT_TITLE_INTEGRATION_TESTING
 from ..events import HallPassIssuedEvent, SeatingChartUpdatedEvent, HallPassReturnedEvent
 
 

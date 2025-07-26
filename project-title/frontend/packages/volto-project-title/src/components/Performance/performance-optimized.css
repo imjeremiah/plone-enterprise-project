@@ -1,0 +1,349 @@
+/**
+ * Phase 4 Performance Optimized CSS
+ * 
+ * Contains performance-oriented styles with:
+ * - Hardware-accelerated animations
+ * - Efficient CSS transforms
+ * - Optimized selectors
+ * - Reduced paint operations
+ * - Critical CSS patterns
+ */
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* Hardware acceleration for smooth animations */
+.timer-running,
+.dashboard-updating,
+.chart-dragging {
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+  backface-visibility: hidden;
+}
+
+/* Efficient transitions using transform and opacity only */
+.optimized-transition {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.fade-in-optimized {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   TIMER OPTIMIZATIONS
+   ======================================== */
+
+.timer-display-optimized {
+  contain: layout style paint; /* CSS containment for better performance */
+  font-variant-numeric: tabular-nums; /* Better number rendering */
+  font-feature-settings: "tnum"; /* Consistent digit spacing */
+}
+
+.timer-progress-optimized {
+  /* Use transform instead of width changes for better performance */
+  transform-origin: left center;
+  transition: transform 0.1s linear;
+}
+
+.timer-complete-flash {
+  animation: flashAlert 3s ease-in-out;
+}
+
+@keyframes flashAlert {
+  0%, 100% { background-color: transparent; }
+  10%, 30%, 50% { background-color: rgba(255, 0, 0, 0.1); }
+}
+
+/* ========================================
+   DASHBOARD OPTIMIZATIONS
+   ======================================== */
+
+.dashboard-widget {
+  contain: layout; /* Prevent layout thrashing */
+  transform: translateZ(0); /* Hardware acceleration */
+}
+
+.dashboard-loading {
+  opacity: 0.7;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.dashboard-update-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #21ba45;
+  opacity: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { 
+    opacity: 0; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.2); 
+  }
+  100% { 
+    opacity: 0; 
+    transform: scale(1); 
+  }
+}
+
+/* ========================================
+   SEATING CHART OPTIMIZATIONS
+   ======================================== */
+
+.seating-grid-optimized {
+  display: grid;
+  gap: 8px;
+  contain: layout size; /* Optimize grid calculations */
+}
+
+.student-seat {
+  cursor: move;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+}
+
+.student-seat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.student-seat.dragging {
+  transform: rotate(5deg) scale(1.05);
+  z-index: 1000;
+  opacity: 0.9;
+}
+
+/* Optimize drag operations */
+.drag-preview {
+  pointer-events: none;
+  transform: rotate(5deg);
+  opacity: 0.8;
+}
+
+/* ========================================
+   HALL PASS OPTIMIZATIONS
+   ======================================== */
+
+.hall-pass-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  contain: layout style;
+}
+
+.hall-pass-overdue {
+  animation: urgentPulse 2s infinite;
+}
+
+@keyframes urgentPulse {
+  0%, 100% { 
+    border-color: #db2828; 
+    box-shadow: 0 0 0 0 rgba(219, 40, 40, 0.7);
+  }
+  50% { 
+    box-shadow: 0 0 0 10px rgba(219, 40, 40, 0);
+  }
+}
+
+/* ========================================
+   RANDOM PICKER OPTIMIZATIONS
+   ======================================== */
+
+.picker-wheel {
+  transform-origin: center;
+  transition: transform 3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.picker-spinning {
+  animation: spin 3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(1800deg); } /* 5 full rotations */
+}
+
+.picked-student-highlight {
+  animation: celebration 1s ease-out;
+}
+
+@keyframes celebration {
+  0% { 
+    transform: scale(1);
+    background: inherit;
+  }
+  50% { 
+    transform: scale(1.1);
+    background: linear-gradient(45deg, #f39c12, #e67e22);
+  }
+  100% { 
+    transform: scale(1);
+    background: inherit;
+  }
+}
+
+/* ========================================
+   RESPONSIVE OPTIMIZATIONS
+   ======================================== */
+
+/* Reduce animations on mobile for better performance */
+@media (max-width: 768px) {
+  .timer-running,
+  .dashboard-updating,
+  .chart-dragging {
+    will-change: auto; /* Reduce memory usage on mobile */
+  }
+  
+  /* Disable expensive animations on mobile */
+  .hall-pass-overdue {
+    animation: none;
+    border-color: #db2828;
+  }
+  
+  /* Simpler hover effects on touch devices */
+  .student-seat:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY & PERFORMANCE
+   ======================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .timer-running,
+  .dashboard-updating,
+  .chart-dragging {
+    will-change: auto;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .timer-complete-flash {
+    animation: none;
+    background-color: yellow;
+    color: black;
+  }
+}
+
+/* ========================================
+   CRITICAL CSS PATTERNS
+   ======================================== */
+
+/* Above-the-fold optimization */
+.above-fold {
+  content-visibility: visible;
+}
+
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px; /* Estimate size for layout */
+}
+
+/* Lazy loading optimization */
+.lazy-widget {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px 200px;
+}
+
+/* ========================================
+   PRINT OPTIMIZATIONS
+   ======================================== */
+
+@media print {
+  .dashboard-update-indicator,
+  .timer-controls,
+  button {
+    display: none !important;
+  }
+  
+  .hall-pass-card,
+  .seating-chart {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+.skeleton-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ========================================
+   UTILITIES
+   ======================================== */
+
+/* GPU acceleration utility */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Efficient visibility toggle */
+.hide-performant {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.show-performant {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Performance monitoring styles */
+.perf-monitor {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #00ff00;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
+  pointer-events: none;
+} 

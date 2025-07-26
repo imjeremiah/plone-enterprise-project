@@ -11,8 +11,6 @@ from plone.app.testing import PLONE_INTEGRATION_TESTING
 from plone import api
 import json
 
-from ..testing import PROJECT_TITLE_INTEGRATION_TESTING
-
 
 class TestPerformanceIntegration(unittest.TestCase):
     """Test performance enhancements"""

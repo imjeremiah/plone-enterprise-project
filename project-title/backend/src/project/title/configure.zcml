@@ -18,6 +18,9 @@
   <include package=".behaviors" />
   <include package=".vocabularies" />
   <include package=".browser" />
+  
+  <!-- Include profiles configuration -->
+  <include file="profiles.zcml" />
 
   <!-- Custom catalog configuration -->
   <!-- Temporarily disabled catalog to resolve startup issues -->

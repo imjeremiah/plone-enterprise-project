@@ -17,13 +17,12 @@ from plone.app.testing import PLONE_INTEGRATION_TESTING
 from plone.testing import z2
 from plone import api
 from zope.annotation.interfaces import IAnnotations
-from project.title.testing import PROJECT_TITLE_INTEGRATION_TESTING
 
 
 class TestFeatureIntegration(unittest.TestCase):
     """Integration tests for Phase 3 feature synergies"""
     
-    layer = PROJECT_TITLE_INTEGRATION_TESTING
+    layer = PLONE_INTEGRATION_TESTING
     
     def setUp(self):
         """Set up test environment with sample data"""

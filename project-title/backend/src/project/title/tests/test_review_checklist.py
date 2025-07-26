@@ -20,13 +20,12 @@ from datetime import datetime, timedelta
 from plone.app.testing import PLONE_INTEGRATION_TESTING
 from plone import api
 from zope.annotation.interfaces import IAnnotations
-from project.title.testing import PROJECT_TITLE_INTEGRATION_TESTING
 
 
 class TestPhase3ReviewChecklist(unittest.TestCase):
     """Systematic verification of Phase 3 review checklist items"""
     
-    layer = PROJECT_TITLE_INTEGRATION_TESTING
+    layer = PLONE_INTEGRATION_TESTING
     
     def setUp(self):
         """Set up test environment for checklist verification"""

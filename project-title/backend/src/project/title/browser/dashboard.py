@@ -9,6 +9,7 @@ Aggregates real-time data from all classroom management features:
 - Quick classroom statistics
 
 Provides both full page view and AJAX data endpoints for real-time updates.
+OPTIMIZED: Uses performance optimizations from optimizations.py module.
 """
 
 from Products.Five.browser import BrowserView
@@ -21,6 +22,7 @@ import logging
 import time
 
 from .cors_helper import set_cors_headers
+from ..optimizations import get_dashboard_aggregates, get_user_dashboard_data, measure_performance
 
 logger = logging.getLogger(__name__)
 
@@ -44,38 +46,55 @@ class TeacherDashboard(BrowserView):
         # Otherwise return the main dashboard page (would be template-based in full implementation)
         return self.index()
     
-    @ram.cache(lambda *args: time.time() // 30)  # 30-second cache
+    @measure_performance
     def get_dashboard_data(self):
-        """Aggregate all classroom management data for real-time dashboard"""
-        logger.info("📊 Aggregating dashboard data (cached)")
+        """Aggregate all classroom management data for real-time dashboard - OPTIMIZED"""
+        logger.info("📊 Aggregating dashboard data (cached optimization)")
+        
+        # Use optimized cached aggregation
+        dashboard_data = get_dashboard_aggregates()
+        
+        # Add user-specific personalization
+        user = api.user.get_current()
+        if user:
+            user_data = get_user_dashboard_data(user.getId())
+            dashboard_data['user_context'] = user_data
         
         try:
-            current_time = datetime.now()
-            
-            data = {
-                'timestamp': current_time.isoformat(),
-                'seating': self.get_current_seating(),
-                'hall_passes': self.get_active_passes(),
-                'participation': self.get_participation_stats(),
-                'alerts': self.get_classroom_alerts(),
-                'quick_stats': self.get_quick_stats(),
-                'system_status': self.get_system_status()
-            }
+            # Add legacy format compatibility for existing frontend components
+            dashboard_data.update({
+                'seating': self.get_current_seating_optimized(),
+                'hall_passes': dashboard_data.get('hall_passes', {}),
+                'participation': dashboard_data.get('participation', {}),
+                'alerts': self.get_classroom_alerts_optimized(),
+                'quick_stats': {
+                    'active_passes': dashboard_data['hall_passes']['active'],
+                    'overdue_passes': dashboard_data['hall_passes']['overdue'],
+                    'students_picked_today': dashboard_data['participation']['students_picked_today'],
+                    'fairness_score': dashboard_data['participation']['fairness_score']
+                },
+                'system_status': {
+                    'cache_performance': dashboard_data['performance']['cache_hit_ratio'],
+                    'response_time': dashboard_data['performance']['avg_response_time'],
+                    'status': 'optimized'
+                }
+            })
             
             self.request.response.setHeader('Content-Type', 'application/json')
-            return json.dumps(data)
+            return json.dumps(dashboard_data)
             
         except Exception as e:
-            logger.error(f"Error getting dashboard data: {e}")
+            logger.error(f"Error getting optimized dashboard data: {e}")
             self.request.response.setStatus(500)
             return json.dumps({
                 'error': 'Failed to load dashboard data',
-                'details': str(e)
+                'details': str(e),
+                'timestamp': datetime.now().isoformat()
             })
     
     @ram.cache(lambda *args: time.time() // 60)  # 60-second cache for seating
-    def get_current_seating(self):
-        """Get active seating chart information"""
+    def get_current_seating_optimized(self):
+        """Get active seating chart information - OPTIMIZED"""
         try:
             catalog = api.portal.get_tool('portal_catalog')
             charts = catalog(
@@ -329,6 +348,107 @@ class TeacherDashboard(BrowserView):
                 'icon': 'warning sign',
                 'title': 'System Error',
                 'message': 'Unable to load classroom alerts',
+                'action': 'Check system status',
+                'timestamp': current_time.isoformat(),
+                'category': 'system'
+            }]
+    
+    @ram.cache(lambda *args: time.time() // 30)  # 30-second cache for alerts
+    def get_classroom_alerts_optimized(self):
+        """Generate alerts using optimized data - PERFORMANCE ENHANCED"""
+        alerts = []
+        current_time = datetime.now()
+        
+        try:
+            # Use cached dashboard data for faster alert generation
+            dashboard_data = get_dashboard_aggregates()
+            
+            # Generate alerts based on cached data
+            hall_passes = dashboard_data.get('hall_passes', {})
+            
+            # High priority: Overdue hall passes
+            if hall_passes.get('overdue', 0) > 0:
+                alerts.append({
+                    'type': 'warning',
+                    'priority': 'high',
+                    'icon': 'exclamation triangle',
+                    'title': 'Students Overdue',
+                    'message': f"{hall_passes['overdue']} students past expected return time",
+                    'action': 'Check on overdue students',
+                    'timestamp': current_time.isoformat(),
+                    'category': 'hall_pass'
+                })
+            
+            # Medium priority: Multiple active passes
+            if hall_passes.get('active', 0) > 3:
+                alerts.append({
+                    'type': 'info',
+                    'priority': 'medium',
+                    'icon': 'users',
+                    'title': 'Multiple Students Out',
+                    'message': f"{hall_passes['active']} students currently out",
+                    'action': 'Monitor classroom supervision',
+                    'timestamp': current_time.isoformat(),
+                    'category': 'hall_pass'
+                })
+            
+            # Participation fairness alerts
+            participation = dashboard_data.get('participation', {})
+            fairness_score = participation.get('fairness_score', 100)
+            
+            if fairness_score < 70:
+                alerts.append({
+                    'type': 'warning',
+                    'priority': 'medium',
+                    'icon': 'balance scale',
+                    'title': 'Participation Imbalance',
+                    'message': f"Fairness score: {fairness_score}% - consider using random picker",
+                    'action': 'Use random student picker',
+                    'timestamp': current_time.isoformat(),
+                    'category': 'participation'
+                })
+            
+            # Performance alerts
+            performance = dashboard_data.get('performance', {})
+            if performance.get('avg_response_time', 0) > 1.0:
+                alerts.append({
+                    'type': 'info',
+                    'priority': 'low',
+                    'icon': 'clock',
+                    'title': 'System Performance',
+                    'message': f"Response time: {performance['avg_response_time']:.2f}s",
+                    'action': 'System running normally',
+                    'timestamp': current_time.isoformat(),
+                    'category': 'system'
+                })
+            
+            # End of day preparation (optimized check)
+            if current_time.hour >= 14:  # After 2 PM
+                alerts.append({
+                    'type': 'info',
+                    'priority': 'low',
+                    'icon': 'folder',
+                    'title': 'End of Day Prep',
+                    'message': 'Consider generating substitute folder for tomorrow',
+                    'action': 'Generate substitute materials',
+                    'timestamp': current_time.isoformat(),
+                    'category': 'preparation'
+                })
+            
+            # Sort by priority
+            priority_order = {'high': 3, 'medium': 2, 'low': 1}
+            alerts.sort(key=lambda x: priority_order.get(x['priority'], 0), reverse=True)
+            
+            return alerts[:8]  # Limit for UI performance
+            
+        except Exception as e:
+            logger.error(f"Error generating optimized alerts: {e}")
+            return [{
+                'type': 'error',
+                'priority': 'high',
+                'icon': 'warning sign',
+                'title': 'Alert System Error',
+                'message': 'Unable to load optimized alerts',
                 'action': 'Check system status',
                 'timestamp': current_time.isoformat(),
                 'category': 'system'

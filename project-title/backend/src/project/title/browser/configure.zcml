@@ -169,6 +169,43 @@
     permission="zope2.View"
     />
 
+  <!-- Phase 4 Optimized API Endpoints for Performance Enhancement -->
+  <browser:page
+    name="api-batch"
+    for="*"
+    class=".api_optimized.BatchedAPIView"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="api-seating-optimized"
+    for="*"
+    class=".api_optimized.OptimizedSeatingChartAPI"
+    permission="zope2.View"
+    />
+
+  <!-- Phase 4 Security Hardening Views -->
+  <browser:page
+    name="security-middleware"
+    for="*"
+    class=".security_middleware.SecurityMiddlewareView"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="secure-random-picker"
+    for="*"
+    class=".security_middleware.SecureRandomPickerView"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="secure-hall-pass"
+    for="*"
+    class=".security_middleware.SecureHallPassView"
+    permission="zope2.View"
+    />
+
   <!-- Temporarily disabled event system to resolve startup issues -->
   <!-- Event System Configuration -->
   <!-- <subscriber

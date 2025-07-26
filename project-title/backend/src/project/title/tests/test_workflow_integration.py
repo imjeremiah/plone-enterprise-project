@@ -11,8 +11,6 @@ from plone import api
 from datetime import datetime, timedelta
 import json
 
-from ..testing import PROJECT_TITLE_INTEGRATION_TESTING
-
 
 class TestWorkflowIntegration(unittest.TestCase):
     """Test workflow enhancements"""

@@ -1,0 +1,303 @@
+# Production Zope Configuration for Classroom Management Platform
+# Optimized for containerized deployment with PostgreSQL RelStorage
+
+%define INSTANCEHOME /app
+instancehome $INSTANCEHOME
+
+%define CLIENTHOME /app/var
+clienthome $CLIENTHOME
+
+# ==========================================
+# Production Settings
+# ==========================================
+
+# Security and performance
+debug-mode off
+security-policy-implementation C
+verbose-security off
+default-zpublisher-encoding utf-8
+
+# Thread configuration (will be overridden by environment)
+zserver-threads 4
+
+# ==========================================
+# Environment Configuration
+# ==========================================
+
+<environment>
+    # Performance optimization
+    CHAMELEON_CACHE /var/cache/classroom/chameleon
+    zope_i18n_compile_mo_files true
+    PYTHON_EGG_CACHE /var/cache/classroom/eggs
+    
+    # Security settings
+    SECURITY_POLICY_IMPLEMENTATION C
+    ENVIRONMENT production
+    
+    # Application settings
+    PLONE_SITE_ID Plone
+    
+    # Logging
+    CLASSROOM_LOG_LEVEL INFO
+    SECURITY_LOG_PATH /var/log/classroom/security.log
+    
+    # Performance monitoring
+    ENABLE_PERFORMANCE_MONITORING true
+    PERFORMANCE_LOG_PATH /var/log/classroom/performance.log
+</environment>
+
+# ==========================================
+# DOS Protection
+# ==========================================
+
+<dos_protection>
+    form-memory-limit 5MB
+    form-disk-limit 100MB
+    form-memfile-limit 64KB
+</dos_protection>
+
+# ==========================================
+# Database Configuration (PostgreSQL RelStorage)
+# ==========================================
+
+<zodb_db main>
+    mount-point /
+    
+    # Performance optimizations for production
+    cache-size 50000
+    pool-size 10
+    connection-pool-size 10
+    
+    # Large object threshold for blob storage
+    large-record-size 33554432  # 32MB
+    
+    <relstorage>
+        # PostgreSQL adapter
+        <postgresql>
+            # Connection will be set via RELSTORAGE_DSN environment variable
+            dsn $RELSTORAGE_DSN
+        </postgresql>
+        
+        # Performance and reliability settings
+        name classroom_storage
+        read-only false
+        keep-history true
+        
+        # Connection pooling
+        replica-conf /app/instance/etc/replica.conf
+        ro-replica-conf /app/instance/etc/ro-replica.conf
+        
+        # Cache configuration
+        cache-servers ${CACHE_SERVERS}
+        cache-module-name memcache
+        cache-prefix classroom
+        
+        # Blob storage configuration
+        shared-blob-dir false
+        blob-dir /app/var/blobstorage
+        blob-cache-size 1073741824  # 1GB
+        blob-cache-size-check 100
+        
+        # Performance tuning
+        commit-lock-timeout 60
+        commit-lock-id 0
+        
+        # Packing configuration
+        pack-gc true
+        pack-prepack-only false
+        pack-skip-prepack false
+        
+        # Replication settings for high availability
+        replica-timeout 600
+        revert-when-stale false
+        
+        # Database-specific optimizations
+        driver-extra-args
+            isolation_level: READ_COMMITTED
+            application_name: classroom-management
+            connect_timeout: 30
+            statement_timeout: 300000
+    </relstorage>
+</zodb_db>
+
+# ==========================================
+# Temporary Storage (Sessions, etc.)
+# ==========================================
+
+<zodb_db temporary>
+    mount-point /temp_folder
+    container-class Products.TemporaryFolder.TemporaryContainer
+    
+    <temporarystorage>
+        name temporary storage for sessioning
+    </temporarystorage>
+</zodb_db>
+
+# ==========================================
+# Logging Configuration
+# ==========================================
+
+# Main application log
+<logger>
+    level INFO
+    <logfile>
+        path /var/log/classroom/classroom.log
+        format %(asctime)s - %(name)s - %(levelname)s - %(message)s
+        max-size 50MB
+        old-files 10
+    </logfile>
+</logger>
+
+# Security audit log
+<logger security>
+    level INFO
+    propagate false
+    <logfile>
+        path /var/log/classroom/security.log
+        format %(asctime)s - SECURITY - %(levelname)s - %(message)s
+        max-size 100MB
+        old-files 20
+    </logfile>
+</logger>
+
+# Performance monitoring log
+<logger performance>
+    level INFO
+    propagate false
+    <logfile>
+        path /var/log/classroom/performance.log
+        format %(asctime)s - PERFORMANCE - %(message)s
+        max-size 20MB
+        old-files 5
+    </logfile>
+</logger>
+
+# Access log for HTTP requests
+<logger access>
+    level INFO
+    propagate false
+    <logfile>
+        path /var/log/classroom/access.log
+        format %(message)s
+        max-size 100MB
+        old-files 30
+    </logfile>
+</logger>
+
+# ==========================================
+# Server Configuration
+# ==========================================
+
+<server>
+    type http
+    address 8080
+    
+    # Production optimizations
+    fast-listen on
+    
+    # Security headers (handled by application security module)
+    # Additional server-level security can be configured here
+</server>
+
+# ==========================================
+# WSGI Configuration for Load Balancers
+# ==========================================
+
+<wsgi>
+    # WSGI application for external servers (nginx, Apache)
+    application-factory project.title.wsgi:application
+</wsgi>
+
+# ==========================================
+# Developer/Debug Settings (Disabled in Production)
+# ==========================================
+
+# Debug mode off for production
+debug-mode off
+
+# Disable Zope's built-in profiling
+profile-dir off
+
+# Disable verbose security for performance
+verbose-security off
+
+# ==========================================
+# ZEO Client Configuration (if using ZEO instead of RelStorage)
+# ==========================================
+
+# Commented out - using RelStorage instead
+# <zeoclient>
+#     server zeo:8100
+#     storage 1
+#     name classroom_zeoclient
+#     client-label classroom-client
+#     var /app/var
+#     cache-size 256MB
+#     client-cache-size 200MB
+# </zeoclient>
+
+# ==========================================
+# Resource Limits and Performance
+# ==========================================
+
+# Python optimization
+python-check-interval 1000
+
+# Large file threshold for streaming
+large-file-threshold 512KB
+
+# ==========================================
+# Locale and Internationalization
+# ==========================================
+
+locale en_US.UTF-8
+datetime-format international
+
+# ==========================================
+# Security Configuration
+# ==========================================
+
+# HTTP server security
+http-realm "Classroom Management Platform"
+
+# Trusted proxies for X-Forwarded-For headers
+trusted-proxy 10.0.0.0/8
+trusted-proxy 172.16.0.0/12
+trusted-proxy 192.168.0.0/16
+
+# Session configuration
+session-timeout-minutes 60
+
+# ==========================================
+# Monitoring and Health Checks
+# ==========================================
+
+# Enable detailed monitoring
+enable-product-installation on
+
+# Health check endpoint configuration
+# (Handled by application-level health checks)
+
+# ==========================================
+# Error Handling
+# ==========================================
+
+# Error log configuration
+<logfile>
+    path /var/log/classroom/error.log
+    level ERROR
+    max-size 50MB
+    old-files 10
+</logfile>
+
+# Exception handling
+raise-error-on-conflict-resolution on
+
+# ==========================================
+# Development/Testing Overrides
+# ==========================================
+
+# These settings can be overridden via environment variables
+# for different deployment environments (staging, development)
+
+%include /app/instance/etc/local.conf 

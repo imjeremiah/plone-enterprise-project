@@ -1,0 +1,119 @@
+# Production Dockerfile for Classroom Management Frontend (Volto)
+# Multi-stage build for optimized production image
+
+# ==========================================
+# Build Stage
+# ==========================================
+FROM node:22-alpine as builder
+
+# Set build environment
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    DISABLE_OPENCOLLECTIVE=1
+
+# Install system dependencies for building
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    git \
+    curl
+
+# Create app user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S volto -u 1001
+
+# Set work directory
+WORKDIR /app
+
+# Copy package files for dependency installation
+COPY package.json pnpm-lock.yaml volto.config.js ./
+COPY packages/volto-project-title/package.json ./packages/volto-project-title/
+
+# Install pnpm globally
+RUN npm install -g pnpm@9.1.1
+
+# Install dependencies with production optimizations
+RUN pnpm install --frozen-lockfile --production=false
+
+# Copy source code
+COPY . .
+
+# Build the application with optimizations
+ENV VOLTOCONFIG=/app/volto.config.js
+ENV RAZZLE_API_PATH=http://localhost:8080/Plone
+ENV RAZZLE_INTERNAL_API_PATH=http://backend:8080/Plone
+
+# Build production bundle
+RUN pnpm build
+
+# Remove dev dependencies to reduce image size
+RUN pnpm prune --production
+
+# ==========================================
+# Production Stage
+# ==========================================
+FROM node:22-alpine as production
+
+# Set production environment variables
+ENV NODE_ENV=production \
+    VOLTO_ROBOTSTXT=robotstxt \
+    RAZZLE_DISABLE_SSR_CACHE=true \
+    PORT=3000
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    curl \
+    ca-certificates \
+    dumb-init \
+    && update-ca-certificates
+
+# Create app user for security (non-root)
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S volto -u 1001 \
+    && mkdir -p /app /var/log/volto /var/cache/volto \
+    && chown -R volto:nodejs /app /var/log/volto /var/cache/volto
+
+# Set work directory
+WORKDIR /app
+
+# Copy node_modules and built application from builder
+COPY --from=builder --chown=volto:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=volto:nodejs /app/build ./build
+COPY --from=builder --chown=volto:nodejs /app/public ./public
+COPY --from=builder --chown=volto:nodejs /app/package.json ./
+COPY --from=builder --chown=volto:nodejs /app/volto.config.js ./
+
+# Copy production configuration and scripts
+COPY --chown=volto:nodejs docker/frontend/entrypoint.sh /entrypoint.sh
+COPY --chown=volto:nodejs docker/frontend/nginx.conf /etc/nginx/nginx.conf.template
+
+RUN chmod +x /entrypoint.sh
+
+# Security hardening
+RUN chmod 750 /app \
+    && find /app -type f -name "*.js" -exec chmod 644 {} \; \
+    && find /app -type d -exec chmod 755 {} \;
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:3000/ || exit 1
+
+# Switch to non-root user
+USER volto
+
+# Expose port
+EXPOSE 3000
+
+# Use dumb-init for proper signal handling
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["/entrypoint.sh"]
+
+# Labels for container metadata
+LABEL maintainer="Classroom Management Team" \
+      version="1.0.0" \
+      description="Production Volto Frontend for K-12 Classroom Management" \
+      org.opencontainers.image.source="https://github.com/your-org/classroom-management" \
+      org.opencontainers.image.title="Classroom Management Frontend" \
+      org.opencontainers.image.description="Volto-based frontend for K-12 classroom management" \
+      org.opencontainers.image.version="1.0.0" 

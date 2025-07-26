@@ -5,6 +5,7 @@ import os
 import logging
 
 __version__ = "1.0.0"
+PACKAGE_NAME = "project.title"
 
 logger = logging.getLogger(__name__)
 
