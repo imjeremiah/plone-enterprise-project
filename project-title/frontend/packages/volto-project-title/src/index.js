@@ -1,13 +1,13 @@
-import LoginComponent from './components/Login';
-import StandardsWidget from './components/StandardsWidget';
 import SeatingChartView from './components/Views/SeatingChartView';
-import RandomStudentPicker from './components/RandomPicker/RandomStudentPicker';
+import SeatingChartsPage from './components/Views/SeatingChartsPage';
 import HallPassManager from './components/HallPass/HallPassManager';
+import CustomHomepage from './components/Home/CustomHomepage';
+import RandomStudentPicker from './components/RandomPicker/RandomStudentPicker';
 import HallPassManagerRoute from './components/HallPass/HallPassManagerRoute';
-import LessonTimer from './components/Timer/LessonTimer';
 import TimerPage from './components/Timer/TimerPage';
 import SubstitutePage from './components/SubstituteFolder/SubstitutePage';
 import TeacherDashboard from './components/Dashboard/TeacherDashboard';
+import ClassroomToolsWidget from './components/Dashboard/widgets/ClassroomToolsWidget';
 
 const applyConfig = (config) => {
   console.log('🚀 Edu Plone addon loading...');
@@ -16,27 +16,6 @@ const applyConfig = (config) => {
   config.settings.supportedLanguages = ['en'];
   config.settings.defaultLanguage = 'en';
 
-  // Override the login route in Volto
-  config.addonRoutes = [
-    {
-      path: '/login',
-      component: LoginComponent,
-      exact: true,
-    },
-    ...(config.addonRoutes || []),
-  ];
-  
-  // Initialize widgets object if it doesn't exist
-  if (!config.widgets) {
-    config.widgets = {};
-  }
-  if (!config.widgets.widget) {
-    config.widgets.widget = {};
-  }
-  
-  // Register Standards Widget for educational content
-  config.widgets.widget.aligned_standards = StandardsWidget;
-  
   // Initialize views object if it doesn't exist
   if (!config.views) {
     config.views = {};
@@ -51,13 +30,11 @@ const applyConfig = (config) => {
   // Register HallPass view for digital hall pass management
   config.views.contentTypesViews.HallPass = HallPassManager;
   
+  // Register custom homepage with classroom tools
+  config.views.contentTypesViews['Plone Site'] = CustomHomepage;
+  
   // Add standalone routes for classroom management tools
   config.addonRoutes = [
-    {
-      path: '/login',
-      component: LoginComponent,
-      exact: true,
-    },
     {
       path: '/random-picker',
       component: RandomStudentPicker,
@@ -83,6 +60,11 @@ const applyConfig = (config) => {
       component: TeacherDashboard,
       exact: true,
     },
+    {
+      path: '/seating-charts',
+      component: SeatingChartsPage,
+      exact: true,
+    },
     ...(config.addonRoutes || []),
   ];
   
@@ -92,16 +74,11 @@ const applyConfig = (config) => {
   }
   config.components.RandomStudentPicker = RandomStudentPicker;
   config.components.HallPassManager = HallPassManager;
-  config.components.LessonTimer = LessonTimer;
+  config.components.ClassroomToolsWidget = ClassroomToolsWidget;
   
-  console.log('✅ Custom Login component registered');
-  console.log('✅ Standards Widget registered for educational content');
-  console.log('✅ SeatingChart view registered for classroom management');
-  console.log('✅ Random Student Picker component registered');
-  console.log('✅ Digital Hall Pass Manager component registered');
-  console.log('✅ Lesson Timer tool registered for classroom activities');
-  console.log('✅ Substitute Folder Generator registered for emergency preparation');
-  console.log('✅ Teacher Dashboard registered for real-time classroom management');
+  // Simplified logging - only show completion
+  console.log('✅ Edu Plone classroom management tools initialized');
+  console.log('🎛️ Dashboard available at /dashboard');
 
   return config;
 };

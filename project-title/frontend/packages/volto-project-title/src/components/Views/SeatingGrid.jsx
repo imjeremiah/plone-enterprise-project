@@ -84,12 +84,12 @@ const DraggableStudent = DragSource(STUDENT_TYPE, studentSource, collectSource)(
 const deskTarget = {
   drop(props, monitor) {
     const item = monitor.getItem();
-    if (props.editable && props.onDrop && !props.isEmpty) {
+    if (props.editable && props.onDrop) {
       props.onDrop(item.student, props.row, props.col);
     }
   },
   canDrop(props) {
-    return props.editable && !props.isEmpty;
+    return props.editable;
   },
 };
 
@@ -113,11 +113,17 @@ const DeskSlotComponent = ({
   isEmpty, 
   connectDropTarget, 
   isOver, 
-  canDrop 
+  canDrop,
+  hideInViewMode
 }) => {
+  // Hide empty desks in view mode by rendering invisible placeholder
+  if (hideInViewMode) {
+    return <div className="desk-slot hidden-empty" style={{ visibility: 'hidden' }}></div>;
+  }
+
   let deskClass = 'desk-slot';
   if (student) deskClass += ' occupied';
-  if (isEmpty) deskClass += ' empty-desk';
+  if (isEmpty && !editable) deskClass += ' empty-desk';
   if (editable) deskClass += ' editable';
   if (isOver && canDrop) deskClass += ' drag-over';
   if (!canDrop && isOver) deskClass += ' drag-invalid';
@@ -134,13 +140,13 @@ const DeskSlotComponent = ({
           editable={editable}
         />
       )}
-      {isEmpty && (
+      {isEmpty && !editable && (
         <div className="empty-label">
           <Icon name="ban" color="grey" />
           <span>Empty</span>
         </div>
       )}
-      {!student && !isEmpty && editable && (
+      {!student && editable && (
         <div className="available-slot">
           <Icon name="plus" color="grey" />
           <span>Drop Here</span>
@@ -266,6 +272,7 @@ const SeatingGrid = ({ gridData, students, rows, cols, onMove, onUnassign, edita
             isEmpty={isEmpty}
             onDrop={onMove}
             editable={editable}
+            hideInViewMode={isEmpty && !editable}
           />
         );
       }
@@ -347,7 +354,7 @@ DeskSlotComponent.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
   isOver: PropTypes.bool.isRequired,
   canDrop: PropTypes.bool.isRequired,
-  onDrop: PropTypes.func,
+  hideInViewMode: PropTypes.bool,
 };
 
 export default SeatingGrid; 

@@ -29,24 +29,24 @@
 
 /* Stats Bar */
 .teacher-dashboard .stats-bar {
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
+  background: linear-gradient(90deg, #f8f9fa 0%, #ffffff 100%);
+  color: #333;
+  border: 1px solid #e0e0e0;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 15px !important;
 }
 
 .teacher-dashboard .stats-bar .ui.statistic {
-  color: white;
+  color: #333;
 }
 
 .teacher-dashboard .stats-bar .ui.statistic > .value {
-  color: white;
+  color: #333;
 }
 
 .teacher-dashboard .stats-bar .ui.statistic > .label {
-  color: rgba(255, 255, 255, 0.9);
+  color: #666;
 }
 
 /* Dashboard Widgets */

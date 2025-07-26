@@ -104,23 +104,34 @@ class HallPass(Item):
             str: Base64 encoded QR code image
         """
         try:
-            # Create pass data (minimal PII for security)
-            pass_data = {
-                'id': self.getId(),
-                'code': self.pass_code,
-                'destination': self.destination,
-                'issued': self.issue_time.isoformat() if self.issue_time else datetime.now().isoformat(),
-                'school': 'classroom_mgmt'  # Identifier for our system
-            }
+            # Create verification URL for QR code
+            # This will link to a useful verification page instead of raw JSON
+            from plone import api
+            portal = api.portal.get()
             
-            # Generate QR code
+            # Get the request to determine the proper base URL
+            request = getattr(self, 'REQUEST', None)
+            if request:
+                # Check if we're in Docker environment
+                host = request.getHeader('Host', '')
+                if 'project-title.localhost' in host:
+                    base_url = 'http://project-title.localhost'
+                else:
+                    base_url = 'http://localhost:8080'
+            else:
+                # Fallback
+                base_url = 'http://project-title.localhost'
+            
+            verification_url = f"{base_url}/Plone/@@pass-verify?code={self.pass_code}"
+            
+            # Generate QR code with verification URL
             qr = qrcode.QRCode(
                 version=1,
                 error_correction=qrcode.constants.ERROR_CORRECT_M,
                 box_size=10,
                 border=4,
             )
-            qr.add_data(json.dumps(pass_data))
+            qr.add_data(verification_url)
             qr.make(fit=True)
             
             # Create image

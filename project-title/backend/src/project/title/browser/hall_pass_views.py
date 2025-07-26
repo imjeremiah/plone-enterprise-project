@@ -11,6 +11,16 @@ from Products.Five.browser import BrowserView
 import qrcode
 from io import BytesIO
 import base64
+import logging
+
+# ADD these imports for event integration
+from ..event_handlers import fire_hall_pass_issued
+from ..events import HallPassReturnedEvent
+from zope.event import notify
+
+from .cors_helper import set_cors_headers
+
+logger = logging.getLogger(__name__)
 
 # Demo storage - in-memory storage for demo purposes
 class DemoStorage:
@@ -51,13 +61,9 @@ class HallPassManagerView(BrowserView):
     
     def __call__(self):
         """Handle all requests"""
-        # CORS headers - specific origin when using credentials
-        self.request.response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-        self.request.response.setHeader('Access-Control-Allow-Credentials', 'true')
-        self.request.response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.request.response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept')
-        
-        if self.request.method == 'OPTIONS':
+        # Handle CORS headers for frontend integration
+        is_preflight = set_cors_headers(self.request, self.request.response)
+        if is_preflight:
             return ''
             
         if self.request.method == 'POST':
@@ -140,6 +146,23 @@ class HallPassManagerView(BrowserView):
             qr_code_data = base64.b64encode(buffer.getvalue()).decode()
             pass_data['qr_code'] = f"data:image/png;base64,{qr_code_data}"
             
+            # ENHANCE: Fire event for integration (non-breaking)
+            try:
+                # Create a mock object for event firing
+                class MockHallPassObj:
+                    def getId(self):
+                        return pass_id
+                
+                mock_obj = MockHallPassObj()
+                fire_hall_pass_issued(
+                    mock_obj, 
+                    student_name=pass_data['student_name'], 
+                    destination=pass_data['destination']
+                )
+                logger.info(f"✅ Hall pass event fired for {pass_data['student_name']}")
+            except Exception as event_error:
+                logger.info(f"Event firing skipped (non-critical): {event_error}")
+
             self.request.response.setHeader('Content-Type', 'application/json')
             return json.dumps({
                 'success': True,
@@ -222,19 +245,78 @@ class HallPassManagerView(BrowserView):
                 'details': str(e)
             })
 
+    # WORKFLOW ENHANCEMENT METHODS (ADDITIVE ONLY)
+    def issue_pass_with_workflow(self):
+        """Enhanced pass issuing with workflow support"""
+        # Call existing issue_pass method first (no breaking changes)
+        result = self.issue_pass()
+        
+        # Add workflow support if available
+        try:
+            if hasattr(self.context, 'portal_workflow'):
+                # Find the newly created pass
+                from plone import api
+                catalog = api.portal.get_tool('portal_catalog')
+                recent_passes = catalog(
+                    portal_type='HallPass',
+                    sort_on='created',
+                    sort_order='descending',
+                    sort_limit=1
+                )
+                if recent_passes:
+                    pass_obj = recent_passes[0].getObject()
+                    api.content.transition(obj=pass_obj, transition='issue')
+        except Exception as e:
+            # Log warning but don't break existing functionality
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Workflow enhancement failed, basic functionality preserved: {e}")
+        
+        return result
+
+    def return_pass_with_workflow(self):
+        """Enhanced pass return with workflow support"""
+        pass_id = self.request.get('pass_id')
+        try:
+            # For demo storage, just call the existing return functionality
+            storage = DemoStorage()
+            pass_obj = storage.get_pass(pass_id)
+            if pass_obj:
+                # Set return time (existing functionality)
+                updates = {
+                    'return_time': datetime.now().isoformat(),
+                    'is_active': False
+                }
+                storage.update_pass(pass_id, updates)
+                
+                # Add workflow transition if available (enhancement)
+                try:
+                    if hasattr(self.context, 'portal_workflow'):
+                        from plone import api
+                        # In real implementation, would find actual content object
+                        # api.content.transition(obj=pass_obj, transition='return')
+                        pass
+                except Exception as e:
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.info(f"Workflow transition skipped: {e}")
+            
+            return self.get_passes_data()
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Return pass failed: {e}")
+            return {'error': str(e)}
+
 
 class HallPassReturnView(BrowserView):
     """Mark a hall pass as returned"""
     
     def __call__(self):
         """Mark pass as returned"""
-        # CORS headers - specific origin when using credentials
-        self.request.response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-        self.request.response.setHeader('Access-Control-Allow-Credentials', 'true')
-        self.request.response.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-        self.request.response.setHeader('Access-Control-Allow-Headers', 'Content-Type')
-        
-        if self.request.method == 'OPTIONS':
+        # Handle CORS headers for frontend integration
+        is_preflight = set_cors_headers(self.request, self.request.response)
+        if is_preflight:
             return ''
         
         try:
@@ -259,6 +341,25 @@ class HallPassReturnView(BrowserView):
                 # Get the updated pass data
                 updated_pass = storage.get_pass(pass_id)
                 
+                # ENHANCE: Fire return event for integration (non-breaking)
+                try:
+                    # Calculate duration for event
+                    issue_time = datetime.fromisoformat(pass_data['issue_time'])
+                    return_time = datetime.now()
+                    duration = int((return_time - issue_time).total_seconds() / 60)
+                    
+                    # Create mock object and fire event
+                    class MockHallPassObj:
+                        def getId(self):
+                            return pass_id
+                    
+                    mock_obj = MockHallPassObj()
+                    event = HallPassReturnedEvent(mock_obj, duration=duration)
+                    notify(event)
+                    logger.info(f"✅ Hall pass return event fired after {duration} minutes")
+                except Exception as event_error:
+                    logger.info(f"Return event firing skipped (non-critical): {event_error}")
+                
                 self.request.response.setHeader('Content-Type', 'application/json')
                 return json.dumps({
                     'success': True,
@@ -278,4 +379,125 @@ class HallPassDisplayView(BrowserView):
     """Simple display view"""
     
     def __call__(self):
-        return "Hall Pass Display - Demo Mode" 
+        return "Hall Pass Display - Demo Mode"
+
+
+class PassVerifyView(BrowserView):
+    """Mobile-friendly hall pass verification page"""
+    
+    def __call__(self):
+        """Handle pass verification requests"""
+        # Handle CORS headers
+        is_preflight = set_cors_headers(self.request, self.request.response)
+        if is_preflight:
+            return ''
+        
+        # Get pass code from request
+        pass_code = self.request.get('code', '')
+        
+        if not pass_code:
+            return self.render_error("No pass code provided")
+        
+        # For demo purposes, create a mock pass verification
+        # In a real implementation, you'd search for the actual pass
+        return self.render_demo_verification_page(pass_code)
+    
+    def render_demo_verification_page(self, pass_code):
+        """Render a demo verification page"""
+        html = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall Pass Verification</title>
+    <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 400px; margin: 0 auto; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }}
+        .header {{ text-align: center; margin-bottom: 24px; }}
+        .status {{ padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 20px; background: #e3f2fd; color: #1565c0; }}
+        .detail {{ margin: 12px 0; padding: 12px; background: #f8f9fa; border-radius: 6px; }}
+        .detail-label {{ font-weight: bold; color: #666; }}
+        .detail-value {{ font-size: 1.1em; }}
+        .button {{ display: block; width: 100%; padding: 14px; background: #1976d2; color: white; text-decoration: none; text-align: center; border-radius: 8px; font-weight: bold; margin-top: 20px; border: none; font-size: 16px; }}
+        .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 0.9em; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>🎫 Hall Pass Verification</h2>
+        </div>
+        
+        <div class="status">
+            ✅ Valid Pass - 5 minutes
+        </div>
+        
+        <div class="detail">
+            <div class="detail-label">Student:</div>
+            <div class="detail-value">ERIC W.</div>
+        </div>
+        
+        <div class="detail">
+            <div class="detail-label">Destination:</div>
+            <div class="detail-value">RESTROOM</div>
+        </div>
+        
+        <div class="detail">
+            <div class="detail-label">Pass Code:</div>
+            <div class="detail-value">{pass_code}</div>
+        </div>
+        
+        <div class="detail">
+            <div class="detail-label">Issued:</div>
+            <div class="detail-value">{datetime.now().strftime('%I:%M %p')}</div>
+        </div>
+        
+        <a href="#" class="button" onclick="markReturned()">✅ Mark as Returned</a>
+        
+        <div class="footer">
+            Scanned at {datetime.now().strftime('%I:%M %p')}
+        </div>
+    </div>
+    
+    <script>
+        function markReturned() {{
+            alert('Pass marked as returned!');
+            document.querySelector('.status').innerHTML = '✅ Returned Successfully';
+            document.querySelector('.button').style.display = 'none';
+        }}
+    </script>
+</body>
+</html>
+        """
+        
+        self.request.response.setHeader('Content-Type', 'text/html')
+        return html
+    
+    def render_error(self, message):
+        """Render error page"""
+        html = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall Pass Error</title>
+    <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 400px; margin: 0 auto; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }}
+        .error {{ color: #c62828; font-size: 1.2em; margin: 20px 0; }}
+        .error-icon {{ font-size: 3em; color: #f44336; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-icon">❌</div>
+        <div class="error">{message}</div>
+    </div>
+</body>
+</html>
+        """
+        
+        self.request.response.setHeader('Content-Type', 'text/html')
+        return html 

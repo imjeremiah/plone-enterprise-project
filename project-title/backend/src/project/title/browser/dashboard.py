@@ -13,10 +13,14 @@ Provides both full page view and AJAX data endpoints for real-time updates.
 
 from Products.Five.browser import BrowserView
 from plone import api
+from plone.memoize import ram
 from zope.annotation.interfaces import IAnnotations
 from datetime import datetime, timedelta
 import json
 import logging
+import time
+
+from .cors_helper import set_cors_headers
 
 logger = logging.getLogger(__name__)
 
@@ -29,12 +33,8 @@ class TeacherDashboard(BrowserView):
         logger.info("🎛️ Teacher Dashboard accessed")
         
         # Handle CORS headers for frontend integration
-        self.request.response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-        self.request.response.setHeader('Access-Control-Allow-Credentials', 'true')
-        self.request.response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.request.response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept')
-        
-        if self.request.method == 'OPTIONS':
+        is_preflight = set_cors_headers(self.request, self.request.response)
+        if is_preflight:
             return ''
         
         # Check if this is an AJAX request for data updates
@@ -44,9 +44,10 @@ class TeacherDashboard(BrowserView):
         # Otherwise return the main dashboard page (would be template-based in full implementation)
         return self.index()
     
+    @ram.cache(lambda *args: time.time() // 30)  # 30-second cache
     def get_dashboard_data(self):
         """Aggregate all classroom management data for real-time dashboard"""
-        logger.info("📊 Aggregating dashboard data")
+        logger.info("📊 Aggregating dashboard data (cached)")
         
         try:
             current_time = datetime.now()
@@ -72,6 +73,7 @@ class TeacherDashboard(BrowserView):
                 'details': str(e)
             })
     
+    @ram.cache(lambda *args: time.time() // 60)  # 60-second cache for seating
     def get_current_seating(self):
         """Get active seating chart information"""
         try:
@@ -186,6 +188,7 @@ class TeacherDashboard(BrowserView):
             return 'yellow'   # Warning - monitor student
         return 'green'        # Normal duration
     
+    @ram.cache(lambda *args: time.time() // 60)  # 60-second cache for participation
     def get_participation_stats(self):
         """Get today's participation statistics from random picker"""
         try:
@@ -369,6 +372,7 @@ class TeacherDashboard(BrowserView):
                 'day_of_week': datetime.now().strftime('%A')
             }
     
+    @ram.cache(lambda *args: time.time() // 300)  # 5-minute cache for system status
     def get_system_status(self):
         """Get overall system health and status"""
         try:

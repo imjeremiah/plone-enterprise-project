@@ -130,7 +130,7 @@ with spinning wheel animation and classroom-appropriate styling.
   transform: translate(-50%, -50%);
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #a333c8 0%, #8e44ad 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -179,20 +179,97 @@ with spinning wheel animation and classroom-appropriate styling.
 
 /* Selected Student Display in Modal */
 .selected-student-display {
-  padding: 20px;
+  padding: 30px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 12px;
+  border: 2px solid #a333c8;
+  margin: 10px;
 }
 
 .student-avatar {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #a333c8 0%, #8e44ad 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 20px;
   color: white;
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 20px rgba(163, 51, 200, 0.3);
+  border: 3px solid white;
+}
+
+/* Student Name Container - Clean white background */
+.selected-student-display .student-name-container {
+  background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+  border-radius: 8px !important;
+  border: 2px solid #e9ecef !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  margin: 20px auto !important;
+  padding: 15px 20px !important;
+  max-width: 80% !important;
+}
+
+/* Selected Student Name Styling - Force white background */
+.selected-student-display .student-name-container .ui.header,
+.selected-student-display .student-name-container .ui.header.h2,
+.selected-student-display .student-name-container h2.ui.header,
+.selected-student-display .ui.header,
+.selected-student-display .ui.header.h2,
+.selected-student-display h2.ui.header {
+  color: #2c3e50 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  text-shadow: none !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.selected-student-display p {
+  color: #666 !important;
+  font-size: 1.1em;
+  margin: 10px 0;
+}
+
+.selected-student-display .ui.label {
+  background: linear-gradient(135deg, #a333c8 0%, #8e44ad 100%) !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 500;
+}
+
+/* Modal Header Styling */
+.ui.modal > .header {
+  background: linear-gradient(135deg, #a333c8 0%, #8e44ad 100%);
+  color: white !important;
+  border-radius: 12px 12px 0 0;
+}
+
+.ui.modal > .header .icon {
+  color: #ffd700 !important;
+}
+
+/* Ensure student name header inside modal content is NOT styled like modal header */
+.ui.modal .content .selected-student-display .ui.header,
+.ui.modal .content .selected-student-display h2 {
+  background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+  background-attachment: initial !important;
+  background-blend-mode: initial !important;
+  background-clip: initial !important;
+  background-origin: initial !important;
+  background-position: initial !important;
+  background-repeat: initial !important;
+  background-size: initial !important;
+  color: #2c3e50 !important;
 }
 
 /* Responsive Design */
@@ -334,7 +411,7 @@ with spinning wheel animation and classroom-appropriate styling.
 
 /* Accessibility improvements */
 .picker-wheel:focus-within {
-  outline: 3px solid #667eea;
+  outline: 3px solid #a333c8;
   outline-offset: 4px;
 }
 
@@ -387,14 +464,14 @@ with spinning wheel animation and classroom-appropriate styling.
 
 /* Enhanced button styles */
 .picker-controls .ui.button.primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #a333c8 0%, #8e44ad 100%);
   border: none;
   transition: all 0.3s ease;
 }
 
 .picker-controls .ui.button.primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(163, 51, 200, 0.4);
 }
 
 .picker-controls .ui.button.primary:active {

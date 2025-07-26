@@ -505,15 +505,44 @@ const RandomStudentPickerComponent = ({
                     <Modal.Content style={{textAlign: 'center'}}>
           <div className="selected-student-display">
             <div className="student-avatar">
-                              <Icon name="user" size="huge" color="blue" />
+              <Icon name="user" size="huge" />
             </div>
-            <Header as="h2" color="blue">
-              {selectedStudent}
-            </Header>
+            <div 
+              className="student-name-container"
+              style={{
+                background: 'white',
+                backgroundColor: 'white',
+                backgroundImage: 'none',
+                borderRadius: '8px',
+                border: '2px solid #e9ecef',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                margin: '20px auto',
+                padding: '15px 20px',
+                maxWidth: '80%'
+              }}
+            >
+              <Header 
+                as="h2"
+                style={{
+                  color: '#2c3e50',
+                  background: 'transparent',
+                  backgroundColor: 'transparent',
+                  backgroundImage: 'none',
+                  textShadow: 'none',
+                  fontWeight: '600',
+                  margin: '0',
+                  padding: '0',
+                  border: 'none',
+                  boxShadow: 'none'
+                }}
+              >
+                {selectedStudent}
+              </Header>
+            </div>
             <p>
               Selected at: {new Date().toLocaleTimeString()}
             </p>
-            <Label color={getFairnessColor(fairnessScore)} size="large">
+            <Label size="large">
               Fairness Score: {fairnessScore}%
             </Label>
           </div>

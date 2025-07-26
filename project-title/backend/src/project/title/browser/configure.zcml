@@ -70,6 +70,37 @@
     permission="zope.Public"
     />
 
+  <browser:page
+    name="pass-verify"
+    for="*"
+    class=".hall_pass_views.PassVerifyView"
+    permission="zope.Public"
+    />
+
+  <!-- Hall Pass Workflow Support Views (ADDITIVE ENHANCEMENT) -->
+  <browser:page
+    name="workflow-support"
+    for="*"
+    class=".hall_pass_workflow.HallPassWorkflowSupport"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="issue-with-workflow"
+    for="*"
+    class=".hall_pass_views.HallPassManagerView"
+    attribute="issue_pass_with_workflow"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="return-with-workflow"
+    for="*"
+    class=".hall_pass_views.HallPassManagerView"
+    attribute="return_pass_with_workflow"
+    permission="zope2.View"
+    />
+
   <!-- Timer Presets Management Views -->
   <browser:page
     name="timer-presets"
@@ -122,6 +153,43 @@
     class=".dashboard.TeacherDashboard"
     permission="zope2.View"
     />
+
+  <!-- Performance Dashboard Views -->
+  <browser:page
+    name="performance-dashboard"
+    for="*"
+    class=".dashboard_performance.PerformanceDashboard"
+    permission="zope2.View"
+    />
+
+  <browser:page
+    name="dashboard-metrics"
+    for="*"
+    class=".dashboard_performance.PerformanceDashboard"
+    permission="zope2.View"
+    />
+
+  <!-- Temporarily disabled event system to resolve startup issues -->
+  <!-- Event System Configuration -->
+  <!-- <subscriber
+    for="..events.IHallPassIssuedEvent"
+    handler="..event_handlers.handle_hall_pass_issued"
+    />
+
+  <subscriber
+    for="..events.IHallPassReturnedEvent"
+    handler="..event_handlers.handle_hall_pass_returned"
+    />
+
+  <subscriber
+    for="..events.ISeatingChartUpdatedEvent"
+    handler="..event_handlers.handle_seating_chart_updated"
+    />
+
+  <subscriber
+    for="..events.ITimerCompletedEvent"
+    handler="..event_handlers.handle_timer_completed"
+    /> -->
 
   <!-- -*- extra stuff goes here -*- -->
 

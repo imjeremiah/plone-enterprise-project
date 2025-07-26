@@ -140,16 +140,6 @@ const SubstituteGenerator = ({
   return (
     <div className="substitute-generator">
       <Segment>
-        <Header as="h2" icon textAlign="center">
-          <Icon name="folder open" />
-          <Header.Content>
-            Prepare for Substitute Teacher
-            <Header.Subheader>
-              Generate a comprehensive folder with all materials needed for a smooth classroom transition
-            </Header.Subheader>
-          </Header.Content>
-        </Header>
-
         {/* Available Materials Summary */}
         {availableMaterials && (
           <Message info>

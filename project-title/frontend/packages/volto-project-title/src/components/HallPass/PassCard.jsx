@@ -18,6 +18,7 @@ import {
   Grid,
   Statistic
 } from 'semantic-ui-react';
+import WorkflowStatus from './WorkflowStatus';
 import './PassCard.css';
 
 const PassCard = ({ 
@@ -47,6 +48,37 @@ const PassCard = ({
   };
   
   const [currentDuration, setCurrentDuration] = useState(calculateDuration);
+  const [workflowState, setWorkflowState] = useState('unknown');
+
+  // Determine workflow state from pass data (fallback-first approach)
+  const getWorkflowStateFromPass = (passData) => {
+    // Use existing pass data to determine workflow state
+    if (passData.return_time) return 'returned';
+    if (passData.issue_time) return 'issued';
+    return 'draft';
+  };
+
+  // Optional: Try to fetch enhanced workflow state from backend
+  const fetchWorkflowState = async (passId) => {
+    try {
+      // TEMPORARILY DISABLED: Backend workflow support causing 500 errors
+      // TODO: Re-enable once backend event system is restored
+      /*
+      const response = await fetch(`http://localhost:8080/Plone/@@workflow-support`, {
+        headers: { 'Accept': 'application/json' }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data.workflow_state || getWorkflowStateFromPass(pass);
+      }
+      */
+    } catch (error) {
+      // Workflow endpoint not available - use fallback
+    }
+    
+    // Use fallback workflow state determination
+    return getWorkflowStateFromPass(pass);
+  };
 
   // Update duration every 30 seconds for active passes
   useEffect(() => {
@@ -70,6 +102,19 @@ const PassCard = ({
     
     // Set initial duration
     setCurrentDuration(calculateCurrentDuration());
+    
+    // Set initial workflow state from pass data (immediate)
+    const initialState = getWorkflowStateFromPass(pass);
+    setWorkflowState(initialState);
+    
+    // Try to enhance with backend workflow state (optional)
+    if (pass.id) {
+      fetchWorkflowState(pass.id).then(state => {
+        if (state !== initialState) {
+          setWorkflowState(state);
+        }
+      });
+    }
     
     if (!pass.is_active) return;
 
@@ -231,13 +276,19 @@ const PassCard = ({
           <Card.Header>
             <Icon name="user" />
             {pass.student_name}
-            <Label 
-              color={alertLevel.color} 
-              floated="right"
-              size="small"
-            >
-              {alertLevel.text}
-            </Label>
+            <div style={{ float: 'right' }}>
+              <WorkflowStatus 
+                workflowState={workflowState} 
+                duration={currentDuration} 
+              />
+              <Label 
+                color={alertLevel.color} 
+                size="small"
+                style={{ marginLeft: '5px' }}
+              >
+                {alertLevel.text}
+              </Label>
+            </div>
           </Card.Header>
           
           <Card.Meta>

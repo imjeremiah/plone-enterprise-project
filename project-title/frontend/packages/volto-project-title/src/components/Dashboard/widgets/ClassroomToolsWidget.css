@@ -1,0 +1,174 @@
+/**
+ * Classroom Tools Widget Styling
+ * 
+ * Professional, tablet-friendly design for classroom navigation
+ */
+
+.classroom-tools-widget {
+  margin: 2rem 0;
+}
+
+.classroom-tools-widget .ui.segment {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+/* Force center alignment for header title and subtitle */
+.classroom-tools-widget .ui.header {
+  text-align: center !important;
+}
+
+.classroom-tools-widget .ui.header .content {
+  text-align: center !important;
+}
+
+.classroom-tools-widget .ui.header .sub.header {
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+.tools-grid {
+  margin-top: 2rem !important;
+}
+
+.tool-card {
+  transition: all 0.3s ease !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  height: 100%;
+  cursor: pointer !important;
+  text-decoration: none !important;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  text-decoration: none !important;
+}
+
+.tool-card.primary-tool {
+  background: linear-gradient(135deg, #2185d0 0%, #1678c2 100%) !important;
+  color: white !important;
+}
+
+.tool-card.primary-tool .tool-title,
+.tool-card.primary-tool .tool-description {
+  color: white !important;
+}
+
+.tool-card.primary-tool .tool-icon {
+  color: white !important;
+}
+
+.tool-icon {
+  margin-bottom: 1rem !important;
+  transition: transform 0.2s ease;
+}
+
+.tool-card:hover .tool-icon {
+  transform: scale(1.1);
+}
+
+.tool-title {
+  font-weight: bold !important;
+  font-size: 1.2em !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.tool-description {
+  font-size: 0.9em !important;
+  line-height: 1.4 !important;
+  opacity: 0.8;
+}
+
+.tool-button {
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.tool-button:hover {
+  transform: translateY(-1px) !important;
+}
+
+.quick-access {
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.quick-access .ui.buttons {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.quick-access .ui.button {
+  border-radius: 25px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.quick-access .ui.button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .tools-grid {
+    margin: 1rem 0 !important;
+  }
+  
+  .tool-card {
+    margin-bottom: 1rem !important;
+  }
+  
+  .tool-icon {
+    font-size: 3rem !important;
+  }
+  
+  .quick-access .ui.buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .quick-access .ui.button {
+    margin: 0.25rem 0 !important;
+    width: 100%;
+  }
+}
+
+/* Tablet optimization */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .tools-grid {
+    margin: 1.5rem 0 !important;
+  }
+  
+  .tool-card {
+    min-height: 280px;
+  }
+  
+  .tool-icon {
+    font-size: 4rem !important;
+  }
+}
+
+/* Accessibility improvements */
+.tool-card:focus {
+  outline: 3px solid #2185d0;
+  outline-offset: 2px;
+}
+
+.tool-card:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Print styles */
+@media print {
+  .classroom-tools-widget {
+    display: none;
+  }
+} 

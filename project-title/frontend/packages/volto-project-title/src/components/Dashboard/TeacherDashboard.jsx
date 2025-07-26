@@ -22,6 +22,7 @@ import AlertsWidget from './widgets/AlertsWidget';
 import QuickActionsWidget from './widgets/QuickActionsWidget';
 import TimerWidget from './widgets/TimerWidget';
 import SubstituteWidget from './widgets/SubstituteWidget';
+import PerformanceMonitor from './PerformanceMonitor';
 
 import './TeacherDashboard.css';
 
@@ -31,8 +32,17 @@ const TeacherDashboard = () => {
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
   
-  // Get backend URL from environment
-  const contentUrl = process.env.RAZZLE_API_PATH || 'http://localhost:8080/Plone';
+  // Get backend URL from environment - support both dev and Docker modes
+  const getApiUrl = () => {
+    // If we're on project-title.localhost (Docker), use relative path via Traefik
+    if (typeof window !== 'undefined' && window.location.hostname === 'project-title.localhost') {
+      return '/Plone'; // Relative path - Traefik will route to backend
+    }
+    // Otherwise use localhost fallback for development
+    return 'http://localhost:8080/Plone';
+  };
+  
+  const contentUrl = getApiUrl();
 
   useEffect(() => {
     // Initial load
@@ -121,18 +131,27 @@ const TeacherDashboard = () => {
     <div className="teacher-dashboard">
       <Container fluid style={{ padding: '15px' }}>
         {/* Dashboard Header */}
-        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <Header as="h1" style={{ margin: '0 0 5px 0', textAlign: 'center', width: '100%' }}>
-            <Icon name="dashboard" color="blue" />
-            Classroom Command Center
-          </Header>
-          <div style={{ 
-            color: '#666', 
-            fontSize: '0.9em', 
-            fontWeight: 'normal',
-            marginBottom: '0'
-          }}>
-            Real-time classroom management dashboard • Last updated: {lastUpdate?.toLocaleTimeString()}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+          <div style={{ flex: 1 }}>
+          </div>
+          
+          <div style={{ textAlign: 'center', flex: 2 }}>
+            <Header as="h1" style={{ margin: '0 0 5px 0' }}>
+              <Icon name="dashboard" color="blue" />
+              Classroom Command Center
+            </Header>
+            <div style={{ 
+              color: '#666', 
+              fontSize: '0.9em', 
+              fontWeight: 'normal',
+              marginBottom: '0'
+            }}>
+              Real-time classroom management dashboard • Last updated: {lastUpdate?.toLocaleTimeString()}
+            </div>
+          </div>
+          
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            <PerformanceMonitor />
           </div>
         </div>
 

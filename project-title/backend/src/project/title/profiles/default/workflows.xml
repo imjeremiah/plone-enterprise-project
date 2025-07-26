@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<object name="portal_workflow" meta_type="Plone Workflow Tool">
+  <!-- Temporarily disabled while testing browser views -->
+  <!-- <object name="hall_pass_workflow" meta_type="Workflow"/> -->
+  <!-- <bindings>
+    <type type_id="HallPass">
+      <bound-workflow workflow_id="hall_pass_workflow"/>
+    </type>
+  </bindings> -->
+</object> 

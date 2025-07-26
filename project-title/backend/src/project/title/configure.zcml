@@ -1,44 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:five="http://namespaces.zope.org/five"
     xmlns:i18n="http://namespaces.zope.org/i18n"
-    i18n_domain="project.title"
-    >
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="project.title">
 
-  <i18n:registerTranslations directory="locales" />
+  <!-- Include the dependencies -->
+  <include package="Products.CMFCore" />
+  <include package="plone.app.dexterity" />
+  <include package="plone.restapi" />
 
-  <include
-      package="Products.CMFCore"
-      file="permissions.zcml"
-      />
-
-
-  <include file="dependencies.zcml" />
-  <include file="profiles.zcml" />
-  <include file="permissions.zcml" />
-
-  <include package=".behaviors" />
-  <include package=".browser" />
+  <!-- Register the package configuration -->
   <include package=".content" />
-  <include package=".controlpanel" />
-  <include package=".indexers" />
-  <include package=".serializers" />
+  <include package=".behaviors" />
   <include package=".vocabularies" />
+  <include package=".browser" />
 
-  <!-- CORS Configuration -->
-  <adapter
-      factory=".cors.CORSPolicy"
-      for="* *"
-      />
+  <!-- Custom catalog configuration -->
+  <!-- Temporarily disabled catalog to resolve startup issues -->
+  <!-- <include file="catalog.zcml" /> -->
 
-  <!-- OAuth Redirect JavaScript View -->
-  <browser:page
-      xmlns:browser="http://namespaces.zope.org/browser"
-      for="*"
-      name="oauth_redirect_js"
-      class=".browser.views.OAuthRedirectView"
-      permission="zope2.View"
-      />
+  <!-- Temporarily disabled event system to resolve startup issues -->
+  <!-- Event System Configuration -->
+  <!-- <subscriber
+    for=".events.IHallPassIssuedEvent"
+    handler=".event_handlers.handle_hall_pass_issued"
+    />
 
-  <!-- -*- extra stuff goes here -*- -->
+  <subscriber
+    for=".events.IHallPassReturnedEvent"
+    handler=".event_handlers.handle_hall_pass_returned"
+    />
+
+  <subscriber
+    for=".events.ISeatingChartUpdatedEvent"
+    handler=".event_handlers.handle_seating_chart_updated"
+    />
+
+  <subscriber
+    for=".events.ITimerCompletedEvent"
+    handler=".event_handlers.handle_timer_completed"
+    /> -->
 
 </configure>

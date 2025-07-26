@@ -15,6 +15,7 @@ import transaction
 import secrets
 import string
 import logging
+from .cors_helper import set_cors_headers
 
 logger = logging.getLogger(__name__)
 
@@ -27,10 +28,7 @@ class SubstituteFolderGenerator(BrowserView):
         logger.info(f"🎯 SUBSTITUTE FOLDER __CALL__ METHOD - Request method: {self.request.method}")
         
         # Handle CORS headers for frontend integration
-        self.request.response.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-        self.request.response.setHeader('Access-Control-Allow-Credentials', 'true')
-        self.request.response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.request.response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept')
+        set_cors_headers(self.request, self.request.response)
         
         if self.request.method == 'OPTIONS':
             logger.info("📧 Handling OPTIONS request")

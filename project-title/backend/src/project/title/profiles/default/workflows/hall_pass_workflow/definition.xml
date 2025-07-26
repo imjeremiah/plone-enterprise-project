@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<dc-workflow workflow_id="hall_pass_workflow" title="Hall Pass Workflow"
+             description="Manages hall pass lifecycle with time-based transitions"
+             state_variable="review_state" initial_state="draft">
+
+  <permission>Access contents information</permission>
+  <permission>Modify portal content</permission>
+  <permission>View</permission>
+
+  <!-- States -->
+  <state state_id="draft" title="Draft">
+    <exit-transition transition_id="issue"/>
+    <permission-map name="Access contents information" acquired="False">
+      <permission-role>Owner</permission-role>
+      <permission-role>Manager</permission-role>
+    </permission-map>
+    <permission-map name="View" acquired="False">
+      <permission-role>Owner</permission-role>
+      <permission-role>Manager</permission-role>
+    </permission-map>
+  </state>
+
+  <state state_id="issued" title="Student Out">
+    <exit-transition transition_id="return"/>
+    <exit-transition transition_id="expire"/>
+    <permission-map name="View" acquired="False">
+      <permission-role>Owner</permission-role>
+      <permission-role>Manager</permission-role>
+      <permission-role>Teacher</permission-role>
+    </permission-map>
+    <permission-map name="Modify portal content" acquired="False">
+      <permission-role>Owner</permission-role>
+      <permission-role>Manager</permission-role>
+      <permission-role>Teacher</permission-role>
+    </permission-map>
+  </state>
+
+  <state state_id="returned" title="Returned">
+    <permission-map name="View" acquired="False">
+      <permission-role>Owner</permission-role>
+      <permission-role>Manager</permission-role>
+      <permission-role>Teacher</permission-role>
+    </permission-map>
+  </state>
+
+  <state state_id="expired" title="Auto-Expired">
+    <permission-map name="View" acquired="False">
+      <permission-role>Manager</permission-role>
+      <permission-role>Teacher</permission-role>
+    </permission-map>
+  </state>
+
+  <!-- Transitions -->
+  <transition transition_id="issue" title="Issue Pass"
+              new_state="issued" trigger="USER">
+    <action url="%(content_url)s/content_status_modify?workflow_action=issue"
+            category="workflow">Issue Pass</action>
+    <guard>
+      <guard-role>Teacher</guard-role>
+      <guard-role>Manager</guard-role>
+    </guard>
+  </transition>
+
+  <transition transition_id="return" title="Mark Returned"
+              new_state="returned" trigger="USER">
+    <action url="%(content_url)s/content_status_modify?workflow_action=return"
+            category="workflow">Mark Returned</action>
+    <guard>
+      <guard-role>Teacher</guard-role>
+      <guard-role>Manager</guard-role>
+    </guard>
+  </transition>
+
+  <transition transition_id="expire" title="Auto-Expire"
+              new_state="expired" trigger="AUTOMATIC">
+    <guard>
+      <guard-role>Manager</guard-role>
+    </guard>
+  </transition>
+
+  <!-- Variables -->
+  <variable variable_id="action" for_catalog="False" for_status="True" update_always="True">
+    <description>Previous transition</description>
+    <default>
+      <expression>transition/getId|nothing</expression>
+    </default>
+  </variable>
+
+  <variable variable_id="actor" for_catalog="False" for_status="True" update_always="True">
+    <description>The ID of the user who performed the previous transition</description>
+    <default>
+      <expression>user/getId</expression>
+    </default>
+  </variable>
+
+  <variable variable_id="comments" for_catalog="False" for_status="True" update_always="True">
+    <description>Comment about the last transition</description>
+    <default>
+      <expression>python:state_change.kwargs.get('comment', '')</expression>
+    </default>
+  </variable>
+
+  <variable variable_id="review_history" for_catalog="False" for_status="False" update_always="False">
+    <description>Provides access to workflow history</description>
+    <default>
+      <expression>state_change/getHistory</expression>
+    </default>
+    <guard>
+    </guard>
+  </variable>
+
+  <variable variable_id="time" for_catalog="False" for_status="True" update_always="True">
+    <description>When the previous transition was performed</description>
+    <default>
+      <expression>state_change/getDateTime</expression>
+    </default>
+  </variable>
+
+</dc-workflow> 

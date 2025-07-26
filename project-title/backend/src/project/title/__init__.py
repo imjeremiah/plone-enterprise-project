@@ -15,6 +15,13 @@ def initialize(context):
     """Initializer called when used as a Zope 2 product."""
     # Configure OAuth if environment variables are present
     configure_oauth()
+    
+    # Import catalog module to register indexers
+    try:
+        from . import catalog
+        logger.info("✅ Performance catalog indexers registered")
+    except Exception as e:
+        logger.warning(f"Catalog indexers import failed: {e}")
 
 
 def configure_oauth():
