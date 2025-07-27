@@ -49,8 +49,25 @@ const HallPassManagerComponent = ({
   const [recentPasses, setRecentPasses] = useState([]);
   const [alerts, setAlerts] = useState([]);
 
-  // Provide fallback URL for standalone usage
-  const baseUrl = contentUrl || 'http://localhost:8080';
+  // Get proper base URL for API calls - support both dev and Docker modes
+  const getBaseUrl = () => {
+    if (contentUrl) {
+      return contentUrl;
+    }
+    
+    // If we're on project-title.localhost (Docker), use relative path via Traefik
+    if (
+      typeof window !== 'undefined' &&
+      window.location.hostname === 'project-title.localhost'
+    ) {
+      return '/Plone'; // Relative path - Traefik will route to backend
+    }
+    
+    // Otherwise use localhost fallback for development
+    return 'http://localhost:8080/Plone';
+  };
+
+  const baseUrl = getBaseUrl();
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [newPass, setNewPass] = useState({
     student_name: '',
@@ -216,22 +233,11 @@ const HallPassManagerComponent = ({
   };
 
   /**
-   * Play notification sounds
+   * Play notification sounds - DISABLED (sounds not needed)
    */
   const playNotificationSound = (type) => {
-    try {
-      const soundFile =
-        type === 'pass-issued' ? 'pass-issued.mp3' : 'pass-returned.mp3';
-      const audio = new Audio(
-        `${baseUrl}/++resource++project.title/sounds/${soundFile}`,
-      );
-      audio.volume = 0.3;
-      audio.play().catch(() => {
-        // Sound is optional, ignore errors
-      });
-    } catch (error) {
-      // Sound is optional
-    }
+    // Sound functionality disabled - no sounds needed
+    return;
   };
 
   /**

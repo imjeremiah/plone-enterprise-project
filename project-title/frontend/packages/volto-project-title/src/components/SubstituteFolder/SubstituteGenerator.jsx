@@ -242,16 +242,17 @@ const SubstituteGenerator = ({ contentUrl }) => {
                       <List.Icon name="clock" />
                       <List.Content>
                         <strong>Generated:</strong>{' '}
-                        {generationResult.generated_date}
+                        {generationResult.generated_date || generationResult.date || 'Unknown'}
                       </List.Content>
                     </List.Item>
                     <List.Item>
                       <List.Icon name="clock" />
                       <List.Content>
                         <strong>Expires:</strong>{' '}
-                        {new Date(
-                          generationResult.expiry_time,
-                        ).toLocaleString()}
+                        {generationResult.expiry_time ? 
+                          new Date(generationResult.expiry_time).toLocaleString() : 
+                          'Not specified'
+                        }
                       </List.Content>
                     </List.Item>
                   </List>
@@ -260,7 +261,7 @@ const SubstituteGenerator = ({ contentUrl }) => {
                 <Grid.Column>
                   <Header as="h4">Materials Included</Header>
                   <List>
-                    {generationResult.sections_created.map((section, index) => (
+                    {(generationResult.sections_created || []).map((section, index) => (
                       <List.Item key={index}>
                         <List.Icon name="checkmark" color="green" />
                         <List.Content>{section}</List.Content>

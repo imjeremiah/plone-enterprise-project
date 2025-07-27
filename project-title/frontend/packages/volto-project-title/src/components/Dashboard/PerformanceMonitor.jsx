@@ -15,13 +15,31 @@ import {
 } from 'semantic-ui-react';
 
 const PerformanceMonitor = () => {
-  const [metrics, setMetrics] = useState(null);
+  const [metrics, setMetrics] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  // Get backend URL from environment - support both dev and Docker modes
+  const getApiUrl = () => {
+    // If we're on project-title.localhost (Docker), use relative path via Traefik
+    if (
+      typeof window !== 'undefined' &&
+      window.location.hostname === 'project-title.localhost'
+    ) {
+      return '/Plone'; // Relative path - Traefik will route to backend
+    }
+    // Otherwise use localhost fallback for development
+    return 'http://localhost:8080/Plone';
+  };
+
+  const baseUrl = getApiUrl();
 
   useEffect(() => {
     console.log('🔍 PerformanceMonitor: Starting metrics fetch...');
     fetchMetrics();
+
     // Update metrics every 2 minutes
     const interval = setInterval(fetchMetrics, 120000);
     return () => clearInterval(interval);
@@ -32,7 +50,7 @@ const PerformanceMonitor = () => {
     console.log('🧪 Testing dashboard-metrics endpoint...');
     try {
       const response = await fetch(
-        'http://localhost:8080/Plone/@@dashboard-metrics',
+        `${baseUrl}/@@dashboard-metrics`,
         {
           method: 'GET',
           mode: 'cors',
@@ -59,7 +77,7 @@ const PerformanceMonitor = () => {
     try {
       console.log('🔄 Attempting dashboard-metrics endpoint...');
       response = await fetch(
-        'http://localhost:8080/Plone/@@dashboard-metrics',
+        `${baseUrl}/@@dashboard-metrics`,
         {
           headers: {
             Accept: 'application/json',
@@ -82,7 +100,7 @@ const PerformanceMonitor = () => {
 
       // Try the existing dashboard endpoint as fallback
       try {
-        response = await fetch('http://localhost:8080/Plone/@@dashboard', {
+        response = await fetch(`${baseUrl}/@@dashboard`, {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',

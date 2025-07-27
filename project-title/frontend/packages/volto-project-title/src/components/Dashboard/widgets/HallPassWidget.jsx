@@ -62,7 +62,7 @@ const HallPassWidget = ({ data }) => {
     return `${hours}h ${remainingMinutes}m`;
   };
 
-  const { active_count, total_today, passes } = data;
+  const { active_count = 0, total_today = 0, passes = [] } = data;
 
   return (
     <Segment

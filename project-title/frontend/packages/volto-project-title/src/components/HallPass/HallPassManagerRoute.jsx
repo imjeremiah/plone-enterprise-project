@@ -24,6 +24,19 @@ const HallPassManagerRoute = () => {
     });
   }, []);
 
+  // Get proper content URL - support both dev and Docker modes
+  const getContentUrl = () => {
+    // If we're on project-title.localhost (Docker), use relative path via Traefik
+    if (
+      typeof window !== 'undefined' &&
+      window.location.hostname === 'project-title.localhost'
+    ) {
+      return '/Plone'; // Relative path - Traefik will route to backend
+    }
+    // Otherwise use localhost fallback for development
+    return 'http://localhost:8080/Plone';
+  };
+
   // Always render loading screen until component is loaded on client
   if (!isClient || !Component) {
     return <LoadingScreen />;
@@ -31,7 +44,7 @@ const HallPassManagerRoute = () => {
 
   return (
     <Component
-      contentUrl="http://localhost:8080"
+      contentUrl={getContentUrl()}
       title="Digital Hall Pass Manager"
     />
   );

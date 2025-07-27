@@ -342,6 +342,7 @@ class SubstituteFolderGenerator(BrowserView):
     def generate_materials_json(self):
         """Generate substitute materials as JSON response instead of creating content objects"""
         logger.info("🚀 GENERATE_MATERIALS_JSON METHOD CALLED - NEW APPROACH!")
+        logger.info("🔍 About to start generating materials...")
 
         try:
             # Parse request data for custom notes
