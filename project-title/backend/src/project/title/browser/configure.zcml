@@ -154,6 +154,14 @@
     permission="zope2.View"
     />
 
+  <browser:page
+    name="dashboard-stats"
+    for="*"
+    class=".dashboard.TeacherDashboard"
+    attribute="get_simple_stats"
+    permission="zope2.View"
+    />
+
   <!-- Performance Dashboard Views -->
   <browser:page
     name="performance-dashboard"

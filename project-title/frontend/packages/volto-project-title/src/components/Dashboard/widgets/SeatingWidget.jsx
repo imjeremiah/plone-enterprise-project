@@ -57,23 +57,26 @@ const SeatingWidget = ({ data }) => {
         );
 
       case 'active':
-        const chart = data.current_chart;
+        const chart = data.current_chart || {};
         return (
           <div>
             <Statistic size="small" style={{ marginBottom: '10px' }}>
               <Statistic.Value>
                 <Icon name="user" />
-                {chart.student_count}
+                {chart.student_count || 0}
               </Statistic.Value>
               <Statistic.Label>Students Seated</Statistic.Label>
             </Statistic>
 
             <div style={{ marginBottom: '10px' }}>
-              <strong>Active Chart:</strong> {chart.title}
+              <strong>Active Chart:</strong> {chart.title || 'Untitled Chart'}
               <br />
               <small style={{ color: '#666' }}>
                 Last updated:{' '}
-                {new Date(chart.last_modified).toLocaleDateString()}
+                {chart.last_modified ? 
+                  new Date(chart.last_modified).toLocaleDateString() : 
+                  'Unknown'
+                }
               </small>
             </div>
 

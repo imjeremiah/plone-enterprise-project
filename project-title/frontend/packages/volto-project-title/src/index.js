@@ -8,6 +8,7 @@ import TimerPage from './components/Timer/TimerPage';
 import SubstitutePage from './components/SubstituteFolder/SubstitutePage';
 import TeacherDashboard from './components/Dashboard/TeacherDashboard';
 import ClassroomToolsWidget from './components/Dashboard/widgets/ClassroomToolsWidget';
+import Login from './components/Login/Login';
 
 const applyConfig = (config) => {
   console.log('🚀 Edu Plone addon loading...');
@@ -63,6 +64,11 @@ const applyConfig = (config) => {
     {
       path: '/seating-charts',
       component: SeatingChartsPage,
+      exact: true,
+    },
+    {
+      path: '/login',
+      component: Login,
       exact: true,
     },
     ...(config.addonRoutes || []),
